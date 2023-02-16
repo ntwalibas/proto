@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-#include <iostream>
+#include <cstdio>
 #include <string>
 
 #include "common/token_type.h"
