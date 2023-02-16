@@ -4,6 +4,7 @@ cc_library(
         "*.h",
         "common/*.h",
         "utils/*.h",
+        "lexer/*.h",
     ]),
     visibility = ["//visibility:public"],
 )
