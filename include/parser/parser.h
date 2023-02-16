@@ -36,14 +36,53 @@ class Parser
          * Parses the token stream and returns an AST representing the program.
          */
         Program parse();
-
         Program parseProgram();
 
+
     private:
-        Lexer lexer;    /* Lexer to generate tokens */
-        Token previous; /* Last token to be consumed. */
-        Token current;  /* Token to be consumed. */
-        Token next;     /* Next token to be consumed. */
+        Lexer                           lexer;      /* Lexer to generate tokens */
+        Token                           previous;   /* Last token to be consumed. */
+        Token                           current;    /* Token to be consumed. */
+        Token                           next;       /* Next token to be consumed. */
+        std::vector<class ParserError>  errors;     /* List of non-fatal errors to be displayed all at once. */
+
+        // Returns the token that comes before the one currently being parsed.
+        Token& peekBack();
+
+        // Returns the current token.
+        Token& peek();
+
+        // Returns the token that comes after the one currently being parsed.
+        Token& peekFront();
+
+        // Returns true if we are at the end of the token stream.
+        bool atEnd();
+
+        // Returns true if we are one token away from the end of the token stream.
+        bool pastEnd();
+
+        // Returns true if the previous token type matches the given type.
+        bool checkPrevious(enum TokenType type);
+
+        // Returns true if the current token type matches the given type.
+        bool check(enum TokenType type);
+
+        // Returns true if the next token type matches the given type.
+        bool checkNext(enum TokenType type);
+
+        // Advances in the token stream and returns the current token.
+        Token& advance();
+
+        // Returns true if the current token type matches the given token type.
+        // Advances to the next token only if the match was true.
+        bool match(enum TokenType type);
+
+        // If the current token is of the given type, return it and advance.
+        // Throws an invalid argument exception otherwise.
+        Token& consume(enum TokenType type);
+
+        // Create a token.
+        Token makeToken(enum TokenType type);
 };
 
 
@@ -51,38 +90,37 @@ class ParserError : public std::runtime_error
 {
     public:
         ParserError(
-            Token error_tok,
+            Token& token,
             std::string const& primary_message,
             std::string const& secondary_message,
             bool fatal
         )
         : std::runtime_error(primary_message),
-          error_tok(error_tok),
+          token(token),
           secondary_message(secondary_message.c_str()),
           fatal(fatal) {}
-
-        ParserError(
-            Token error_tok,
-            char const * primary_message,
-            char const * secondary_message,
-            bool fatal
-        )
-        : std::runtime_error(primary_message),
-          error_tok(error_tok),
-          secondary_message(secondary_message),
-          fatal(fatal) {}
+        
+        /**
+         * Returns the token associated with this error.
+         */
+        Token& getToken()
+        {
+            return token;
+        }
         
         /**
          * Returns the primary error message.
          */
-        char const * getPrimaryMessage() const {
+        char const * getPrimaryMessage() const
+        {
             return what();
         }
         
         /**
          * Returns the secondary error message.
          */
-        char const * getSecondaryMessage() const {
+        char const * getSecondaryMessage() const
+        {
             return secondary_message;
         }
 
@@ -95,7 +133,7 @@ class ParserError : public std::runtime_error
         }
 
     private:
-        Token error_tok;                /* Where the error happened. */
+        Token token;                    /* Where the error happened. */
         char const * secondary_message; /* Error secondary message. */
         bool fatal;                     /* Is this an error we can recover from. */
 };

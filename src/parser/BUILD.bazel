@@ -2,6 +2,9 @@ cc_library(
     name = "parser",
     srcs = ["parser.cc"],
     copts = ["-Iinclude"],
-    deps = ["//include:include"],
+    deps = [
+        "//include:include",
+        "//src/utils:utils",
+    ],
     visibility = ["//visibility:public"],
 )

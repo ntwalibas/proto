@@ -17,7 +17,9 @@
 
 #include <string>
 
+#include "common/token_type.h"
 #include "parser/parser.h"
+#include "utils/parser.h"
 #include "common/token.h"
 #include "ast/program.h"
 #include "lexer/lexer.h"
@@ -49,8 +51,138 @@ Parser::parse()
     return parseProgram();
 }
 
+
 Program
 Parser::parseProgram()
 {
-    return Program();
+    Program program;
+
+    if (atEnd()) {
+        throw ParserError(
+            peek(),
+            std::string("a program must have at least one definition"),
+            std::string(""),
+            true
+        );
+    }
+
+    return program;
+}
+
+
+// Returns the token that comes before the one currently being parsed.
+inline Token&
+Parser::peekBack()
+{
+    return previous;
+}
+
+
+// Returns the current token.
+inline Token&
+Parser::peek()
+{
+    return current;
+}
+
+
+// Returns the token that comes after the one currently being parsed.
+inline Token&
+Parser::peekFront()
+{
+    return next;
+}
+
+
+// Returns true if we are at the end of the token stream.
+inline bool
+Parser::atEnd()
+{
+    return current.type == PROTO_EOF;
+}
+
+
+// Returns true if we are one token away from the end of the token stream.
+inline bool
+Parser::pastEnd()
+{
+    return next.type == PROTO_EOF;
+}
+
+
+// Returns true if the previous token type matches the given type.
+inline bool
+Parser::checkPrevious(enum TokenType type)
+{
+    return previous.type == type;
+}
+
+
+// Returns true if the current token type matches the given type.
+inline bool
+Parser::check(enum TokenType type)
+{
+    return current.type == type;
+}
+
+
+// Returns true if the next token type matches the given type.
+inline bool
+Parser::checkNext(enum TokenType type)
+{
+    return next.type == type;
+}
+
+
+// Advances in the token stream and returns the current token.
+Token&
+Parser::advance()
+{
+    Token new_next = lexer.lex();
+
+    previous = current;
+    current = next;
+    next = new_next;
+
+    return previous;
+}
+
+// Returns true if the current token type matches the given token type.
+// Advances to the next token only if the match was true.
+bool
+Parser::match(enum TokenType type)
+{
+    if (check(type)) {
+        advance();
+        return true;
+    }
+
+    return false;
+}
+
+
+// If the current token is of the given type, return it and advance.
+// Throws an invalid argument exception otherwise.
+Token&
+Parser::consume(enum TokenType type)
+{
+    if (check(type) == true)
+        return advance();
+
+    throw std::invalid_argument("The current token is not of the given type.");
+}
+
+
+// Create a token.
+Token
+Parser::makeToken(enum TokenType type) {
+    return Token(
+        type,
+        current.source,
+        current.source_path,
+        current.start,
+        current.length,
+        current.line,
+        current.column
+    );
 }

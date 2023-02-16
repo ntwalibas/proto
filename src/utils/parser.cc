@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-#include <iostream>
+#include <cstdio>
 #include <string>
 
 #include "include/ansi_colors.h"
@@ -24,45 +24,47 @@
 
 /**
  * Given a token and an error message, display that error in a visually appealing way.
+ * We stick to using C-style formatted output due to iomap being hard to use.
  */
 void
 printError(
-   Token const& token,
+    Token const& token,
     std::string const& primary_message,
     std::string const& secondary_message,
-    std::string const& file_path
+    std::string const& source_path
 )
 {
-    // if (token -> type == PROTO_EOF || token -> type == PROTO_ERROR) {
-    //     printf(
-    //         ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-    //         ANSI_BRIGHT_BOLD_WHITE "[%s]: %s.\n" ANSI_COLOR_RESET,
-    //         file_path,
-    //         primary_message
-    //     );
-    //     return;
-    // }
+    if (token.type == PROTO_EOF || token.type == PROTO_ERROR) {
+        fprintf(
+            stderr,
+            ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
+            ANSI_BRIGHT_BOLD_WHITE "[%s]: %s.\n" ANSI_COLOR_RESET,
+            source_path.c_str(),
+            primary_message.c_str()
+        );
+        return;
+    }
 
-    // struct TokenLine token_line = getTokenLine(token);
-    // printf(
-    //     ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-    //     ANSI_BRIGHT_BOLD_WHITE "[%s:%d:%d]: %s:\n" ANSI_COLOR_RESET,
-    //     file_path,
-    //     token -> line,
-    //     token -> column,
-    //     primary_message
-    // );
-    // printf("%*s|\n", 6, "");
-    // printf("%5u", token -> line);
-    // printf("%2s%-4s", "|", "");
-    // printf("%s\n", token_line.line);
-    // printf("%*s|", 6, "");
-    // printf("%*s", (int) (token_line.offset + 4), "");
-    // for (unsigned i = 0; i < token -> length - 1; i++)
-    //     printf(ANSI_COLOR_GREEN "~" ANSI_COLOR_RESET);
-    // printf(ANSI_COLOR_GREEN "^" ANSI_COLOR_RESET);
-    // if (secondary_message != NULL)
-    //     printf(ANSI_COLOR_GREEN " %s." ANSI_COLOR_RESET, secondary_message);
-    // printf("\n\n");
-    // free(token_line.line);
+    TokenLine token_line = token.getLine();
+    fprintf(
+        stderr,
+        ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
+        ANSI_BRIGHT_BOLD_WHITE "[%s:%zu:%zu]: %s:\n" ANSI_COLOR_RESET,
+        source_path.c_str(),
+        token.line,
+        token.column,
+        primary_message.c_str()
+    );
+    fprintf(stderr, "%*s|\n", 6, "");
+    fprintf(stderr, "%5zu", token.line);
+    fprintf(stderr, "%2s%-4s", "|", "");
+    fprintf(stderr, "%s\n", token_line.line.c_str());
+    fprintf(stderr, "%*s|", 6, "");
+    fprintf(stderr, "%*s", static_cast<int>(token_line.offset) + 4, "");
+    for (std::string::size_type i = 0; i < token.length - 1; i++)
+        fprintf(stderr, ANSI_GREEN "~" ANSI_COLOR_RESET);
+    fprintf(stderr, ANSI_GREEN "^" ANSI_COLOR_RESET);
+    if (! secondary_message.empty())
+        fprintf(stderr, ANSI_GREEN " %s." ANSI_COLOR_RESET, secondary_message.c_str());
+    fprintf(stderr, "\n\n");
 }

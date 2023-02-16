@@ -19,6 +19,8 @@
 #include <iostream>
 #include <string>
 
+#include "parser/parser.h"
+#include "utils/parser.h"
 #include "ansi_colors.h"
 #include "lexer/lexer.h"
 #include "utils/lexer.h"
@@ -58,7 +60,23 @@ compile(std::string const& source_path)
 
     /* 3. Lex the source */
     Lexer lexer(std::make_shared<std::string>(source), source_path);
-    printTokens(lexer);
+    // printTokens(lexer);
+
+    /* 4. Parse tokens */
+    Parser parser(lexer);
+    try {
+        parser.parse();
+    } catch (ParserError& e) {
+        printError(
+            e.getToken(),
+            e.getPrimaryMessage(),
+            e.getSecondaryMessage(),
+            e.getToken().source_path
+        );
+
+        return 1;
+    }
+    
 
     return 0;
 }
