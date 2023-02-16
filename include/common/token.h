@@ -26,16 +26,25 @@
 
 struct Token
 {
-    Token();
     Token(
         enum TokenType type,
-        const std::shared_ptr<std::string>& source,
-        const std::string& source_path,
-        const std::string::iterator start,
-        const std::string::size_type length,
-        const std::string::size_type line,
-        const std::string::size_type column
+        std::shared_ptr<std::string>& source,
+        std::string& source_path,
+        std::string::iterator start,
+        std::string::size_type length,
+        std::string::size_type line,
+        std::string::size_type column
     );
+
+    /**
+     * Copy constructor.
+     */
+    Token(Token const& token);
+
+    /**
+     * Copy assignment.
+     */
+    Token& operator=(Token const& token);
 
     /**
         * Returns the lexeme for the given token.
@@ -47,13 +56,13 @@ struct Token
         */
     struct TokenLine getLine();
 
-    enum TokenType                      type;           /* Type of token */
-    const std::shared_ptr<std::string>  source;         /* Source containing this token */
-    const std::string                   source_path;    /* File containing the source where this token was found */
-    std::string::iterator               start;          /* Index where this token occurs in the source */
-    std::string::size_type              length;         /* Length of the token */
-    std::string::size_type              line;           /* Line where the token occurs */
-    std::string::size_type              column;         /* Column where the token occurs */
+    enum TokenType                  type;           /* Type of token */
+    std::shared_ptr<std::string>    source;         /* Source containing this token */
+    std::string                     source_path;    /* File containing the source where this token was found */
+    std::string::iterator           start;          /* Index where this token occurs in the source */
+    std::string::size_type          length;         /* Length of the token */
+    std::string::size_type          line;           /* Line where the token occurs */
+    std::string::size_type          column;         /* Column where the token occurs */
 };
 
 

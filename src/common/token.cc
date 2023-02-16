@@ -23,20 +23,54 @@
 
 Token::Token(
     enum TokenType type,
-    const std::shared_ptr<std::string>& source,
-    const std::string& source_path,
-    const std::string::iterator start,
-    const std::string::size_type length,
-    const std::string::size_type line,
-    const std::string::size_type column
+    std::shared_ptr<std::string>& source,
+    std::string& source_path,
+    std::string::iterator start,
+    std::string::size_type length,
+    std::string::size_type line,
+    std::string::size_type column
 ) : type(type),
-source(source),
-source_path(source_path),
-start(start),
-length(length),
-line(line),
-column(column) {}
+    source(source),
+    source_path(source_path),
+    start(start),
+    length(length),
+    line(line),
+    column(column)
+{}
 
+
+ /**
+ * Copy constructor.
+ */
+Token::Token(Token const& token)
+{
+    type = token.type;
+    source = token.source;
+    source_path = token.source_path;
+    start = token.start;
+    length = token.length;
+    line = token.line;
+    column = token.column;
+}
+
+/**
+ * Copy assignment.
+ */
+Token&
+Token::operator=(Token const& token)
+{
+    if (this != &token) {
+        type = token.type;
+        source = token.source;
+        source_path = token.source_path;
+        start = token.start;
+        length = token.length;
+        line = token.line;
+        column = token.column;
+    }
+
+    return *this;
+}
 
 /**
  * Returns the lexeme for the given token.
