@@ -43,7 +43,6 @@ tokenTypeToString(enum TokenType type)
         "PLUS",                 // +
         "DIV",                  // /
         "MOD",                  // %
-        "QUOTE",                // '
         "COMMA",                // ,
         "SEMICOLON",            // ;
         "COLON",                // :
@@ -68,8 +67,9 @@ tokenTypeToString(enum TokenType type)
 
         /* literals */
         "IDENTIFIER",           // variable, function or type name
-        "INT",                  // classical integers
-        "FLOAT",                // classical floating point
+        "INT",                  // integers
+        "FLOAT",                // floating point
+        "STRING",               // string
 
         /* keywords */
         "FUNCTION",             // function
@@ -79,10 +79,10 @@ tokenTypeToString(enum TokenType type)
         "ELSE",                 // else
         "FOR",                  // for
         "WHILE",                // while
+        "IN",                   // in
         "CONTINUE",             // continue
         "BREAK",                // break
         "RETURN",               // return
-        "IN",                   // in
 
         /* specials */
         "EOF",                  // end file

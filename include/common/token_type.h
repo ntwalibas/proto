@@ -37,7 +37,6 @@ enum TokenType {
     PROTO_PLUS,               // +
     PROTO_DIV,                // /
     PROTO_MOD,                // %
-    PROTO_QUOTE,              // '
     PROTO_COMMA,              // ,
     PROTO_SEMICOLON,          // ;
     PROTO_COLON,              // :
@@ -62,8 +61,9 @@ enum TokenType {
 
     /* literals */
     PROTO_IDENTIFIER,         // variable, function or type name
-    PROTO_INT,                // classical integers
-    PROTO_FLOAT,              // classical floating point
+    PROTO_INT,                // integers
+    PROTO_FLOAT,              // floating point
+    PROTO_STRING,             // string
 
     /* keywords */
     PROTO_FUNCTION,           // function
@@ -73,10 +73,10 @@ enum TokenType {
     PROTO_ELSE,               // else
     PROTO_FOR,                // for
     PROTO_WHILE,              // while
+    PROTO_IN,                 // in
     PROTO_CONTINUE,           // continue
     PROTO_BREAK,              // break
     PROTO_RETURN,             // return
-    PROTO_IN,                 // in
 
     /* specials */
     PROTO_EOF,                // end file
