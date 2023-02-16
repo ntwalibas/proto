@@ -24,40 +24,36 @@
 #include "token_type.h"
 
 
-class Token
+struct Token
 {
-    public:
-        Token();
-        Token(
-            enum TokenType type,
-            const std::shared_ptr<std::string>& source,
-            const std::string& source_path,
-            const std::string::iterator start,
-            const std::string::size_type length,
-            const std::string::size_type line,
-            const std::string::size_type column
-        );
+    Token();
+    Token(
+        enum TokenType type,
+        const std::shared_ptr<std::string>& source,
+        const std::string& source_path,
+        const std::string::iterator start,
+        const std::string::size_type length,
+        const std::string::size_type line,
+        const std::string::size_type column
+    );
 
-        /**
-         * Returns the lexeme for the given token.
-         */
-        std::string getLexeme() const;
+    /**
+        * Returns the lexeme for the given token.
+        */
+    std::string getLexeme() const;
 
-        /**
-         * Returns line information where this token was found.
-         */
-        struct TokenLine getLine();
-    
-    private:
-        enum TokenType                      type;           /* Type of token */
-        const std::shared_ptr<std::string>  source;         /* Source containing this token */
-        const std::string                   source_path;    /* File containing the source where this token was found */
-        const std::string::iterator         start;          /* Index where this token occurs in the source */
-        const std::string::size_type        length;         /* Length of the token */
-        const std::string::size_type        line;           /* Line where the token occurs */
-        const std::string::size_type        column;         /* Column where the token occurs */
-    
-    friend struct TokenLine;
+    /**
+        * Returns line information where this token was found.
+        */
+    struct TokenLine getLine();
+
+    enum TokenType                      type;           /* Type of token */
+    const std::shared_ptr<std::string>  source;         /* Source containing this token */
+    const std::string                   source_path;    /* File containing the source where this token was found */
+    std::string::iterator               start;          /* Index where this token occurs in the source */
+    std::string::size_type              length;         /* Length of the token */
+    std::string::size_type              line;           /* Line where the token occurs */
+    std::string::size_type              column;         /* Column where the token occurs */
 };
 
 

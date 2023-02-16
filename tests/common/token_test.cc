@@ -12,7 +12,7 @@ class TokenTest: public ::testing::Test
         void SetUp() override {
             static std::string _source = "var";
             source = std::make_shared<std::string>(_source);
-            source_path = "main.proto";
+            source_path = "main.pro";
         }
 
         void TearDown() override {
