@@ -88,7 +88,7 @@ Token::getLexeme() const
  * Returns line information where this token was found.
  */
 TokenLine
-Token::getLine()
+Token::getLine() const
 {
     return TokenLine(* this);
 }

@@ -47,14 +47,14 @@ struct Token
     Token& operator=(Token const& token);
 
     /**
-        * Returns the lexeme for the given token.
-        */
+     * Returns the lexeme for the given token.
+     */
     std::string getLexeme() const;
 
     /**
-        * Returns line information where this token was found.
-        */
-    struct TokenLine getLine();
+     * Returns line information where this token was found.
+     */
+    struct TokenLine getLine() const;
 
     enum TokenType                  type;           /* Type of token */
     std::shared_ptr<std::string>    source;         /* Source containing this token */
@@ -68,10 +68,10 @@ struct Token
 
 struct TokenLine
 {
-    TokenLine(const Token& token);
+    TokenLine(Token const& token);
 
-    std::string                             line;           /* Line where the given token lies */
-    std::string::size_type                  offset;         /* How far the token's lexeme is from the beginning of the line */
+    std::string                     line;           /* Line where the given token lies */
+    std::string::size_type          offset;         /* How far the token's lexeme is from the beginning of the line */
 };
 
 #endif
