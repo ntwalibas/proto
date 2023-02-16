@@ -1,0 +1,11 @@
+cc_test(
+  name = "common_test",
+  size = "small",
+  srcs = glob(["*.cc"]),
+  deps = [
+    "@com_google_googletest//:gtest_main",
+    "//src/common:common",
+    "//include:include",
+  ],
+  copts = ["-Iinclude"],
+)

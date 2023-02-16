@@ -1,0 +1,6 @@
+bazel-*
+Process.pro
+main.pro
+simple.pro
+VERSION
+.DS_Store
