@@ -23,10 +23,12 @@
 #include "utils/file.h"
 
 
-int compile(std::string const& source_path);
+int
+compile(std::string const& source_path);
 
 
-int main(int argc, char const * argv[])
+int
+main(int argc, char const * argv[])
 {
     if (argc != 2) {
         std::cout << "Usage: nova program" << std::endl;
@@ -38,7 +40,8 @@ int main(int argc, char const * argv[])
     return 0;
 }
 
-int compile(std::string const& source_path)
+int
+compile(std::string const& source_path)
 {
     /* We begin by making sure the given source path exists */
     if (fileExists(source_path) == false) {

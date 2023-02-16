@@ -25,12 +25,14 @@
 /**
  * Returns true if the given file exists, false otherwise.
  */
-bool fileExists(std::string const& path);
+bool
+fileExists(std::string const& path);
 
 
 /**
  * Reads the content of the given file and returns a string with the content.
  */
-std::string readFile(std::string const& path);
+std::string
+readFile(std::string const& path);
 
 #endif

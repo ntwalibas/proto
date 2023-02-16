@@ -24,7 +24,8 @@
 /**
  * Given a token and an error message, display that error in a visually appealing way.
  */
-void printError(
+void
+printError(
     Token const& token,
     std::string const& primary_message,
     std::string const& secondary_message,

@@ -25,7 +25,8 @@
  *
  * @return      the string representation of a token type.
  */
-std::string tokenTypeToString(enum TokenType type)
+std::string
+tokenTypeToString(enum TokenType type)
 {
     char const * token_types[] = {
         "LOGICAL_NOT",          // !  (not)

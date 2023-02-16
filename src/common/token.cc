@@ -41,7 +41,8 @@ column(column) {}
 /**
  * Returns the lexeme for the given token.
  */
-std::string Token::getLexeme() const
+std::string
+Token::getLexeme() const
 {
     return source->substr(
         std::distance(source->begin(), start),
@@ -52,7 +53,8 @@ std::string Token::getLexeme() const
 /**
  * Returns line information where this token was found.
  */
-TokenLine Token::getLine()
+TokenLine
+Token::getLine()
 {
     return TokenLine(* this);
 }

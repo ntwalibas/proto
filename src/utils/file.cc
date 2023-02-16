@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 
+#include <exception>
 #include <cstdbool>
 #include <fstream>
 #include <string>
@@ -25,7 +26,8 @@
 /**
  * Returns true if the given file exists, false otherwise.
  */
-bool fileExists(std::string const& path)
+bool
+fileExists(std::string const& path)
 {
     std::ifstream f(path.c_str());
     return f.good();
@@ -35,9 +37,13 @@ bool fileExists(std::string const& path)
 /**
  * Reads the content of the given file and returns a string with the content.
  */
-std::string readFile(std::string const& path)
+std::string
+readFile(std::string const& path)
 {
     std::ifstream f(path.c_str());
+    if (!f.good())
+        throw std::invalid_argument("File [" + path + "] to read not found. Make sure to check for existence first using fileExists().");
+
     f.seekg(0, std::ios::end);
     std::ifstream::pos_type size = f.tellg();
     std::string buffer(size, ' ');
