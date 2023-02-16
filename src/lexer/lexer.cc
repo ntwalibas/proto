@@ -37,12 +37,12 @@ Lexer::Lexer(
     std::shared_ptr<std::string> const& source,
     std::string const& source_path
 ) : source(source),
-source_path(source_path),
-start(source->begin()),
-current(source->begin()),
-line(1),
-column(1),
-num_tokens(0)
+    source_path(source_path),
+    start(source->begin()),
+    current(source->begin()),
+    line(1),
+    column(1),
+    num_tokens(0)
 {
     keywords["function"]    = PROTO_FUNCTION;
     keywords["const"]       = PROTO_CONST;

@@ -39,6 +39,30 @@ class Lexer
          */
         Token lex();
 
+        /**
+         * Returns the source code.
+         */
+        std::shared_ptr<std::string>& getSource()
+        {
+            return source;
+        }
+
+        /**
+         * Returns the source path.
+         */
+        std::string& getSourcePath()
+        {
+            return source_path;
+        }
+
+        /**
+         * Returns the iterator to the start of the source.
+         */
+        std::string::iterator& getStart()
+        {
+            return start;
+        }
+
     private:
         std::shared_ptr<std::string>    source;         /* Source code to lex. */
         std::string                     source_path;    /* Path to the source code for error message. */
