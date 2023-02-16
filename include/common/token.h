@@ -18,12 +18,14 @@
 #ifndef PROTO_COMMON_TOKEN_H
 #define PROTO_COMMON_TOKEN_H
 
+#include <memory>
 #include <string>
 
 #include "token_type.h"
 
 
-class Token {
+class Token
+{
     public:
         Token();
         Token(
@@ -59,7 +61,8 @@ class Token {
 };
 
 
-struct TokenLine {
+struct TokenLine
+{
     TokenLine(const Token& token);
 
     std::string                             line;           /* Line where the given token lies */
