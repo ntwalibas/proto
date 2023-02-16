@@ -25,7 +25,7 @@ Token::Token(
     enum TokenType type,
     const std::shared_ptr<std::string>& source,
     const std::string& source_path,
-    const std::string::size_type start,
+    const std::string::iterator start,
     const std::string::size_type length,
     const std::string::size_type line,
     const std::string::size_type column
@@ -43,7 +43,10 @@ column(column) {}
  */
 std::string Token::getLexeme() const
 {
-    return source->substr(start, length);
+    return source->substr(
+        std::distance(source->begin(), start),
+        length
+    );
 }
 
 /**
@@ -65,7 +68,7 @@ TokenLine::TokenLine(Token const& token)
     std::string::size_type length = 0, offset = 0;
 
     // Find the start of the line this token is located at
-    auto line_start = token.source->begin() + token.start;
+    auto line_start = token.start;
     while (line_start != token.source->begin() && * line_start != '\n') {
         line_start--;
         offset++;

@@ -30,7 +30,7 @@ class Token {
             enum TokenType type,
             const std::shared_ptr<std::string>& source,
             const std::string& source_path,
-            const std::string::size_type start,
+            const std::string::iterator start,
             const std::string::size_type length,
             const std::string::size_type line,
             const std::string::size_type column
@@ -50,7 +50,7 @@ class Token {
         enum TokenType                      type;           /* Type of token */
         const std::shared_ptr<std::string>  source;         /* Source containing this token */
         const std::string                   source_path;    /* File containing the source where this token was found */
-        const std::string::size_type        start;          /* Index where this token occurs in the source */
+        const std::string::iterator         start;          /* Index where this token occurs in the source */
         const std::string::size_type        length;         /* Length of the token */
         const std::string::size_type        line;           /* Line where the token occurs */
         const std::string::size_type        column;         /* Column where the token occurs */
