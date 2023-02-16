@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include <iostream>
-
 #include "common/token_type.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
