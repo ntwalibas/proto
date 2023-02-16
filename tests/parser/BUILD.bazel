@@ -1,0 +1,13 @@
+cc_test(
+  name = "parser_test",
+  size = "small",
+  srcs = ["parser_test.cc"],
+  deps = [
+    "@com_google_googletest//:gtest_main",
+    "//src/common:common",
+    "//src/lexer:lexer",
+    "//src/parser:parser",
+    "//include:include",
+  ],
+  copts = ["-Iinclude"],
+)
