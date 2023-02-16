@@ -198,7 +198,7 @@ Lexer::number()
         advance();
 
     // Match the fractional part if any
-    if (peek() == '.' && isDigit(peekNext())) {
+    if (peek() == '.' && isDigit(peekFront())) {
         // Consume the decimal point
         advance();
 
@@ -295,10 +295,10 @@ Lexer::skipWhitespace()
                 if (peekBack() == '\n' || num_tokens == 0)
                     issue_new_line = false;
 
-                if (peekNext() == '/') {
+                if (peekFront() == '/') {
                     skipSingleComment(issue_new_line);
                 }
-                else if (peekNext() == '*') {
+                else if (peekFront() == '*') {
                     // since we are sure we have a multi line comment,
                     // we consume the MUL token in order to avoid clashing with nested comments
                     advance();
@@ -345,12 +345,12 @@ Lexer::skipMultiComment(bool issue_new_line)
 
     while (atEnd() == false) {
         // if we have nested comments
-        if (peek() == '/' && peekNext() == '*') {
+        if (peek() == '/' && peekFront() == '*') {
             levels++;
         }
         
         // We handle comment closing
-        if (peek() == '*' && peekNext() == '/') {
+        if (peek() == '*' && peekFront() == '/') {
             // we make sure to consume the closing characters because the advance() at the end of the loop cannot
             advance();
             advance();
@@ -430,18 +430,18 @@ Lexer::match(char expected)
     return true;
 }
 
+// Returns next character in the stream.
+char
+Lexer::peekFront()
+{
+    return * (current + 1);
+}
+
 // Returns current character in the stream.
 char
 Lexer::peek()
 {
     return * current;
-}
-
-// Returns next character in the stream.
-char
-Lexer::peekNext()
-{
-    return * (current + 1);
 }
 
 // Returns the previous character in the stream.

@@ -117,7 +117,7 @@ class Lexer
         char peek();
 
         // Returns next character in the stream.
-        char peekNext();
+        char peekFront();
 
         // Returns the previous character in the stream.
         char peekBack();
