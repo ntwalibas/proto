@@ -20,6 +20,8 @@
 #include <string>
 
 #include "ansi_colors.h"
+#include "lexer/lexer.h"
+#include "utils/lexer.h"
 #include "utils/file.h"
 
 
@@ -51,9 +53,12 @@ compile(std::string const& source_path)
         return 1;
     }
 
-    /* 2. Invoke the compiler */
+    /* 2. Read the source */
     std::string source = readFile(source_path);
-    std::cout << source << std::endl;
+
+    /* 3. Lex the source */
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    printTokens(lexer);
 
     return 0;
 }

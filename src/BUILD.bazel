@@ -4,6 +4,7 @@ cc_binary(
     deps = [
         "//include:include",
         "//src/utils:utils",
+        "//src/lexer:lexer",
     ],
     copts = ["-Iinclude"],
 )
