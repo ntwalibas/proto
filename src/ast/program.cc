@@ -25,7 +25,7 @@
  * Adds a definition to this program.
  */
 void
-Program::addDefinition(Definition& definition)
+Program::addDefinition(Definition const& definition)
 {
     definitions.push_back(definition);
 }

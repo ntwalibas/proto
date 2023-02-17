@@ -29,7 +29,7 @@ class Program
         /**
          * Adds a definition to this program.
          */
-        void addDefinition(Definition& definition);
+        void addDefinition(Definition const& definition);
 
         /**
          * Returns all definitions in this program.
