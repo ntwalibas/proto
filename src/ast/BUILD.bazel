@@ -4,6 +4,7 @@ cc_library(
         "*.cc",
         "declarations/*.cc",
         "definitions/*.cc",
+        "expressions/*.cc",
     ]),
     copts = ["-Iinclude"],
     deps = [
