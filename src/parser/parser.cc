@@ -75,8 +75,7 @@ Parser::parseProgram()
 
     while (! atEnd()) {
         try {
-            std::unique_ptr<Definition> def = parseDefinition();
-            program.addDefinition(std::move(def));
+            program.addDefinition(parseDefinition());
             while (match(PROTO_NEWLINE));
         } catch (ParserError const& e) {
             if (e.isFatal())
