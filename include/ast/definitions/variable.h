@@ -1,6 +1,6 @@
-/*  This file is part of the Nova programming language
+/*  This file is part of the Proto programming language
  * 
- *  Copyright (c) 2022- Ntwali Bashige Toussaint
+ *  Copyright (c) 2023- Ntwali Bashige Toussaint
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
