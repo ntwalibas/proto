@@ -1,0 +1,14 @@
+cc_library(
+    name = "ast",
+    srcs = glob([
+        "*.cc",
+        "declarations/*.cc",
+        "definitions/*.cc",
+    ]),
+    copts = ["-Iinclude"],
+    deps = [
+        "//include:include",
+        "//src/common:common",
+    ],
+    visibility = ["//visibility:public"],
+)

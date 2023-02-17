@@ -20,32 +20,24 @@
 
 #include <cstdbool>
 
+#include "common/token.h"
 #include "declaration.h"
 
 
 class TypeDeclaration : public Declaration
 {
     public:
-        TypeDeclaration(Token& token, bool is_const)
-        : Declaration(DeclarationType::Type),
-          token(token),
-          is_const(is_const) {}
+        TypeDeclaration(Token& token, bool is_const);
 
         /**
          * Returns the token associated with this type declaration.
          */
-        Token& getToken()
-        {
-            return token;
-        }
+        Token& getToken();
 
         /**
          * Returns true is this type declaration is const-qualified.
          */
-        bool isConst() const
-        {
-            return is_const;
-        }
+        bool isConst() const;
 
     protected:
         Token   token;      /* The token with type information. */

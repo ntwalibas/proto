@@ -18,37 +18,29 @@
 #ifndef PROTO_AST_VARIABLE_DEFINITION_H
 #define PROTO_AST_VARIABLE_DEFINITION_H
 
-#include "declarations/type.h"
+#include "ast/declarations/type.h"
+#include "common/token.h"
 #include "definition.h"
 
 
 class VariableDefinition : public Definition
 {
     public:
-        VariableDefinition(Token& token, TypeDeclaration& type_decl)
-        : Definition(DefinitionType::Variable),
-          token(token),
-          type_decl(type_decl) {}
+        VariableDefinition(Token& token, TypeDeclaration& type_decl);
 
         /**
          * Returns the token associated with this variable definition.
          */
-        Token& getToken()
-        {
-            return token;
-        }
+        Token& getToken();
 
         /**
          * Returns the type of this variable definition.
          */
-        TypeDeclaration& getTypeDeclaration()
-        {
-            return type_decl;
-        }
+        TypeDeclaration& getTypeDeclaration();
 
     protected:
         Token           token;      /* Token associated with this variable. */
-        TypeDeclaration type_decl   /* Variable type. */
+        TypeDeclaration type_decl;  /* Variable type. */
 };
 
 #endif

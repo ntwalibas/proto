@@ -1,6 +1,6 @@
-/*  This file is part of the Nova programming language
+/*  This file is part of the Proto programming language
  * 
- *  Copyright (c) 2022- Ntwali Bashige Toussaint
+ *  Copyright (c) 2023- Ntwali Bashige Toussaint
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,29 +15,27 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_AST_PROGRAM_H
-#define PROTO_AST_PROGRAM_H
-
 #include <vector>
 
-#include "definitions/definition.h"
+#include "ast/definitions/definition.h"
+#include "ast/program.h"
 
 
-class Program
+/**
+ * Adds a definition to this program.
+ */
+void
+Program::addDefinition(Definition& definition)
 {
-    public:
-        /**
-         * Adds a definition to this program.
-         */
-        void addDefinition(Definition& definition);
+    definitions.push_back(definition);
+}
 
-        /**
-         * Returns all definitions in this program.
-         */
-        std::vector<Definition>& getDefinitions();
 
-    private:
-        std::vector<Definition> definitions;    /* Vector of all the definitions in this program. */
-};
-
-#endif
+/**
+ * Returns all definitions in this program.
+ */
+std::vector<Definition>&
+Program::getDefinitions()
+{
+    return definitions;
+}
