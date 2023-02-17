@@ -16,6 +16,8 @@
  */
 
 #include <exception>
+#include <utility>
+#include <memory>
 #include <string>
 
 #include "ast/declarations/declaration.h"
@@ -73,7 +75,8 @@ Parser::parseProgram()
 
     while (! atEnd()) {
         try {
-            program.addDefinition(parseDefinition());
+            std::unique_ptr<Definition> def = parseDefinition();
+            program.addDefinition(std::move(def));
             while (match(PROTO_NEWLINE));
         } catch (ParserError const& e) {
             if (e.isFatal())
@@ -88,7 +91,7 @@ Parser::parseProgram()
 }
 
 
-Definition
+std::unique_ptr<Definition>
 Parser::parseDefinition()
 {
     Token def_token;
@@ -125,17 +128,20 @@ Parser::parseDefinition()
                 true
             );
         
-        default:
+        default: {
             return parseVariableDefinition(def_token);
+        }
     }
 }
 
 
-VariableDefinition
+std::unique_ptr<VariableDefinition>
 Parser::parseVariableDefinition(Token& var_token)
 {
     TypeDeclaration var_type = parseTypeDeclaration();
-    return VariableDefinition(var_token, var_type);
+    return std::make_unique<VariableDefinition>(
+        VariableDefinition(var_token, var_type)
+    );
 }
 
 

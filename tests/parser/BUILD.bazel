@@ -4,10 +4,11 @@ cc_test(
   srcs = ["parser_test.cc"],
   deps = [
     "@com_google_googletest//:gtest_main",
+    "//include:include",
     "//src/common:common",
     "//src/lexer:lexer",
     "//src/parser:parser",
-    "//include:include",
+    "//src/ast:ast",
   ],
   copts = ["-Iinclude"],
 )

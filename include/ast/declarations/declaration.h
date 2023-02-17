@@ -29,6 +29,7 @@ class Declaration
 {
     public:
         Declaration(enum DeclarationType type) : type(type) {}
+        virtual ~Declaration() {}
 
         /**
          * Returns the type of this declaration.

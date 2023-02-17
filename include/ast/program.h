@@ -18,6 +18,7 @@
 #ifndef PROTO_AST_PROGRAM_H
 #define PROTO_AST_PROGRAM_H
 
+#include <memory>
 #include <vector>
 
 #include "definitions/definition.h"
@@ -29,15 +30,15 @@ class Program
         /**
          * Adds a definition to this program.
          */
-        void addDefinition(Definition const& definition);
+        void addDefinition(std::unique_ptr<Definition>&& definition);
 
         /**
          * Returns all definitions in this program.
          */
-        std::vector<Definition>& getDefinitions();
+        std::vector<std::unique_ptr<Definition>>& getDefinitions();
 
     private:
-        std::vector<Definition> definitions;    /* Vector of all the definitions in this program. */
+        std::vector<std::unique_ptr<Definition>> definitions;   /* Vector of all the definitions in this program. */
 };
 
 #endif

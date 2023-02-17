@@ -15,6 +15,8 @@
  *  limitations under the License.
  */
 
+#include <utility>
+#include <memory>
 #include <vector>
 
 #include "ast/definitions/definition.h"
@@ -25,16 +27,18 @@
  * Adds a definition to this program.
  */
 void
-Program::addDefinition(Definition const& definition)
+Program::addDefinition(std::unique_ptr<Definition>&& definition)
 {
-    definitions.push_back(definition);
+    definitions.push_back(
+        std::move(definition)
+    );
 }
 
 
 /**
  * Returns all definitions in this program.
  */
-std::vector<Definition>&
+std::vector<std::unique_ptr<Definition>>&
 Program::getDefinitions()
 {
     return definitions;

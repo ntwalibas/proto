@@ -20,6 +20,7 @@
 #define PROTO_PARSER_H
 
 #include <exception>
+#include <memory>
 #include <string>
 
 #include "ast/definitions/definition.h"
@@ -42,8 +43,8 @@ class Parser
         Program parseProgram();
 
         // Definitions
-        Definition parseDefinition();
-        VariableDefinition parseVariableDefinition(Token& var_token);
+        std::unique_ptr<Definition> parseDefinition();
+        std::unique_ptr<VariableDefinition> parseVariableDefinition(Token& var_token);
 
         // Declarations
         TypeDeclaration parseTypeDeclaration();

@@ -32,7 +32,7 @@ VariableDefinition::VariableDefinition(
 /**
  * Returns the token associated with this variable definition.
  */
-inline Token&
+Token&
 VariableDefinition::getToken()
 {
     return token;
@@ -42,7 +42,7 @@ VariableDefinition::getToken()
 /**
  * Returns the type of this variable definition.
  */
-inline TypeDeclaration&
+TypeDeclaration&
 VariableDefinition::getTypeDeclaration()
 {
     return type_decl;

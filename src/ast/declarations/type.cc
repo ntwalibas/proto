@@ -33,7 +33,7 @@ TypeDeclaration::TypeDeclaration(
 /**
  * Returns the token associated with this type declaration.
  */
-inline Token&
+Token&
 TypeDeclaration::getToken()
 {
     return token;
@@ -43,7 +43,7 @@ TypeDeclaration::getToken()
 /**
  * Returns true is this type declaration is const-qualified.
  */
-inline bool
+bool
 TypeDeclaration::isConst() const
 {
     return is_const;

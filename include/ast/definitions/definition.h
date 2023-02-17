@@ -28,6 +28,7 @@ class Definition
 {
     public:
         Definition(enum DefinitionType type) : type(type) {}
+        virtual ~Definition(){};
 
         /**
          * Returns the type of this definition.
