@@ -18,8 +18,10 @@
 #include <exception>
 #include <string>
 
+#include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
 #include "ast/definitions/variable.h"
+#include "ast/declarations/type.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
@@ -71,18 +73,20 @@ Parser::parseProgram()
 
     while (! atEnd()) {
         try {
-            parseDefinition();
+            program.addDefinition(parseDefinition());
             while (match(PROTO_NEWLINE));
         } catch (ParserError const& e) {
             if (e.isFatal())
                 throw;
             
             errors.push_back(e);
+            synchronize();
         }
     }
 
     return program;
 }
+
 
 Definition
 Parser::parseDefinition()
@@ -117,7 +121,7 @@ Parser::parseDefinition()
             throw ParserError(
                 peek(),
                 "function definitions are not currently supported",
-                "expected a variable definition",
+                "unexpected function definition",
                 true
             );
         
@@ -127,11 +131,29 @@ Parser::parseDefinition()
 }
 
 
-Definition
+VariableDefinition
 Parser::parseVariableDefinition(Token& var_token)
 {
-    advance();
-    return Definition(DefinitionType::Variable);
+    TypeDeclaration var_type = parseTypeDeclaration();
+    return VariableDefinition(var_token, var_type);
+}
+
+
+TypeDeclaration
+Parser::parseTypeDeclaration()
+{
+    bool is_const = match(PROTO_CONST);
+    try {
+        Token& type_token = consume(PROTO_IDENTIFIER);
+        return TypeDeclaration(type_token, is_const);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "expected a type",
+            "type name missing",
+            false
+        );
+    }
 }
 
 
@@ -246,13 +268,13 @@ Parser::synchronize()
     
     while (! atEnd()) {
         switch(peek().type) {
-        case PROTO_IDENTIFIER:
-            if (checkNext(PROTO_COLON))
-                return;
-        
-        // This is to avoid a compiler warning about unhandled token types
-        default:
-            break;
+            case PROTO_IDENTIFIER:
+                if (checkNext(PROTO_COLON))
+                    return;
+            
+            // Avoid a compiler warning about unhandled token types
+            default:
+                break;
         }
 
         advance();

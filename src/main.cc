@@ -21,6 +21,7 @@
 
 #include "parser/parser.h"
 #include "utils/parser.h"
+#include "ast/program.h"
 #include "ansi_colors.h"
 #include "lexer/lexer.h"
 #include "utils/lexer.h"
@@ -65,7 +66,8 @@ compile(std::string const& source_path)
     /* 4. Parse tokens */
     Parser parser(lexer);
     try {
-        parser.parse();
+        Program program = parser.parse();
+        std::cout << "The program has " << program.getDefinitions().size() << " definitions." << std::endl;
     } catch (ParserError& e) {
         printError(
             e.getToken(),

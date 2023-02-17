@@ -23,6 +23,8 @@
 #include <string>
 
 #include "ast/definitions/definition.h"
+#include "ast/definitions/variable.h"
+#include "ast/declarations/type.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
 #include "ast/program.h"
@@ -38,8 +40,13 @@ class Parser
          */
         Program parse();
         Program parseProgram();
+
+        // Definitions
         Definition parseDefinition();
-        Definition parseVariableDefinition(Token& var_token);
+        VariableDefinition parseVariableDefinition(Token& var_token);
+
+        // Declarations
+        TypeDeclaration parseTypeDeclaration();
 
 
     private:
