@@ -22,6 +22,7 @@
 #include <exception>
 #include <string>
 
+#include "ast/definitions/definition.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
 #include "ast/program.h"
@@ -37,10 +38,12 @@ class Parser
          */
         Program parse();
         Program parseProgram();
+        Definition parseDefinition();
+        Definition parseVariableDefinition(Token& var_token);
 
 
     private:
-        Lexer                           lexer;      /* Lexer to generate tokens */
+        Lexer&                          lexer;      /* Lexer to generate tokens */
         Token                           previous;   /* Last token to be consumed. */
         Token                           current;    /* Token to be consumed. */
         Token                           next;       /* Next token to be consumed. */
@@ -81,6 +84,9 @@ class Parser
         // Throws an invalid argument exception otherwise.
         Token& consume(enum TokenType type);
 
+        // Synchronize the parser so we can consume more tokens even under failure.
+        void synchronize();
+
         // Create a token.
         Token makeToken(enum TokenType type);
 };
@@ -97,7 +103,7 @@ class ParserError : public std::runtime_error
         )
         : std::runtime_error(primary_message),
           token(token),
-          secondary_message(secondary_message.c_str()),
+          secondary_message(secondary_message),
           fatal(fatal) {}
         
         /**
@@ -121,7 +127,7 @@ class ParserError : public std::runtime_error
          */
         char const * getSecondaryMessage() const
         {
-            return secondary_message;
+            return secondary_message.c_str();
         }
 
         /**
@@ -134,7 +140,7 @@ class ParserError : public std::runtime_error
 
     private:
         Token token;                    /* Where the error happened. */
-        char const * secondary_message; /* Error secondary message. */
+        std::string secondary_message;  /* Error secondary message. */
         bool fatal;                     /* Is this an error we can recover from. */
 };
 

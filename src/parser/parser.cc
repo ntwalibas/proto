@@ -15,8 +15,11 @@
  *  limitations under the License.
  */
 
+#include <exception>
 #include <string>
 
+#include "ast/definitions/definition.h"
+#include "ast/definitions/variable.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
@@ -66,7 +69,69 @@ Parser::parseProgram()
         );
     }
 
+    while (! atEnd()) {
+        try {
+            parseDefinition();
+            while (match(PROTO_NEWLINE));
+        } catch (ParserError const& e) {
+            if (e.isFatal())
+                throw;
+            
+            errors.push_back(e);
+        }
+    }
+
     return program;
+}
+
+Definition
+Parser::parseDefinition()
+{
+    Token def_token;
+    try {
+        def_token = consume(PROTO_IDENTIFIER);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "failed to parse the beginning of a definition",
+            "expected an identifier",
+            true
+        );
+    }
+
+    try {
+        consume(PROTO_COLON);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing colon after definition name",
+            "expected a colon after this definition name",
+            true
+        );
+    }
+
+    // Depending on the token that follows,
+    // we decide if we have a function or a variable definition
+    switch (peek().type) {
+        case PROTO_FUNCTION:
+            throw ParserError(
+                peek(),
+                "function definitions are not currently supported",
+                "expected a variable definition",
+                true
+            );
+        
+        default:
+            return parseVariableDefinition(def_token);
+    }
+}
+
+
+Definition
+Parser::parseVariableDefinition(Token& var_token)
+{
+    advance();
+    return Definition(DefinitionType::Variable);
 }
 
 
@@ -170,6 +235,28 @@ Parser::consume(enum TokenType type)
         return advance();
 
     throw std::invalid_argument("The current token is not of the given type.");
+}
+
+
+// Synchronize the parser so we can consume more tokens even under failure.
+void
+Parser::synchronize()
+{
+    advance();
+    
+    while (! atEnd()) {
+        switch(peek().type) {
+        case PROTO_IDENTIFIER:
+            if (checkNext(PROTO_COLON))
+                return;
+        
+        // This is to avoid a compiler warning about unhandled token types
+        default:
+            break;
+        }
+
+        advance();
+    }
 }
 
 
