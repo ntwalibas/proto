@@ -16,9 +16,23 @@
  */
 
 #include <iterator>
+#include <cstddef>
 #include <string>
 
+#include <iostream>
+
 #include "common/token.h"
+
+
+Token::Token(
+) : type(PROTO_ERROR),
+    source(nullptr),
+    source_path(""),
+    start(source_path.end()), // ugly hack to make sure to have a valid iterator
+    length(0),
+    line(1),
+    column(1)
+{}
 
 
 Token::Token(
@@ -99,9 +113,12 @@ Token::getLine() const
  * Attached to the struct is information that points to the lexeme,
  * but within the line, not the source.
  */
-TokenLine::TokenLine(Token const& token)
+TokenLine::TokenLine(
+    Token const& token
+) : line(""),
+    offset(0)
 {
-    std::string::size_type length = 0, offset = 0;
+    std::string::size_type length = 0;
 
     // Find the start of the line this token is located at
     auto line_start = token.start;
@@ -113,7 +130,8 @@ TokenLine::TokenLine(Token const& token)
     // Renormalize in case we hit a newline before the current line
     if (* line_start == '\n') {
         line_start++;
-        offset--;
+        if (offset > 0)
+            offset--;
     }
     
     // Calculate the length of the line

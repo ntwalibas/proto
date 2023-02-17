@@ -26,6 +26,8 @@
 
 struct Token
 {
+    Token();
+
     Token(
         enum TokenType type,
         std::shared_ptr<std::string>& source,
