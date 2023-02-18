@@ -18,6 +18,9 @@
 #ifndef PROTO_AST_VARIABLE_DEFINITION_H
 #define PROTO_AST_VARIABLE_DEFINITION_H
 
+#include <memory>
+
+#include "ast/expressions/expression.h"
 #include "ast/declarations/type.h"
 #include "common/token.h"
 #include "definition.h"
@@ -26,7 +29,11 @@
 class VariableDefinition : public Definition
 {
     public:
-        VariableDefinition(Token& token, TypeDeclaration& type_decl);
+        VariableDefinition(
+            Token& token,
+            TypeDeclaration& type_decl,
+            std::unique_ptr<Expression>&& initializer
+        );
 
         /**
          * Returns the token associated with this variable definition.
@@ -38,9 +45,15 @@ class VariableDefinition : public Definition
          */
         TypeDeclaration& getTypeDeclaration();
 
+        /**
+         * Returns the expression that initializes this variable definition.
+         */
+        std::unique_ptr<Expression>& getInitializer();
+
     protected:
-        Token           token;      /* Token associated with this variable. */
-        TypeDeclaration type_decl;  /* Variable type. */
+        Token                       token;          /* Token associated with this variable. */
+        TypeDeclaration             type_decl;      /* Variable type. */
+        std::unique_ptr<Expression> initializer;    /* Expression that initializes this variable definition*/
 };
 
 #endif

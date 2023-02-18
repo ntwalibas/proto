@@ -15,6 +15,9 @@
  *  limitations under the License.
  */
 
+#include <utility>
+#include <memory>
+
 #include "ast/definitions/variable.h"
 #include "ast/declarations/type.h"
 #include "common/token.h"
@@ -22,10 +25,12 @@
 
 VariableDefinition::VariableDefinition(
     Token& token,
-    TypeDeclaration& type_decl
+    TypeDeclaration& type_decl,
+    std::unique_ptr<Expression>&& initializer
 ) : Definition(DefinitionType::Variable),
     token(token),
-    type_decl(type_decl)
+    type_decl(type_decl),
+    initializer(std::move(initializer))
 {}
 
 
@@ -46,4 +51,14 @@ TypeDeclaration&
 VariableDefinition::getTypeDeclaration()
 {
     return type_decl;
+}
+
+
+/**
+ * Returns the expression that initializes this variable definition.
+ */
+std::unique_ptr<Expression>&
+VariableDefinition::getInitializer()
+{
+    return initializer;
 }

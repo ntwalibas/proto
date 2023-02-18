@@ -76,7 +76,7 @@ TEST_F(ParserTest, parseDefinitionTest)
     }, ParserError);
 
     // Otherwise, we have a valid definition
-    std::string Source = "name: string";
+    std::string Source = "name: string = \"John Doe\"";
     Lexer Lexer(std::make_shared<std::string>(Source), source_path);
     Parser parser(Lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -85,7 +85,7 @@ TEST_F(ParserTest, parseDefinitionTest)
 
 TEST_F(ParserTest, parseVariableDefinitionTest)
 {
-    std::string source = "name: string";
+    std::string source = "name: string = \"John Doe\"";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -98,6 +98,13 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     // We have the correct type
     TypeDeclaration& var_type = var_def.getTypeDeclaration();
     EXPECT_EQ(var_type.getToken().getLexeme(), "string");
+
+    // We have the correct initializer
+    std::unique_ptr<Expression>& var_init = var_def.getInitializer();
+    EXPECT_EQ(var_init->getType(), ExpressionType::Literal);
+    LiteralExpression& lit_expr = dynamic_cast<LiteralExpression&>(*var_init);
+    EXPECT_EQ(lit_expr.getToken().getLexeme(), "John Doe");
+    EXPECT_EQ(lit_expr.getLiteralType(), LiteralType::String);
 }
 
 

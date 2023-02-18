@@ -140,8 +140,22 @@ std::unique_ptr<VariableDefinition>
 Parser::parseVariableDefinition(Token& var_token)
 {
     TypeDeclaration var_type = parseTypeDeclaration();
+
+    try {
+        consume(PROTO_EQUAL);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing equal sign before variable initializer",
+            "expected an equal sign in order to initialize the variable definition",
+            false
+        );
+    }
+
+    std::unique_ptr<Expression> var_init = parseExpression();
+
     return std::make_unique<VariableDefinition>(
-        VariableDefinition(var_token, var_type)
+        VariableDefinition(var_token, var_type, std::move(var_init))
     );
 }
 
