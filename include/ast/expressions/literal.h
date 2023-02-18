@@ -22,18 +22,32 @@
 #include "expression.h"
 
 
+enum class LiteralType
+{
+    Integer,
+    Float,
+    String
+};
+
+
 class LiteralExpression : public Expression
 {
     public:
-        LiteralExpression(Token& token);
+        LiteralExpression(Token& token, enum LiteralType type);
 
         /**
          * Returns the token associated with this literal expression.
          */
         Token& getToken();
 
+        /**
+         * Returns the type of literal help in this expression.
+         */
+        enum LiteralType& getLiteralType();
+
     protected:
-        Token           token;      /* Token associated with this literal. */
+        Token               token;      /* Token associated with this literal. */
+        enum LiteralType    type;       /* Type of this literal */
 };
 
 #endif

@@ -32,6 +32,7 @@ class Expression
 {
     public:
         Expression(enum ExpressionType type) : type(type) {}
+        virtual ~Expression() {}
 
         /**
          * Returns the type of this expression.

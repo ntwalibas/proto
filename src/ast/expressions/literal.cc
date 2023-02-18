@@ -21,9 +21,11 @@
 
 
 LiteralExpression::LiteralExpression(
-    Token& token
+    Token& token,
+    enum LiteralType type
 ) : Expression(ExpressionType::Literal),
-    token(token)
+    token(token),
+    type(type)
 {}
 
 
@@ -34,4 +36,14 @@ Token&
 LiteralExpression::getToken()
 {
     return token;
+}
+
+
+/**
+ * Returns the type of literal help in this expression.
+ */
+enum LiteralType&
+LiteralExpression::getLiteralType()
+{
+    return type;
 }

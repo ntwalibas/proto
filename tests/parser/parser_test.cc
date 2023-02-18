@@ -2,10 +2,12 @@
 #include <memory>
 #include <string>
 
-#include <iostream>
-
 #include "ast/definitions/definition.h"
+#include "ast/expressions/expression.h"
+#include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
+#include "ast/expressions/literal.h"
+#include "ast/declarations/type.h"
 #include "parser/parser.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -23,6 +25,8 @@ class ParserTest: public ::testing::Test
         std::string source_path = "main.pro";
 };
 
+
+// Program
 TEST_F(ParserTest, parseEmptyProgramTest)
 {
     std::string source = "";
@@ -39,6 +43,8 @@ TEST_F(ParserTest, parseEmptyProgramTest)
     }, ParserError);
 }
 
+
+// Definitions
 TEST_F(ParserTest, parseDefinitionTest)
 {
     // The definition doesn't start with an identifier that names it
@@ -74,7 +80,7 @@ TEST_F(ParserTest, parseDefinitionTest)
     Lexer Lexer(std::make_shared<std::string>(Source), source_path);
     Parser parser(Lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
-    EXPECT_EQ(def -> getType(), DefinitionType::Variable);
+    EXPECT_EQ(def->getType(), DefinitionType::Variable);
 }
 
 TEST_F(ParserTest, parseVariableDefinitionTest)
@@ -83,7 +89,80 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
+
+    // We have the correct variable name
     EXPECT_EQ(def->getType(), DefinitionType::Variable);
     VariableDefinition& var_def = dynamic_cast<VariableDefinition&>(*def);
-    EXPECT_EQ(var_def.getToken().getLexeme(), std::string("name"));
+    EXPECT_EQ(var_def.getToken().getLexeme(), "name");
+
+    // We have the correct type
+    TypeDeclaration& var_type = var_def.getTypeDeclaration();
+    EXPECT_EQ(var_type.getToken().getLexeme(), "string");
+}
+
+
+// Declarations
+TEST_F(ParserTest, parseTypeDeclarationTest)
+{
+    std::string source = "const string";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    TypeDeclaration decl = parser.parseTypeDeclaration();
+
+    EXPECT_EQ(decl.isConst(), true);
+    EXPECT_EQ(decl.getToken().getLexeme(), "string");
+}
+
+
+// Expressions
+TEST_F(ParserTest, parsePrimaryExpressionTest)
+{
+    std::string source = "name";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parsePrimaryExpression();
+
+    // We have the correct expression type
+    EXPECT_EQ(expr->getType(), ExpressionType::Variable);
+    VariableExpression& var_expr = dynamic_cast<VariableExpression&>(*expr);
+
+    // We have the correct variable expression name
+    EXPECT_EQ(var_expr.getToken().getLexeme(), "name");
+}
+
+TEST_F(ParserTest, parseVariableExpressionTest)
+{
+    std::string source = "name";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<VariableExpression> var_expr = parser.parseVariableExpression();
+
+    EXPECT_EQ(var_expr->getToken().getLexeme(), "name");
+}
+
+TEST_F(ParserTest, parseLiteralExpressionTest)
+{
+    // Integer literal
+    std::string intSource = "0";
+    Lexer intLexer(std::make_shared<std::string>(intSource), source_path);
+    Parser intParser(intLexer);
+    std::unique_ptr<LiteralExpression> int_lit = intParser.parseLiteralExpression();
+    EXPECT_EQ(int_lit->getToken().getLexeme(), "0");
+    EXPECT_EQ(int_lit->getLiteralType(), LiteralType::Integer);
+
+    // Float literal
+    std::string floatSource = "0.5";
+    Lexer floatLexer(std::make_shared<std::string>(floatSource), source_path);
+    Parser floatParser(floatLexer);
+    std::unique_ptr<LiteralExpression> float_lit = floatParser.parseLiteralExpression();
+    EXPECT_EQ(float_lit->getToken().getLexeme(), "0.5");
+    EXPECT_EQ(float_lit->getLiteralType(), LiteralType::Float);
+
+    // String literal
+    std::string stringSource = "\"string\"";
+    Lexer stringLexer(std::make_shared<std::string>(stringSource), source_path);
+    Parser stringParser(stringLexer);
+    std::unique_ptr<LiteralExpression> string_lit = stringParser.parseLiteralExpression();
+    EXPECT_EQ(string_lit->getToken().getLexeme(), "string");
+    EXPECT_EQ(string_lit->getLiteralType(), LiteralType::String);
 }

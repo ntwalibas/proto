@@ -20,9 +20,11 @@
 #include <memory>
 #include <string>
 
-#include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
+#include "ast/expressions/expression.h"
+#include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
+#include "ast/expressions/literal.h"
 #include "ast/declarations/type.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
@@ -67,8 +69,8 @@ Parser::parseProgram()
     if (atEnd()) {
         throw ParserError(
             peek(),
-            std::string("a program must have at least one definition"),
-            std::string(""),
+            "a program must have at least one definition",
+            "",
             true
         );
     }
@@ -156,6 +158,67 @@ Parser::parseTypeDeclaration()
             peek(),
             "expected a type",
             "type name missing",
+            false
+        );
+    }
+}
+
+
+std::unique_ptr<Expression>
+Parser::parseExpression()
+{
+    return parsePrimaryExpression();
+}
+
+
+std::unique_ptr<Expression>
+Parser::parsePrimaryExpression()
+{
+    if (check(PROTO_IDENTIFIER)) {
+        return parseVariableExpression();
+    }
+    else if(
+        check(PROTO_INT)    ||
+        check(PROTO_FLOAT)  ||
+        check(PROTO_STRING)
+    ) {
+        return parseLiteralExpression();
+    }
+    else {
+        throw ParserError(
+            peek(),
+            "expected a primary expression: variable or literal",
+            "",
+            false
+        );
+    }
+}
+
+
+std::unique_ptr<VariableExpression>
+Parser::parseVariableExpression()
+{
+    return std::make_unique<VariableExpression>(consume(PROTO_IDENTIFIER));
+}
+
+
+std::unique_ptr<LiteralExpression>
+Parser::parseLiteralExpression()
+{
+    if (match(PROTO_INT)) {
+        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::Integer);
+    }
+    else if (match(PROTO_FLOAT)) {
+        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::Float);
+    }
+    else if (match(PROTO_STRING)) {
+        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::String);
+    }
+    else {
+        throw ParserError(
+            peek(),
+            "expected a literal expression: integer, float or string",
+            "",
             false
         );
     }
