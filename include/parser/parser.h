@@ -25,6 +25,7 @@
 
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/declarations/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
@@ -54,6 +55,7 @@ class Parser
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();
         std::unique_ptr<SimpleTypeDeclaration> parseSimpleTypeDeclaration(bool is_const);
         std::unique_ptr<ArrayTypeDeclaration> parseArrayTypeDeclaration(bool is_const);
+        std::unique_ptr<VariableDeclaration> parseVariableDeclaration();
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();

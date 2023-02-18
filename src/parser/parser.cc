@@ -22,6 +22,7 @@
 
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/declarations/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
@@ -249,6 +250,39 @@ Parser::parseArrayTypeDeclaration(bool is_const)
     );
 }
 
+std::unique_ptr<VariableDeclaration>
+Parser::parseVariableDeclaration()
+{
+    Token var_token;
+    try {
+        var_token = consume(PROTO_IDENTIFIER);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing variable declaration name",
+            "expected the name of the variable being declared",
+            false
+        );
+    }
+
+    try {
+        consume(PROTO_COLON);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing colon after variable declaration name",
+            "expected a colon after variable declaration in anticipation of the type",
+            false
+        );
+    }
+
+    std::unique_ptr<TypeDeclaration> var_type = parseTypeDeclaration();
+
+    return std::make_unique<VariableDeclaration>(
+        var_token,
+        std::move(var_type)
+    );
+}
 
 
 // Expressions

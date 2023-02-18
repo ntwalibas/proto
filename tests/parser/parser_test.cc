@@ -132,6 +132,23 @@ TEST_F(ParserTest, parseArrayTypeDeclarationTest)
     EXPECT_EQ(type_decl->getSize(), 1);
 }
 
+TEST_F(ParserTest, parseVariableDeclarationTest)
+{
+    std::string source = "count: int32";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<VariableDeclaration> var_decl = parser.parseVariableDeclaration();
+
+    // We have the correct variable name
+    EXPECT_EQ(var_decl->getToken().getLexeme(), "count");
+
+    // We have the correct type
+    std::unique_ptr<TypeDeclaration>& var_type = var_decl->getTypeDeclaration();
+    EXPECT_EQ(var_type->getTypeCategory(), TypeCategory::Simple);
+    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*var_type);
+    EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
+}
+
 
 // Expressions
 TEST_F(ParserTest, parsePrimaryExpressionTest)
