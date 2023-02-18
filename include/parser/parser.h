@@ -26,6 +26,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/declarations/variable.h"
+#include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
@@ -50,6 +51,7 @@ class Parser
         // Definitions
         std::unique_ptr<Definition> parseDefinition();
         std::unique_ptr<VariableDefinition> parseVariableDefinition(Token& var_token);
+        std::unique_ptr<FunctionDefinition> parseFunctionDefinition(Token& fun_token);
 
         // Declarations
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();

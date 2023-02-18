@@ -88,10 +88,10 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
-
-    // We have the correct variable name
     EXPECT_EQ(def->getType(), DefinitionType::Variable);
     VariableDefinition& var_def = dynamic_cast<VariableDefinition&>(*def);
+
+    // We have the correct variable name
     EXPECT_EQ(var_def.getToken().getLexeme(), "name");
 
     // We have the correct type
@@ -106,6 +106,31 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     LiteralExpression& lit_expr = dynamic_cast<LiteralExpression&>(*var_init);
     EXPECT_EQ(lit_expr.getToken().getLexeme(), "John Doe");
     EXPECT_EQ(lit_expr.getLiteralType(), LiteralType::String);
+}
+
+TEST_F(ParserTest, parseFunctionDefinitionTest)
+{
+    std::string source = "sum: function(a: int32, b: int32) -> int32";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Definition> def = parser.parseDefinition();
+    EXPECT_EQ(def->getType(), DefinitionType::Function);
+    FunctionDefinition& fun_def = dynamic_cast<FunctionDefinition&>(*def);
+
+    // We have the correct function name
+    EXPECT_EQ(fun_def.getToken().getLexeme(), "sum");
+
+    // We have the correct parameters
+    std::vector<
+        std::unique_ptr<VariableDeclaration>>& fun_params = fun_def.getParameters();
+    EXPECT_EQ(fun_params.size(), 2);
+    EXPECT_EQ(fun_params[0]->getToken().getLexeme(), "a");
+    EXPECT_EQ(fun_params[1]->getToken().getLexeme(), "b");
+
+    // We have the correct return type
+    std::unique_ptr<TypeDeclaration>& ret_type = fun_def.getReturnType();
+    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*ret_type);
+    EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
 }
 
 

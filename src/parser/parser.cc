@@ -25,6 +25,7 @@
 #include "ast/declarations/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
+#include "ast/definitions/function.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
@@ -124,12 +125,7 @@ Parser::parseDefinition()
     // we decide if we have a function or a variable definition
     switch (peek().type) {
         case PROTO_FUNCTION:
-            throw ParserError(
-                peek(),
-                "function definitions are not currently supported",
-                "unexpected function definition",
-                true
-            );
+            return parseFunctionDefinition(def_token);
         
         default: {
             return parseVariableDefinition(def_token);
@@ -158,6 +154,57 @@ Parser::parseVariableDefinition(Token& var_token)
     return std::make_unique<VariableDefinition>(
         VariableDefinition(var_token, std::move(var_type), std::move(var_init))
     );
+}
+
+std::unique_ptr<FunctionDefinition>
+Parser::parseFunctionDefinition(Token& fun_token)
+{
+    consume(PROTO_FUNCTION);
+    std::unique_ptr<FunctionDefinition> fun_def =
+        std::make_unique<FunctionDefinition>(fun_token);
+    
+    try {
+        consume(PROTO_LEFT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing opening left parenthesis before function parameters",
+            "expected an opening left parenthesis before function parameters",
+            false
+        );
+    }
+    
+    if (! check(PROTO_RIGHT_PAREN)) {
+        do {
+            fun_def->addParameter(parseVariableDeclaration());
+        } while (match(PROTO_COMMA));
+    }
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing opening right parenthesis after function parameters",
+            "expected an opening right parenthesis after function parameters",
+            false
+        );
+    }
+
+    try {
+        consume(PROTO_RETURN_TYPE);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing return type indicator",
+            "expected the return type indicator [->] before the function body",
+            false
+        );
+    }
+
+    fun_def->setReturnType(parseTypeDeclaration());
+
+    return fun_def;
 }
 
 
@@ -330,6 +377,7 @@ Parser::parseArrayExpression()
             array_exp->addContent(parsePrimaryExpression());
         } while (match(PROTO_COMMA));
     }
+
     try {
         consume(PROTO_RIGHT_BRACKET);
     } catch (std::invalid_argument const& e) {
