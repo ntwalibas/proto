@@ -79,7 +79,6 @@ tokenTypeToString(enum TokenType type)
         "ELSE",                 // else
         "FOR",                  // for
         "WHILE",                // while
-        "IN",                   // in
         "CONTINUE",             // continue
         "BREAK",                // break
         "RETURN",               // return

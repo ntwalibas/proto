@@ -51,7 +51,6 @@ Lexer::Lexer(
     keywords["else"]        = PROTO_ELSE;
     keywords["for"]         = PROTO_FOR;
     keywords["while"]       = PROTO_WHILE;
-    keywords["in"]          = PROTO_IN;
     keywords["continue"]    = PROTO_CONTINUE;
     keywords["break"]       = PROTO_BREAK;
     keywords["return"]      = PROTO_RETURN;

@@ -73,7 +73,6 @@ enum TokenType {
     PROTO_ELSE,               // else
     PROTO_FOR,                // for
     PROTO_WHILE,              // while
-    PROTO_IN,                 // in
     PROTO_CONTINUE,           // continue
     PROTO_BREAK,              // break
     PROTO_RETURN,             // return
