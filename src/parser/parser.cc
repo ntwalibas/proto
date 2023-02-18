@@ -184,7 +184,7 @@ Parser::parseFunctionDefinition(Token& fun_token)
         consume(PROTO_RIGHT_PAREN);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing opening right parenthesis after function parameters",
             "expected an opening right parenthesis after function parameters",
             false
@@ -195,9 +195,9 @@ Parser::parseFunctionDefinition(Token& fun_token)
         consume(PROTO_RETURN_TYPE);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing return type indicator",
-            "expected the return type indicator [->] before the function body",
+            "expected the return type indicator [->] after function parameters",
             false
         );
     }
@@ -382,7 +382,7 @@ Parser::parseArrayExpression()
         consume(PROTO_RIGHT_BRACKET);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing closing right bracket after array initializer",
             "expected a closing right bracket after initializing an array",
             false
