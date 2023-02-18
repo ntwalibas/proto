@@ -116,10 +116,22 @@ TEST_F(ParserTest, parseSimpleTypeDeclarationTest)
     std::string source = "string";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
-    std::unique_ptr<SimpleTypeDeclaration> decl = parser.parseSimpleTypeDeclaration(true);
+    std::unique_ptr<SimpleTypeDeclaration> type_decl = parser.parseSimpleTypeDeclaration(true);
 
-    EXPECT_EQ(decl->isConst(), true);
-    EXPECT_EQ(decl->getToken().getLexeme(), "string");
+    EXPECT_EQ(type_decl->isConst(), true);
+    EXPECT_EQ(type_decl->getToken().getLexeme(), "string");
+}
+
+TEST_F(ParserTest, parseArrayTypeDeclarationTest)
+{
+    std::string source = "[1] int";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<ArrayTypeDeclaration> type_decl = parser.parseArrayTypeDeclaration(true);
+
+    EXPECT_EQ(type_decl->isConst(), true);
+    EXPECT_EQ(type_decl->getToken().getLexeme(), "[");
+    EXPECT_EQ(type_decl->getSize(), 1);
 }
 
 

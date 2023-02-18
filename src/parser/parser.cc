@@ -168,6 +168,9 @@ Parser::parseTypeDeclaration()
     if (check(PROTO_IDENTIFIER)) {
         return parseSimpleTypeDeclaration(is_const);
     }
+    else if (check(PROTO_LEFT_BRACKET)) {
+        return parseArrayTypeDeclaration(is_const);
+    }
     else {
         throw ParserError(
             peek(),
@@ -197,7 +200,52 @@ Parser::parseSimpleTypeDeclaration(bool is_const)
 std::unique_ptr<ArrayTypeDeclaration>
 Parser::parseArrayTypeDeclaration(bool is_const)
 {
-    return nullptr;
+    Token type_token;
+    try {
+        type_token = consume(PROTO_LEFT_BRACKET);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing left bracket",
+            "expected a left bracket to declare an array type",
+            false
+        );
+    }
+
+    long size = 0;
+    try {
+        Token& size_str = consume(PROTO_INT);
+        size = std::stol(size_str.getLexeme());
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing array size",
+            "expected the array size",
+            false
+        );
+    }
+
+    try {
+        consume(PROTO_RIGHT_BRACKET);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing right bracket",
+            "expected a right bracket after array size",
+            false
+        );
+    }
+
+    bool is_simple_const = match(PROTO_CONST);
+    std::unique_ptr<SimpleTypeDeclaration> simple_type = 
+        parseSimpleTypeDeclaration(is_simple_const);
+    
+    return std::make_unique<ArrayTypeDeclaration>(
+        is_const,
+        type_token,
+        size,
+        *simple_type
+    );
 }
 
 

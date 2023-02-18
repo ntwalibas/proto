@@ -88,6 +88,15 @@ ArrayTypeDeclaration::getToken()
     return token;
 }
 
+ /**
+ * Returns the size of this array type.
+ */
+long
+ArrayTypeDeclaration::getSize()
+{
+    return size;
+}
+
 /**
  * Returns the simple stored in the array.
  */

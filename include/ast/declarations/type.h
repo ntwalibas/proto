@@ -85,6 +85,11 @@ class ArrayTypeDeclaration : public TypeDeclaration
         Token& getToken();
 
         /**
+         * Returns the size of this array type.
+         */
+        long getSize();
+
+        /**
          * Returns the simple stored in the array.
          */
         SimpleTypeDeclaration& getSimpleType();
