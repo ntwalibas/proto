@@ -24,7 +24,31 @@
 #include "declaration.h"
 
 
-class SimpleTypeDeclaration : public Declaration
+enum class TypeCategory
+{
+    Simple,
+    Array
+};
+
+
+class TypeDeclaration : public Declaration
+{
+    public:
+        virtual ~TypeDeclaration() {}
+        enum TypeCategory& getTypeCategory();
+
+    protected:
+        TypeDeclaration(
+            enum TypeCategory category
+        ) : Declaration(DeclarationType::Type),
+            category(category)
+        {}
+
+        enum TypeCategory category;
+};
+
+
+class SimpleTypeDeclaration : public TypeDeclaration
 {
     public:
         SimpleTypeDeclaration(Token& token, bool is_const);

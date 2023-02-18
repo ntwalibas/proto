@@ -91,7 +91,7 @@ Parser::parseProgram()
     return program;
 }
 
-
+// Definitions
 std::unique_ptr<Definition>
 Parser::parseDefinition()
 {
@@ -135,11 +135,10 @@ Parser::parseDefinition()
     }
 }
 
-
 std::unique_ptr<VariableDefinition>
 Parser::parseVariableDefinition(Token& var_token)
 {
-    SimpleTypeDeclaration var_type = parseSimpleTypeDeclaration();
+    std::unique_ptr<TypeDeclaration> var_type = parseTypeDeclaration();
 
     try {
         consume(PROTO_EQUAL);
@@ -155,18 +154,36 @@ Parser::parseVariableDefinition(Token& var_token)
     std::unique_ptr<Expression> var_init = parseExpression();
 
     return std::make_unique<VariableDefinition>(
-        VariableDefinition(var_token, var_type, std::move(var_init))
+        VariableDefinition(var_token, std::move(var_type), std::move(var_init))
     );
 }
 
 
-SimpleTypeDeclaration
-Parser::parseSimpleTypeDeclaration()
+// Declarations
+std::unique_ptr<TypeDeclaration>
+Parser::parseTypeDeclaration()
 {
     bool is_const = match(PROTO_CONST);
+
+    if (check(PROTO_IDENTIFIER)) {
+        return parseSimpleTypeDeclaration(is_const);
+    }
+    else {
+        throw ParserError(
+            peek(),
+            "expected a type",
+            "a type is either a simple type or an array type",
+            false
+        );
+    }
+}
+
+std::unique_ptr<SimpleTypeDeclaration>
+Parser::parseSimpleTypeDeclaration(bool is_const)
+{
     try {
         Token& type_token = consume(PROTO_IDENTIFIER);
-        return SimpleTypeDeclaration(type_token, is_const);
+        return std::make_unique<SimpleTypeDeclaration>(type_token, is_const);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
             peek(),
@@ -178,12 +195,12 @@ Parser::parseSimpleTypeDeclaration()
 }
 
 
+// Expressions
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
     return parsePrimaryExpression();
 }
-
 
 std::unique_ptr<Expression>
 Parser::parsePrimaryExpression()
@@ -208,13 +225,11 @@ Parser::parsePrimaryExpression()
     }
 }
 
-
 std::unique_ptr<VariableExpression>
 Parser::parseVariableExpression()
 {
     return std::make_unique<VariableExpression>(consume(PROTO_IDENTIFIER));
 }
-
 
 std::unique_ptr<LiteralExpression>
 Parser::parseLiteralExpression()

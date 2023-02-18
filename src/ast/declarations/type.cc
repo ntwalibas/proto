@@ -21,10 +21,19 @@
 #include "common/token.h"
 
 
+// TypeDeclaration
+enum TypeCategory&
+TypeDeclaration::getTypeCategory()
+{
+    return category;
+}
+
+
+// Simple type declaration
 SimpleTypeDeclaration::SimpleTypeDeclaration(
     Token& token,
     bool is_const
-) : Declaration(DeclarationType::Type),
+) : TypeDeclaration(TypeCategory::Simple),
     token(token),
     is_const(is_const)
 {}

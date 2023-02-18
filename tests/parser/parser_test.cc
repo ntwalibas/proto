@@ -96,8 +96,10 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     EXPECT_EQ(var_def.getToken().getLexeme(), "name");
 
     // We have the correct type
-    SimpleTypeDeclaration& var_type = var_def.getTypeDeclaration();
-    EXPECT_EQ(var_type.getToken().getLexeme(), "string");
+    std::unique_ptr<TypeDeclaration>& var_type = var_def.getTypeDeclaration();
+    EXPECT_EQ(var_type -> getTypeCategory(), TypeCategory::Simple);
+    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*var_type);
+    EXPECT_EQ(simple_type.getToken().getLexeme(), "string");
 
     // We have the correct initializer
     std::unique_ptr<Expression>& var_init = var_def.getInitializer();
@@ -111,13 +113,13 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
 // Declarations
 TEST_F(ParserTest, parseSimpleTypeDeclarationTest)
 {
-    std::string source = "const string";
+    std::string source = "string";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
-    SimpleTypeDeclaration decl = parser.parseSimpleTypeDeclaration();
+    std::unique_ptr<SimpleTypeDeclaration> decl = parser.parseSimpleTypeDeclaration(true);
 
-    EXPECT_EQ(decl.isConst(), true);
-    EXPECT_EQ(decl.getToken().getLexeme(), "string");
+    EXPECT_EQ(decl->isConst(), true);
+    EXPECT_EQ(decl->getToken().getLexeme(), "string");
 }
 
 

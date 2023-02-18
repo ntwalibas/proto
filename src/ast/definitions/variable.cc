@@ -25,11 +25,11 @@
 
 VariableDefinition::VariableDefinition(
     Token& token,
-    SimpleTypeDeclaration& type_decl,
+    std::unique_ptr<TypeDeclaration>&& type_decl,
     std::unique_ptr<Expression>&& initializer
 ) : Definition(DefinitionType::Variable),
     token(token),
-    type_decl(type_decl),
+    type_decl(std::move(type_decl)),
     initializer(std::move(initializer))
 {}
 
@@ -47,7 +47,7 @@ VariableDefinition::getToken()
 /**
  * Returns the type of this variable definition.
  */
-SimpleTypeDeclaration&
+std::unique_ptr<TypeDeclaration>&
 VariableDefinition::getTypeDeclaration()
 {
     return type_decl;

@@ -50,7 +50,8 @@ class Parser
         std::unique_ptr<VariableDefinition> parseVariableDefinition(Token& var_token);
 
         // Declarations
-        SimpleTypeDeclaration parseSimpleTypeDeclaration();
+        std::unique_ptr<TypeDeclaration> parseTypeDeclaration();
+        std::unique_ptr<SimpleTypeDeclaration> parseSimpleTypeDeclaration(bool is_const);
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();
