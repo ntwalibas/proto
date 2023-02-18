@@ -38,6 +38,14 @@ SimpleTypeDeclaration::SimpleTypeDeclaration(
     token(token)
 {}
 
+/**
+ * Returns true is this type declaration is const-qualified.
+ */
+bool
+SimpleTypeDeclaration::isConst() const
+{
+    return is_const;
+}
 
 /**
  * Returns the token associated with this type declaration.
@@ -49,11 +57,42 @@ SimpleTypeDeclaration::getToken()
 }
 
 
+// Array type declaration
+ArrayTypeDeclaration::ArrayTypeDeclaration(
+    bool is_const,
+    Token& token,
+    long size,
+    SimpleTypeDeclaration& simple_type
+) : TypeDeclaration(TypeCategory::Array),
+    is_const(is_const),
+    token(token),
+    size(size),
+    simple_type(simple_type)
+{}
+
 /**
  * Returns true is this type declaration is const-qualified.
  */
 bool
-SimpleTypeDeclaration::isConst() const
+ArrayTypeDeclaration::isConst() const
 {
     return is_const;
+}
+
+/**
+ * Returns the token associated with this type declaration.
+ */
+Token&
+ArrayTypeDeclaration::getToken()
+{
+    return token;
+}
+
+/**
+ * Returns the simple stored in the array.
+ */
+SimpleTypeDeclaration&
+ArrayTypeDeclaration::getSimpleType()
+{
+    return simple_type;
 }

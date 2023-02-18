@@ -54,14 +54,14 @@ class SimpleTypeDeclaration : public TypeDeclaration
         SimpleTypeDeclaration(bool is_const, Token& token);
 
         /**
-         * Returns the token associated with this type declaration.
-         */
-        Token& getToken();
-
-        /**
          * Returns true is this type declaration is const-qualified.
          */
         bool isConst() const;
+
+        /**
+         * Returns the token associated with this type declaration.
+         */
+        Token& getToken();
 
     protected:
         bool    is_const;   /* Whether this type declaration is qualified as const. */
@@ -72,7 +72,12 @@ class SimpleTypeDeclaration : public TypeDeclaration
 class ArrayTypeDeclaration : public TypeDeclaration
 {
     public:
-        ArrayTypeDeclaration(bool is_const, Token& token);
+        ArrayTypeDeclaration(bool is_const, Token& token, long size, SimpleTypeDeclaration& simple_type);
+
+        /**
+         * Returns true is this type declaration is const-qualified.
+         */
+        bool isConst() const;
 
         /**
          * Returns the token associated with this type declaration.
@@ -80,13 +85,15 @@ class ArrayTypeDeclaration : public TypeDeclaration
         Token& getToken();
 
         /**
-         * Returns true is this type declaration is const-qualified.
+         * Returns the simple stored in the array.
          */
-        bool isConst() const;
+        SimpleTypeDeclaration& getSimpleType();
 
     protected:
-        bool    is_const;   /* Whether this type declaration is qualified as const. */
-        Token   token;      /* The token with type information. */
+        bool                    is_const;       /* Whether this type declaration is qualified as const. */
+        Token                   token;          /* The token with type information. */
+        long                    size;           /* Size of the array. */
+        SimpleTypeDeclaration   simple_type;    /* The simple type to store in the array. */
 };
 
 #endif

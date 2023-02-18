@@ -194,6 +194,13 @@ Parser::parseSimpleTypeDeclaration(bool is_const)
     }
 }
 
+std::unique_ptr<ArrayTypeDeclaration>
+Parser::parseArrayTypeDeclaration(bool is_const)
+{
+    return nullptr;
+}
+
+
 
 // Expressions
 std::unique_ptr<Expression>

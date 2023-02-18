@@ -67,7 +67,19 @@ compile(std::string const& source_path)
     Parser parser(lexer);
     try {
         Program program = parser.parse();
-        std::cout << "The program has " << program.getDefinitions().size() << " definitions." << std::endl;
+        if (parser.errors.size() > 0) {
+            for (auto& e : parser.errors) {
+                printError(
+                    e.getToken(),
+                    e.getPrimaryMessage(),
+                    e.getSecondaryMessage(),
+                    e.getToken().source_path
+                );
+            }
+        }
+        else {
+            std::cout << "The program has " << program.getDefinitions().size() << " definitions." << std::endl;
+        }
     } catch (ParserError& e) {
         printError(
             e.getToken(),

@@ -52,6 +52,7 @@ class Parser
         // Declarations
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();
         std::unique_ptr<SimpleTypeDeclaration> parseSimpleTypeDeclaration(bool is_const);
+        std::unique_ptr<ArrayTypeDeclaration> parseArrayTypeDeclaration(bool is_const);
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();
@@ -59,13 +60,13 @@ class Parser
         std::unique_ptr<VariableExpression> parseVariableExpression();
         std::unique_ptr<LiteralExpression> parseLiteralExpression();
 
+        std::vector<class ParserError>  errors;     /* List of non-fatal errors to be displayed all at once. */
 
     private:
         Lexer&                          lexer;      /* Lexer to generate tokens */
         Token                           previous;   /* Last token to be consumed. */
         Token                           current;    /* Token to be consumed. */
         Token                           next;       /* Next token to be consumed. */
-        std::vector<class ParserError>  errors;     /* List of non-fatal errors to be displayed all at once. */
 
         // Returns the token that comes before the one currently being parsed.
         Token& peekBack();
