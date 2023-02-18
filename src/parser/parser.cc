@@ -183,7 +183,7 @@ Parser::parseSimpleTypeDeclaration(bool is_const)
 {
     try {
         Token& type_token = consume(PROTO_IDENTIFIER);
-        return std::make_unique<SimpleTypeDeclaration>(type_token, is_const);
+        return std::make_unique<SimpleTypeDeclaration>(is_const, type_token);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
             peek(),

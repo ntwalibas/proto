@@ -31,11 +31,11 @@ TypeDeclaration::getTypeCategory()
 
 // Simple type declaration
 SimpleTypeDeclaration::SimpleTypeDeclaration(
-    Token& token,
-    bool is_const
+    bool is_const,
+    Token& token
 ) : TypeDeclaration(TypeCategory::Simple),
-    token(token),
-    is_const(is_const)
+    is_const(is_const),
+    token(token)
 {}
 
 
