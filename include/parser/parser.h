@@ -28,6 +28,7 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -57,6 +58,7 @@ class Parser
         // Expressions
         std::unique_ptr<Expression> parseExpression();
         std::unique_ptr<Expression> parsePrimaryExpression();
+        std::unique_ptr<ArrayExpression> parseArrayExpression();
         std::unique_ptr<VariableExpression> parseVariableExpression();
         std::unique_ptr<LiteralExpression> parseLiteralExpression();
 

@@ -151,6 +151,17 @@ TEST_F(ParserTest, parsePrimaryExpressionTest)
     EXPECT_EQ(var_expr.getToken().getLexeme(), "name");
 }
 
+TEST_F(ParserTest, parseArrayExpressionTest)
+{
+    std::string source = "[1, 2, 3, 4]";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<ArrayExpression> ar_expr = parser.parseArrayExpression();
+
+    EXPECT_EQ(ar_expr->getToken().getLexeme(), "[");
+    EXPECT_EQ(ar_expr->getContents().size(), 4);
+}
+
 TEST_F(ParserTest, parseVariableExpressionTest)
 {
     std::string source = "name";

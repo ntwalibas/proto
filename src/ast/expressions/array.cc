@@ -15,35 +15,45 @@
  *  limitations under the License.
  */
 
+#include <utility>
+#include <memory>
+#include <vector>
+
 #include "ast/expressions/expression.h"
-#include "ast/expressions/literal.h"
+#include "ast/expressions/array.h"
 #include "common/token.h"
 
 
-LiteralExpression::LiteralExpression(
-    Token& token,
-    enum LiteralType type
-) : Expression(ExpressionType::Literal),
-    token(token),
-    type(type)
+ArrayExpression::ArrayExpression(
+    Token& token
+) : Expression(ExpressionType::Array),
+    token(token)
 {}
 
 
 /**
- * Returns the token associated with this literal definition.
+ * Returns the token associated with this variable definition.
  */
 Token&
-LiteralExpression::getToken()
+ArrayExpression::getToken()
 {
     return token;
 }
 
+/**
+ * Add an expression to this array's contents.
+ */
+void
+ArrayExpression::addContent(std::unique_ptr<Expression>&& content)
+{
+    contents.push_back(std::move(content));
+}
 
 /**
- * Returns the type of literal help in this expression.
+ * Returns all the expressions held in this array expression.
  */
-enum LiteralType&
-LiteralExpression::getLiteralType()
+std::vector<std::unique_ptr<Expression>>&
+ArrayExpression::getContents()
 {
-    return type;
+    return contents;
 }

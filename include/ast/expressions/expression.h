@@ -21,7 +21,7 @@
 enum class ExpressionType {
     // Primary expressions
     Literal,
-    // Array,
+    Array,
     Variable,
     // FunctionCall,
     // Group

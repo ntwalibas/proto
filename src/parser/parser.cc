@@ -25,6 +25,7 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
@@ -260,6 +261,9 @@ Parser::parseExpression()
 std::unique_ptr<Expression>
 Parser::parsePrimaryExpression()
 {
+    if (check(PROTO_LEFT_BRACKET)) {
+        return parseArrayExpression();
+    }
     if (check(PROTO_IDENTIFIER)) {
         return parseVariableExpression();
     }
@@ -278,6 +282,32 @@ Parser::parsePrimaryExpression()
             false
         );
     }
+}
+
+std::unique_ptr<ArrayExpression>
+Parser::parseArrayExpression()
+{
+    Token& array_token = consume(PROTO_LEFT_BRACKET);
+    std::unique_ptr<ArrayExpression> array_exp =
+        std::make_unique<ArrayExpression>(array_token);
+    
+    if (! check(PROTO_RIGHT_BRACKET)) {
+        do {
+            array_exp->addContent(parsePrimaryExpression());
+        } while (match(PROTO_COMMA));
+    }
+    try {
+        consume(PROTO_RIGHT_BRACKET);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing closing right bracket after array initializer",
+            "expected a closing right bracket after initializing an array",
+            false
+        );
+    }
+
+    return array_exp;
 }
 
 std::unique_ptr<VariableExpression>
