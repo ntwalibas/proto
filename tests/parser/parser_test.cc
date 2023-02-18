@@ -36,7 +36,7 @@ TEST_F(ParserTest, parseEmptyProgramTest)
     EXPECT_THROW({
         try {
             parser.parse();
-        } catch(ParserError& e) {
+        } catch (ParserError& e) {
             EXPECT_STREQ(e.getPrimaryMessage(), "a program must have at least one definition");
             throw;
         }
@@ -55,7 +55,7 @@ TEST_F(ParserTest, parseDefinitionTest)
     EXPECT_THROW({
         try {
             noIdentifierparser.parseDefinition();
-        } catch(ParserError& e) {
+        } catch (ParserError& e) {
             EXPECT_STREQ(e.getSecondaryMessage(), "expected an identifier");
             throw;
         }
@@ -65,11 +65,10 @@ TEST_F(ParserTest, parseDefinitionTest)
     std::string noColonSource = "name";
     Lexer noColonLexer(std::make_shared<std::string>(noColonSource), source_path);
     Parser noColonparser(noColonLexer);
-
     EXPECT_THROW({
         try {
             noColonparser.parseDefinition();
-        } catch(ParserError& e) {
+        } catch (ParserError& e) {
             EXPECT_STREQ(e.getSecondaryMessage(), "expected a colon after this definition name");
             throw;
         }
@@ -128,7 +127,6 @@ TEST_F(ParserTest, parseArrayTypeDeclarationTest)
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<ArrayTypeDeclaration> type_decl = parser.parseArrayTypeDeclaration(true);
-
     EXPECT_EQ(type_decl->isConst(), true);
     EXPECT_EQ(type_decl->getToken().getLexeme(), "[");
     EXPECT_EQ(type_decl->getSize(), 1);
@@ -153,11 +151,35 @@ TEST_F(ParserTest, parsePrimaryExpressionTest)
 
 TEST_F(ParserTest, parseArrayExpressionTest)
 {
+    // Malformed (not closed) array expression
+    std::string malformedSource = "[1, 2";
+    Lexer malformedLexer(std::make_shared<std::string>(malformedSource), source_path);
+    Parser malformedParser(malformedLexer);
+    EXPECT_THROW({
+        try {
+            malformedParser.parseArrayExpression();
+        } catch (ParserError& e) {
+            EXPECT_STREQ(
+                e.getSecondaryMessage(),
+                "expected a closing right bracket after initializing an array"
+            );
+            throw;
+        }
+    }, ParserError);
+
+    // Empty array expression
+    std::string emptySource = "[]";
+    Lexer emptyLexer(std::make_shared<std::string>(emptySource), source_path);
+    Parser emptyParser(emptyLexer);
+    std::unique_ptr<ArrayExpression> empty_ar_expr = emptyParser.parseArrayExpression();
+    EXPECT_EQ(empty_ar_expr->getToken().getLexeme(), "[");
+    EXPECT_EQ(empty_ar_expr->getContents().size(), 0);
+
+    // Filled array expression
     std::string source = "[1, 2, 3, 4]";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<ArrayExpression> ar_expr = parser.parseArrayExpression();
-
     EXPECT_EQ(ar_expr->getToken().getLexeme(), "[");
     EXPECT_EQ(ar_expr->getContents().size(), 4);
 }
@@ -168,7 +190,6 @@ TEST_F(ParserTest, parseVariableExpressionTest)
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<VariableExpression> var_expr = parser.parseVariableExpression();
-
     EXPECT_EQ(var_expr->getToken().getLexeme(), "name");
 }
 
