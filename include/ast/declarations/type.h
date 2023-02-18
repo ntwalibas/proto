@@ -24,10 +24,10 @@
 #include "declaration.h"
 
 
-class TypeDeclaration : public Declaration
+class SimpleTypeDeclaration : public Declaration
 {
     public:
-        TypeDeclaration(Token& token, bool is_const);
+        SimpleTypeDeclaration(Token& token, bool is_const);
 
         /**
          * Returns the token associated with this type declaration.

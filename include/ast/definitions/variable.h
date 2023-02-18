@@ -31,7 +31,7 @@ class VariableDefinition : public Definition
     public:
         VariableDefinition(
             Token& token,
-            TypeDeclaration& type_decl,
+            SimpleTypeDeclaration& type_decl,
             std::unique_ptr<Expression>&& initializer
         );
 
@@ -43,7 +43,7 @@ class VariableDefinition : public Definition
         /**
          * Returns the type of this variable definition.
          */
-        TypeDeclaration& getTypeDeclaration();
+        SimpleTypeDeclaration& getTypeDeclaration();
 
         /**
          * Returns the expression that initializes this variable definition.
@@ -52,7 +52,7 @@ class VariableDefinition : public Definition
 
     protected:
         Token                       token;          /* Token associated with this variable. */
-        TypeDeclaration             type_decl;      /* Variable type. */
+        SimpleTypeDeclaration             type_decl;      /* Variable type. */
         std::unique_ptr<Expression> initializer;    /* Expression that initializes this variable definition*/
 };
 

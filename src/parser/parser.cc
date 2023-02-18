@@ -139,7 +139,7 @@ Parser::parseDefinition()
 std::unique_ptr<VariableDefinition>
 Parser::parseVariableDefinition(Token& var_token)
 {
-    TypeDeclaration var_type = parseTypeDeclaration();
+    SimpleTypeDeclaration var_type = parseSimpleTypeDeclaration();
 
     try {
         consume(PROTO_EQUAL);
@@ -160,13 +160,13 @@ Parser::parseVariableDefinition(Token& var_token)
 }
 
 
-TypeDeclaration
-Parser::parseTypeDeclaration()
+SimpleTypeDeclaration
+Parser::parseSimpleTypeDeclaration()
 {
     bool is_const = match(PROTO_CONST);
     try {
         Token& type_token = consume(PROTO_IDENTIFIER);
-        return TypeDeclaration(type_token, is_const);
+        return SimpleTypeDeclaration(type_token, is_const);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
             peek(),
@@ -220,13 +220,22 @@ std::unique_ptr<LiteralExpression>
 Parser::parseLiteralExpression()
 {
     if (match(PROTO_INT)) {
-        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::Integer);
+        return std::make_unique<LiteralExpression>(
+            peekBack(),
+            LiteralType::Integer
+        );
     }
     else if (match(PROTO_FLOAT)) {
-        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::Float);
+        return std::make_unique<LiteralExpression>(
+            peekBack(),
+            LiteralType::Float
+        );
     }
     else if (match(PROTO_STRING)) {
-        return std::make_unique<LiteralExpression>(peekBack(), LiteralType::String);
+        return std::make_unique<LiteralExpression>(
+            peekBack(),
+            LiteralType::String
+        );
     }
     else {
         throw ParserError(

@@ -96,7 +96,7 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     EXPECT_EQ(var_def.getToken().getLexeme(), "name");
 
     // We have the correct type
-    TypeDeclaration& var_type = var_def.getTypeDeclaration();
+    SimpleTypeDeclaration& var_type = var_def.getTypeDeclaration();
     EXPECT_EQ(var_type.getToken().getLexeme(), "string");
 
     // We have the correct initializer
@@ -109,12 +109,12 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
 
 
 // Declarations
-TEST_F(ParserTest, parseTypeDeclarationTest)
+TEST_F(ParserTest, parseSimpleTypeDeclarationTest)
 {
     std::string source = "const string";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
-    TypeDeclaration decl = parser.parseTypeDeclaration();
+    SimpleTypeDeclaration decl = parser.parseSimpleTypeDeclaration();
 
     EXPECT_EQ(decl.isConst(), true);
     EXPECT_EQ(decl.getToken().getLexeme(), "string");

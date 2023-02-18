@@ -21,7 +21,7 @@
 #include "common/token.h"
 
 
-TypeDeclaration::TypeDeclaration(
+SimpleTypeDeclaration::SimpleTypeDeclaration(
     Token& token,
     bool is_const
 ) : Declaration(DeclarationType::Type),
@@ -34,7 +34,7 @@ TypeDeclaration::TypeDeclaration(
  * Returns the token associated with this type declaration.
  */
 Token&
-TypeDeclaration::getToken()
+SimpleTypeDeclaration::getToken()
 {
     return token;
 }
@@ -44,7 +44,7 @@ TypeDeclaration::getToken()
  * Returns true is this type declaration is const-qualified.
  */
 bool
-TypeDeclaration::isConst() const
+SimpleTypeDeclaration::isConst() const
 {
     return is_const;
 }
