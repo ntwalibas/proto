@@ -141,7 +141,7 @@ Lexer::lex()
             return makeToken(PROTO_LEFT_BRACKET);
 
         case ']':
-            return makeToken(PROTO_RIGHT_PAREN);
+            return makeToken(PROTO_RIGHT_BRACKET);
 
         case '{':
             return makeToken(PROTO_LEFT_BRACE);
