@@ -205,9 +205,6 @@ Parser::parseFunctionDefinition(Token& fun_token)
         );
     }
 
-    // Consume extra newlines before the first parameter
-    while (match(PROTO_NEWLINE));
-
     do {
         // Consume extra newlines before the next parameter
         while (match(PROTO_NEWLINE));
@@ -217,9 +214,6 @@ Parser::parseFunctionDefinition(Token& fun_token)
 
         fun_def->addParameter(parseVariableDeclaration());
     } while (match(PROTO_COMMA));
-
-    // Consume extra newlines before the closing parenthesis
-    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_PAREN);
@@ -500,9 +494,6 @@ Parser::parseCallExpression()
 
     consume(PROTO_LEFT_PAREN);
 
-    // Consume extra newlines before the first argument
-    while (match(PROTO_NEWLINE));
-
     do {
         // Consume extra newlines before the next argument
         while (match(PROTO_NEWLINE));
@@ -512,9 +503,6 @@ Parser::parseCallExpression()
 
         call_expr->addArgument(parseExpression());
     } while (match(PROTO_COMMA));
-
-    // Consume extra newlines before the closing parenthesis
-    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_PAREN);
@@ -558,9 +546,6 @@ Parser::parseArrayExpression()
     Token& array_token = consume(PROTO_LEFT_BRACKET);
     std::unique_ptr<ArrayExpression> array_exp =
         std::make_unique<ArrayExpression>(array_token);
-    
-    // Consume extra newlines before the first element
-    while (match(PROTO_NEWLINE));
 
     do {
         // Consume extra newlines before the next element
@@ -571,9 +556,6 @@ Parser::parseArrayExpression()
 
         array_exp->addContent(parsePrimaryExpression());
     } while (match(PROTO_COMMA));
-
-    // Consume extra newlines before the closing bracket
-    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_BRACKET);
