@@ -15,8 +15,8 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_AST_UNARY_EXPRESSION_H
-#define PROTO_AST_UNARY_EXPRESSION_H
+#ifndef PROTO_AST_BINARY_EXPRESSION_H
+#define PROTO_AST_BINARY_EXPRESSION_H
 
 #include <memory>
 
