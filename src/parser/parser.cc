@@ -549,11 +549,21 @@ Parser::parseArrayExpression()
     std::unique_ptr<ArrayExpression> array_exp =
         std::make_unique<ArrayExpression>(array_token);
     
-    if (! check(PROTO_RIGHT_BRACKET)) {
-        do {
-            array_exp->addContent(parsePrimaryExpression());
-        } while (match(PROTO_COMMA));
-    }
+    // Consume extra newlines before the first element
+    while (match(PROTO_NEWLINE));
+
+    do {
+        // Consume extra newlines before the next element
+        while (match(PROTO_NEWLINE));
+
+        if (check(PROTO_RIGHT_BRACKET))
+            break;
+
+        array_exp->addContent(parsePrimaryExpression());
+    } while (match(PROTO_COMMA));
+
+    // Consume extra newlines before the closing bracket
+    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_BRACKET);
