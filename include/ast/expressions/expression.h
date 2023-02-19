@@ -33,7 +33,10 @@ enum class ExpressionType {
     Unary,
 
     // Binary
-    Binary
+    Binary,
+
+    // Assignment
+    Assignment
 };
 
 
