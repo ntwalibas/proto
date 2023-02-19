@@ -30,7 +30,7 @@ LiteralExpression::LiteralExpression(
 
 
 /**
- * Returns the token associated with this literal definition.
+ * Returns the token associated with this literal expression.
  */
 Token&
 LiteralExpression::getToken()
