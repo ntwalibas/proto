@@ -111,9 +111,6 @@ class Parser
 
         // Synchronize the parser so we can consume more tokens even under failure.
         void synchronize();
-
-        // Create a token.
-        Token makeToken(enum TokenType type);
 };
 
 

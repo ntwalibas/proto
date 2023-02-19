@@ -553,18 +553,3 @@ Parser::synchronize()
         advance();
     }
 }
-
-
-// Create a token.
-Token
-Parser::makeToken(enum TokenType type) {
-    return Token(
-        type,
-        current.source,
-        current.source_path,
-        current.start,
-        current.length,
-        current.line,
-        current.column
-    );
-}
