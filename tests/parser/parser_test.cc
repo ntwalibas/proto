@@ -7,6 +7,7 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/binary.h"
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
@@ -192,6 +193,23 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseSubscriptExpressionTest)
+{
+    std::string source = "values[0]";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseSubscriptExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& sub_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the subscript expression
+    EXPECT_EQ(sub_expr.getToken().getLexeme(), "[");
+    EXPECT_EQ(sub_expr.getLeft()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(sub_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parsePrimaryExpressionTest)
 {
     std::string source = "name";

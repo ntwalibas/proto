@@ -16,6 +16,7 @@
  */
 
 #include <exception>
+#include <cstddef>
 #include <utility>
 #include <memory>
 #include <string>
@@ -28,6 +29,7 @@
 #include "ast/definitions/function.h"
 #include "ast/statements/statement.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/binary.h"
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
@@ -447,7 +449,43 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parsePrimaryExpression();
+    return parseSubscriptExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseSubscriptExpression()
+{
+    std::unique_ptr<Expression> lvalue = parsePrimaryExpression();
+
+    // Notice the `if` statement and not `while` statement
+    // That's because we don't allow multi-dimensional arrays at the moment
+    if (match(PROTO_LEFT_BRACKET)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> rvalue = parsePrimaryExpression();
+
+        try {
+            consume(PROTO_RIGHT_BRACKET);
+        } catch (std::invalid_argument const& e) {
+            throw ParserError(
+                peekBack(),
+                "missing right closing bracket in subscript expression",
+                "expected a closing bracket after the subscript",
+                false
+            );
+        }
+
+        std::unique_ptr<BinaryExpression> sub_expr = 
+            std::make_unique<BinaryExpression>(
+                op_token,
+                BinaryType::Subscript,
+                std::move(lvalue),
+                std::move(rvalue)
+            );
+        
+        lvalue = std::move(sub_expr);
+    }
+
+    return lvalue;
 }
 
 std::unique_ptr<Expression>
