@@ -141,20 +141,44 @@ Parser::parseDefinition()
 std::unique_ptr<VariableDefinition>
 Parser::parseVariableDefinition(Token& var_token)
 {
-    std::unique_ptr<TypeDeclaration> var_type = parseTypeDeclaration();
+    std::unique_ptr<TypeDeclaration> var_type = nullptr;
+    try {
+        var_type = parseTypeDeclaration();
+    } catch (ParserError const& e) {
+        if (e.getPrimaryMessage() == std::string("expected a type")) {
+            throw ParserError(
+                peekBack(),
+                "missing type",
+                "expected the type of this variable definition",
+                false
+            );
+        }
+    }
 
     try {
         consume(PROTO_EQUAL);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing equal sign before variable initializer",
             "expected an equal sign in order to initialize the variable definition",
             false
         );
     }
 
-    std::unique_ptr<Expression> var_init = parseExpression();
+    std::unique_ptr<Expression> var_init = nullptr;
+    try {
+        var_init = parseExpression();
+    } catch (ParserError const& e) {
+        if (e.getPrimaryMessage() == std::string("missing expression")) {
+            throw ParserError(
+                peekBack(),
+                "missing initializer expression",
+                "expected an initializer expression after the equal sign [=]",
+                false
+            );
+        }
+    }
 
     return std::make_unique<VariableDefinition>(
         VariableDefinition(var_token, std::move(var_type), std::move(var_init))
@@ -211,12 +235,14 @@ Parser::parseFunctionDefinition(Token& fun_token)
     try {
         fun_def->setReturnType(parseTypeDeclaration());
     } catch (ParserError const& e) {
-        throw ParserError(
-            peekBack(),
-            "missing return type",
-            "expected the function return type after the return type indicator [->]",
-            false
-        );
+        if (e.getPrimaryMessage() == std::string("expected a type")) {
+            throw ParserError(
+                peekBack(),
+                "missing return type",
+                "expected the function return type after the return type indicator [->]",
+                false
+            );
+        }
     }
 
     fun_def->setBody(parseBlockStatement());
@@ -250,17 +276,7 @@ Parser::parseTypeDeclaration()
 std::unique_ptr<SimpleTypeDeclaration>
 Parser::parseSimpleTypeDeclaration(bool is_const)
 {
-    try {
-        Token& type_token = consume(PROTO_IDENTIFIER);
-        return std::make_unique<SimpleTypeDeclaration>(is_const, type_token);
-    } catch (std::invalid_argument const& e) {
-        throw ParserError(
-            peek(),
-            "expected a type",
-            "type name missing",
-            false
-        );
-    }
+    return std::make_unique<SimpleTypeDeclaration>(is_const, consume(PROTO_IDENTIFIER));
 }
 
 std::unique_ptr<ArrayTypeDeclaration>
@@ -447,8 +463,8 @@ Parser::parsePrimaryExpression()
     else {
         throw ParserError(
             peek(),
-            "expected a primary expression: variable or literal",
-            "",
+            "missing expression",
+            "expected an expression",
             false
         );
     }
@@ -511,8 +527,8 @@ Parser::parseLiteralExpression()
     else {
         throw ParserError(
             peek(),
-            "expected a literal expression: integer, float or string",
-            "",
+            "missing expression",
+            "expected an expression",
             false
         );
     }
