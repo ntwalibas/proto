@@ -10,6 +10,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "parser/parser.h"
 #include "common/token.h"
@@ -239,6 +240,16 @@ TEST_F(ParserTest, parseArrayExpressionTest)
     std::unique_ptr<ArrayExpression> ar_expr = parser.parseArrayExpression();
     EXPECT_EQ(ar_expr->getToken().getLexeme(), "[");
     EXPECT_EQ(ar_expr->getContents().size(), 4);
+}
+
+TEST_F(ParserTest, parseCallExpressionTest)
+{
+    std::string source = "sum(1, 2)";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<CallExpression> call_expr = parser.parseCallExpression();
+    EXPECT_EQ(call_expr->getToken().getLexeme(), "sum");
+    EXPECT_EQ(call_expr->getArguments().size(), 2);
 }
 
 TEST_F(ParserTest, parseGroupExpressionTest)

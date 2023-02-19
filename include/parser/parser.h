@@ -34,6 +34,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -69,6 +70,7 @@ class Parser
         // Expressions
         std::unique_ptr<Expression> parseExpression();
         std::unique_ptr<Expression> parsePrimaryExpression();
+        std::unique_ptr<CallExpression> parseCallExpression();
         std::unique_ptr<GroupExpression> parseGroupExpression();
         std::unique_ptr<ArrayExpression> parseArrayExpression();
         std::unique_ptr<VariableExpression> parseVariableExpression();

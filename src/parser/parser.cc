@@ -31,6 +31,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
@@ -455,7 +456,12 @@ Parser::parsePrimaryExpression()
         return parseArrayExpression();
     }
     else if (check(PROTO_IDENTIFIER)) {
-        return parseVariableExpression();
+        if (checkNext(PROTO_LEFT_PAREN)) {
+            return parseCallExpression();
+        }
+        else {
+            return parseVariableExpression();
+        }
     }
     else if (
         check(PROTO_TRUE)   ||
@@ -474,6 +480,44 @@ Parser::parsePrimaryExpression()
             false
         );
     }
+}
+
+std::unique_ptr<CallExpression>
+Parser::parseCallExpression()
+{
+    std::unique_ptr<CallExpression> call_expr =
+        std::make_unique<CallExpression>(consume(PROTO_IDENTIFIER));
+
+    consume(PROTO_LEFT_PAREN);
+
+    // Consume extra newlines before the first argument
+    while (match(PROTO_NEWLINE));
+
+    do {
+        // Consume extra newlines before the next argument
+        while (match(PROTO_NEWLINE));
+
+        if (check(PROTO_RIGHT_PAREN))
+            break;
+
+        call_expr->addArgument(parseExpression());
+    } while (match(PROTO_COMMA));
+
+    // Consume extra newlines before the closing parenthesis
+    while (match(PROTO_NEWLINE));
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing closing right parenthesis",
+            "expected a closing parenthesis to terminate the function call",
+            false
+        );
+    }
+
+    return call_expr;
 }
 
 std::unique_ptr<GroupExpression>
