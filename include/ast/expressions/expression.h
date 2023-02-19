@@ -31,6 +31,9 @@ enum class ExpressionType {
 
     // Unary
     Unary,
+
+    // Binary
+    Binary
 };
 
 
