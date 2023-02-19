@@ -209,6 +209,8 @@ Parser::parseFunctionDefinition(Token& fun_token)
 
     fun_def->setReturnType(parseTypeDeclaration());
 
+    fun_def->setBody(parseBlockStatement());
+
     return fun_def;
 }
 
@@ -378,17 +380,18 @@ Parser::parseBlockStatement()
     // Consume extra newlines before the first definition in the block
     while (match(PROTO_NEWLINE));
 
-    if (! check(PROTO_RIGHT_BRACE)) {
-        do {
-            // Consume extra newlines before the next definition
-            while (match(PROTO_NEWLINE));
+    do {
+        // Consume extra newlines before the next definition
+        while (match(PROTO_NEWLINE));
 
-            if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
-                block_stmt->addDefinition(parseDefinition());
-            else
-                block_stmt->addDefinition(parseStatement());
-        } while (match(PROTO_NEWLINE));
-    }
+        if (check(PROTO_RIGHT_BRACE))
+            break;
+
+        if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
+            block_stmt->addDefinition(parseDefinition());
+        else
+            block_stmt->addDefinition(parseStatement());
+    } while (match(PROTO_NEWLINE));
 
     // Consume extra newlines after the last definition in the block
     while (match(PROTO_NEWLINE));

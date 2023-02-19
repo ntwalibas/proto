@@ -22,6 +22,7 @@
 #include "ast/declarations/variable.h"
 #include "ast/definitions/function.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/block.h"
 #include "common/token.h"
 
 
@@ -29,7 +30,8 @@ FunctionDefinition::FunctionDefinition(
     Token& token
 ) : Definition(DefinitionType::Function),
     token(token),
-    return_type(nullptr)
+    return_type(nullptr),
+    body(nullptr)
 {}
 
 
@@ -79,4 +81,22 @@ std::unique_ptr<TypeDeclaration>&
 FunctionDefinition::getReturnType()
 {
     return return_type;
+}
+
+/**
+ * Sets the body of the function.
+ */
+void
+FunctionDefinition::setBody(std::unique_ptr<BlockStatement>&& fun_body)
+{
+    body = std::move(fun_body);
+}
+
+/**
+ * Returns the body of the function.
+ */
+std::unique_ptr<BlockStatement>&
+FunctionDefinition::getBody()
+{
+    return body;
 }

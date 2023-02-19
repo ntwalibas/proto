@@ -111,7 +111,7 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
 
 TEST_F(ParserTest, parseFunctionDefinitionTest)
 {
-    std::string source = "sum: function(a: int32, b: int32) -> int32";
+    std::string source = "sum: function(a: int32, b: int32) -> int32{}";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();

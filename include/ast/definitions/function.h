@@ -23,6 +23,7 @@
 
 #include "ast/declarations/variable.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/block.h"
 #include "common/token.h"
 #include "definition.h"
 
@@ -60,11 +61,22 @@ class FunctionDefinition : public Definition
          */
         std::unique_ptr<TypeDeclaration>& getReturnType();
 
+        /**
+         * Sets the body of the function.
+         */
+        void setBody(std::unique_ptr<BlockStatement>&& fun_body);
+
+        /**
+         * Returns the body of the function.
+         */
+        std::unique_ptr<BlockStatement>& getBody();
+
     protected:
         Token                                       token;          /* Token associated with this function. */
         std::vector<
             std::unique_ptr<VariableDeclaration>>   parameters;     /* Parameters accepted by this function. */
         std::unique_ptr<TypeDeclaration>            return_type;    /* Type of the expression returned by this function*/
+        std::unique_ptr<BlockStatement>             body;           /* Body of the function. */
 };
 
 #endif
