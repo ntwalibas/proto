@@ -9,6 +9,7 @@ cc_library(
         "ast/*.h",
         "ast/declarations/*.h",
         "ast/definitions/*.h",
+        "ast/statements/*.h",
         "ast/expressions/*.h",
     ]),
     visibility = ["//visibility:public"],
