@@ -24,6 +24,7 @@
 
 enum class LiteralType
 {
+    Boolean,
     Integer,
     Float,
     String

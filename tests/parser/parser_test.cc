@@ -250,6 +250,14 @@ TEST_F(ParserTest, parseVariableExpressionTest)
 
 TEST_F(ParserTest, parseLiteralExpressionTest)
 {
+    // Boolean literal
+    std::string booleanSource = "False";
+    Lexer booleanLexer(std::make_shared<std::string>(booleanSource), source_path);
+    Parser booleanParser(booleanLexer);
+    std::unique_ptr<LiteralExpression> boolean_lit = booleanParser.parseLiteralExpression();
+    EXPECT_EQ(boolean_lit->getToken().getLexeme(), "False");
+    EXPECT_EQ(boolean_lit->getLiteralType(), LiteralType::Boolean);
+
     // Integer literal
     std::string intSource = "0";
     Lexer intLexer(std::make_shared<std::string>(intSource), source_path);

@@ -453,7 +453,9 @@ Parser::parsePrimaryExpression()
     if (check(PROTO_IDENTIFIER)) {
         return parseVariableExpression();
     }
-    else if(
+    else if (
+        check(PROTO_TRUE)   ||
+        check(PROTO_FALSE)  ||
         check(PROTO_INT)    ||
         check(PROTO_FLOAT)  ||
         check(PROTO_STRING)
@@ -506,7 +508,16 @@ Parser::parseVariableExpression()
 std::unique_ptr<LiteralExpression>
 Parser::parseLiteralExpression()
 {
-    if (match(PROTO_INT)) {
+    if (
+        match(PROTO_TRUE)   ||
+        match(PROTO_FALSE)
+    ) {
+        return std::make_unique<LiteralExpression>(
+            peekBack(),
+            LiteralType::Boolean
+        );
+    }
+    else if (match(PROTO_INT)) {
         return std::make_unique<LiteralExpression>(
             peekBack(),
             LiteralType::Integer
