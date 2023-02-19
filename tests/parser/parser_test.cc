@@ -7,6 +7,8 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/group.h"
+#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/block.h"
 #include "parser/parser.h"
@@ -237,6 +239,16 @@ TEST_F(ParserTest, parseArrayExpressionTest)
     std::unique_ptr<ArrayExpression> ar_expr = parser.parseArrayExpression();
     EXPECT_EQ(ar_expr->getToken().getLexeme(), "[");
     EXPECT_EQ(ar_expr->getContents().size(), 4);
+}
+
+TEST_F(ParserTest, parseGroupExpressionTest)
+{
+    std::string source = "(name)";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<GroupExpression> group_expr = parser.parseGroupExpression();
+    EXPECT_EQ(group_expr->getToken().getLexeme(), "(");
+    EXPECT_EQ(group_expr->getExpression()->getType(), ExpressionType::Variable);
 }
 
 TEST_F(ParserTest, parseVariableExpressionTest)

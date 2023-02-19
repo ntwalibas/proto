@@ -28,6 +28,7 @@
 #include "ast/definitions/function.h"
 #include "ast/statements/statement.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/block.h"
@@ -447,10 +448,13 @@ Parser::parseExpression()
 std::unique_ptr<Expression>
 Parser::parsePrimaryExpression()
 {
-    if (check(PROTO_LEFT_BRACKET)) {
+    if (check(PROTO_LEFT_PAREN)) {
+        return parseGroupExpression();
+    }
+    else if (check(PROTO_LEFT_BRACKET)) {
         return parseArrayExpression();
     }
-    if (check(PROTO_IDENTIFIER)) {
+    else if (check(PROTO_IDENTIFIER)) {
         return parseVariableExpression();
     }
     else if (
@@ -470,6 +474,28 @@ Parser::parsePrimaryExpression()
             false
         );
     }
+}
+
+std::unique_ptr<GroupExpression>
+Parser::parseGroupExpression()
+{
+    Token token = consume(PROTO_LEFT_PAREN);
+    std::unique_ptr<Expression> expr = parseExpression();
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peek(),
+            "missing closing right parenthesis",
+            "expected a closing parenthesis to end a group expression",
+            false
+        );
+    }
+
+    return std::make_unique<GroupExpression>(
+        token,
+        std::move(expr)
+    );
 }
 
 std::unique_ptr<ArrayExpression>
