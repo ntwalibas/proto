@@ -204,12 +204,22 @@ Parser::parseFunctionDefinition(Token& fun_token)
             false
         );
     }
-    
-    if (! check(PROTO_RIGHT_PAREN)) {
-        do {
-            fun_def->addParameter(parseVariableDeclaration());
-        } while (match(PROTO_COMMA));
-    }
+
+    // Consume extra newlines before the first parameter
+    while (match(PROTO_NEWLINE));
+
+    do {
+        // Consume extra newlines before the next parameter
+        while (match(PROTO_NEWLINE));
+
+        if (check(PROTO_RIGHT_PAREN))
+            break;
+
+        fun_def->addParameter(parseVariableDeclaration());
+    } while (match(PROTO_COMMA));
+
+    // Consume extra newlines before the closing parenthesis
+    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_PAREN);
