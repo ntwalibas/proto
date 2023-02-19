@@ -22,12 +22,15 @@
 
 
 enum class ExpressionType {
-    // Primary expressions
+    // Primary
     Literal,
     Array,
     Variable,
     Group,
     Call,
+
+    // Unary
+    Unary,
 };
 
 
