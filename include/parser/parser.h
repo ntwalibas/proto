@@ -54,7 +54,6 @@ class Parser
         std::unique_ptr<Definition> parseDefinition();
         std::unique_ptr<VariableDefinition> parseVariableDefinition(Token& var_token);
         std::unique_ptr<FunctionDefinition> parseFunctionDefinition(Token& fun_token);
-        std::unique_ptr<Definition> parseStatementDefinition();
 
         // Declarations
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();

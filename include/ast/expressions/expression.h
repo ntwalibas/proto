@@ -18,6 +18,9 @@
 #ifndef PROTO_AST_EXPRESSION_H
 #define PROTO_AST_EXPRESSION_H
 
+#include "ast/statements/statement.h"
+
+
 enum class ExpressionType {
     // Primary expressions
     Literal,
@@ -28,10 +31,14 @@ enum class ExpressionType {
 };
 
 
-class Expression
+class Expression : public Statement
 {
     public:
-        Expression(enum ExpressionType type) : type(type) {}
+        Expression(
+            enum ExpressionType type
+        ) : Statement(StatementType::Expression),
+            type(type)
+        {}
         virtual ~Expression() {}
 
         /**

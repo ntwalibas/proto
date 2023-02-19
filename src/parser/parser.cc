@@ -212,12 +212,6 @@ Parser::parseFunctionDefinition(Token& fun_token)
     return fun_def;
 }
 
-std::unique_ptr<Definition>
-Parser::parseStatementDefinition()
-{
-    return parseStatement();
-}
-
 
 // Declarations
 std::unique_ptr<TypeDeclaration>
@@ -347,33 +341,31 @@ Parser::parseVariableDeclaration()
 std::unique_ptr<Statement>
 Parser::parseStatement()
 {
-    // switch (peek().type) {
-    //     case PROTO_LEFT_BRACE:
-    //         return parseBlockStatement();
+    switch (peek().type) {
+        case PROTO_LEFT_BRACE:
+            return parseBlockStatement();
         
-    //     case PROTO_IF:
-    //         return parseIfStatement();
+        // case PROTO_IF:
+        //     return parseIfStatement();
         
-    //     case PROTO_FOR:
-    //         return parseForStatement();
+        // case PROTO_FOR:
+        //     return parseForStatement();
         
-    //     case PROTO_WHILE:
-    //         return parseWhileStatement();
+        // case PROTO_WHILE:
+        //     return parseWhileStatement();
         
-    //     case PROTO_BREAK:
-    //         return parseBreakStatement();
+        // case PROTO_BREAK:
+        //     return parseBreakStatement();
         
-    //     case PROTO_CONTINUE:
-    //         return parseContinueStatement();
+        // case PROTO_CONTINUE:
+        //     return parseContinueStatement();
         
-    //     case PROTO_RETURN:
-    //         return parseReturnStatement();
+        // case PROTO_RETURN:
+        //     return parseReturnStatement();
         
-    //     default:
-    //         return parseExpressionStatement();
-    // }
-
-    return nullptr;
+        default:
+            return parseExpression();
+    }
 }
 
 std::unique_ptr<BlockStatement>
@@ -394,7 +386,7 @@ Parser::parseBlockStatement()
             if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
                 block_stmt->addDefinition(parseDefinition());
             else
-                block_stmt->addDefinition(parseStatementDefinition());
+                block_stmt->addDefinition(parseStatement());
         } while (match(PROTO_NEWLINE));
     }
 
