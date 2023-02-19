@@ -338,7 +338,7 @@ Parser::parseVariableDeclaration()
         var_token = consume(PROTO_IDENTIFIER);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing variable declaration name",
             "expected the name of the variable being declared",
             false
@@ -349,7 +349,7 @@ Parser::parseVariableDeclaration()
         consume(PROTO_COLON);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
-            peek(),
+            peekBack(),
             "missing colon after variable declaration name",
             "expected a colon after variable declaration in anticipation of the type",
             false
