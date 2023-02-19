@@ -15,42 +15,36 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_AST_EXPRESSION_H
-#define PROTO_AST_EXPRESSION_H
+#ifndef PROTO_AST_GROUP_EXPRESSION_H
+#define PROTO_AST_GROUP_EXPRESSION_H
 
-#include "ast/statements/statement.h"
+#include <memory>
 
-
-enum class ExpressionType {
-    // Primary expressions
-    Literal,
-    Array,
-    Variable,
-    Group,
-    // FunctionCall,
-};
+#include "common/token.h"
+#include "expression.h"
 
 
-class Expression : public Statement
+class GroupExpression : public Expression
 {
     public:
-        Expression(
-            enum ExpressionType type
-        ) : Statement(StatementType::Expression),
-            type(type)
-        {}
-        virtual ~Expression() {}
+        GroupExpression(
+            Token& token,
+            std::unique_ptr<Expression>&& expression
+        );
 
         /**
-         * Returns the type of this expression.
+         * Returns the token associated with this group expression.
          */
-        enum ExpressionType getType() const
-        {
-            return type;
-        }
+        Token& getToken();
+
+        /**
+         * Returns the expression held inside in this group.
+         */
+        std::unique_ptr<Expression>& getExpression();
 
     protected:
-        enum ExpressionType type;   /* The type of expression of the derived class. */
+        Token                       token;      /* Token associated with this literal. */
+        std::unique_ptr<Expression> expression; /* Expression inside the parenthesis. */
 };
 
 #endif
