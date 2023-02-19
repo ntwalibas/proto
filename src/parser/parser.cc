@@ -207,7 +207,17 @@ Parser::parseFunctionDefinition(Token& fun_token)
         );
     }
 
-    fun_def->setReturnType(parseTypeDeclaration());
+    // Show custom error for missing return type
+    try {
+        fun_def->setReturnType(parseTypeDeclaration());
+    } catch (ParserError const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing return type",
+            "expected the function return type after the return type indicator [->]",
+            false
+        );
+    }
 
     fun_def->setBody(parseBlockStatement());
 
@@ -229,7 +239,7 @@ Parser::parseTypeDeclaration()
     }
     else {
         throw ParserError(
-            peek(),
+            peekBack(),
             "expected a type",
             "a type is either a simple type or an array type",
             false
