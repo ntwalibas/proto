@@ -459,14 +459,11 @@ Parser::parseSignExpression()
     if (match(PROTO_PLUS) || match(PROTO_MINUS)) {
         Token op_token = peekBack();
         std::unique_ptr<Expression> rec_expr = parseSignExpression();
-        std::unique_ptr<UnaryExpression> sign_expr =
-            std::make_unique<UnaryExpression>(
-                op_token,
-                (op_token.type == PROTO_PLUS) ? UnaryType::Plus : UnaryType::Minus,
-                std::move(rec_expr)
-            );
-
-        return sign_expr;
+        return std::make_unique<UnaryExpression>(
+            op_token,
+            (op_token.type == PROTO_PLUS) ? UnaryType::Plus : UnaryType::Minus,
+            std::move(rec_expr)
+        );
     }
 
     return parseBitwiseNotExpression();
@@ -478,14 +475,11 @@ Parser::parseBitwiseNotExpression()
     if (match(PROTO_BITWISE_NOT)) {
         Token op_token = peekBack();
         std::unique_ptr<Expression> rec_expr = parseBitwiseNotExpression();
-        std::unique_ptr<UnaryExpression> bitnot_expr =
-            std::make_unique<UnaryExpression>(
-                op_token,
-                UnaryType::BitwiseNot,
-                std::move(rec_expr)
-            );
-
-        return bitnot_expr;
+        return std::make_unique<UnaryExpression>(
+            op_token,
+            UnaryType::BitwiseNot,
+            std::move(rec_expr)
+        );
     }
 
     return parseSubscriptExpression();
