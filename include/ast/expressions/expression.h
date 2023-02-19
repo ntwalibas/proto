@@ -27,7 +27,7 @@ enum class ExpressionType {
     Array,
     Variable,
     Group,
-    // FunctionCall,
+    Call,
 };
 
 
