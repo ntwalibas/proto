@@ -81,12 +81,24 @@ compile(std::string const& source_path)
             std::cout << "The program has " << program.getDefinitions().size() << " definitions." << std::endl;
         }
     } catch (ParserError& e) {
-        printError(
-            e.getToken(),
-            e.getPrimaryMessage(),
-            e.getSecondaryMessage(),
-            e.getToken().source_path
-        );
+        for (auto& e : parser.errors) {
+            printError(
+                e.getToken(),
+                e.getPrimaryMessage(),
+                e.getSecondaryMessage(),
+                e.getToken().source_path
+            );
+        }
+
+        // To avoid displaying spirious fatal errors,
+        // we only show them if there are no non-fatal errors
+        if (! parser.errors.size())
+            printError(
+                e.getToken(),
+                e.getPrimaryMessage(),
+                e.getSecondaryMessage(),
+                e.getToken().source_path
+            );
 
         return 1;
     }
