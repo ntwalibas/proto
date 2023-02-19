@@ -15,32 +15,44 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_AST_DEFINITION_H
-#define PROTO_AST_DEFINITION_H
+#ifndef PROTO_AST_STATEMENT_H
+#define PROTO_AST_STATEMENT_H
 
-enum class DefinitionType {
-    Function,
-    Variable,
-    Statement
+#include "ast/definitions/definition.h"
+
+
+enum class StatementType {
+    Block,
+    If,
+    For,
+    While,
+    Break,
+    Continue,
+    Return,
+    Expression
 };
 
 
-class Definition
+class Statement : public Definition
 {
     public:
-        Definition(enum DefinitionType type) : type(type) {}
-        virtual ~Definition(){};
+        Statement(
+            enum StatementType type
+        ) : Definition(DefinitionType::Statement),
+            type(type)
+        {}
+        virtual ~Statement() {};
 
         /**
          * Returns the type of this definition.
          */
-        enum DefinitionType getType() const
+        enum StatementType getType() const
         {
             return type;
         }
 
     protected:
-        enum DefinitionType type;     /* The type of definition of the derived class. */
+        enum StatementType type;     /* The type of definition of the derived class. */
 };
 
 #endif
