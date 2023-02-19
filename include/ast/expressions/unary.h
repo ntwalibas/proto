@@ -43,12 +43,12 @@ class UnaryExpression : public Expression
         );
 
         /**
-         * Returns the token associated with this literal expression.
+         * Returns the token associated with this unary expression.
          */
         Token& getToken();
 
         /**
-         * Returns the type of literal held in this expression.
+         * Returns the type of unary held in this expression.
          */
         enum UnaryType& getUnaryType();
 
@@ -58,8 +58,8 @@ class UnaryExpression : public Expression
         std::unique_ptr<Expression>& getExpression();
 
     protected:
-        Token                       token;      /* Token associated with this literal. */
-        enum UnaryType              type;       /* Type of this literal */
+        Token                       token;      /* Token associated with this unary expression. */
+        enum UnaryType              type;       /* Type of this unary expression. */
         std::unique_ptr<Expression> expression; /* Expression the unary operator is applied to. */
 };
 

@@ -35,7 +35,7 @@ UnaryExpression::UnaryExpression(
 
 
 /**
- * Returns the token associated with this unary definition.
+ * Returns the token associated with this unary expression.
  */
 Token&
 UnaryExpression::getToken()
