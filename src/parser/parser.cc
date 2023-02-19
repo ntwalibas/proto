@@ -26,9 +26,11 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/definitions/function.h"
+#include "ast/statements/statement.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/block.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
@@ -77,6 +79,9 @@ Parser::parseProgram()
             true
         );
     }
+
+    // Consume irrelevant newlines before hitting the first significant token
+    while (match(PROTO_NEWLINE));
 
     while (! atEnd()) {
         try {
@@ -207,6 +212,12 @@ Parser::parseFunctionDefinition(Token& fun_token)
     return fun_def;
 }
 
+std::unique_ptr<Definition>
+Parser::parseStatementDefinition()
+{
+    return parseStatement();
+}
+
 
 // Declarations
 std::unique_ptr<TypeDeclaration>
@@ -329,6 +340,79 @@ Parser::parseVariableDeclaration()
         var_token,
         std::move(var_type)
     );
+}
+
+
+// Statements
+std::unique_ptr<Statement>
+Parser::parseStatement()
+{
+    // switch (peek().type) {
+    //     case PROTO_LEFT_BRACE:
+    //         return parseBlockStatement();
+        
+    //     case PROTO_IF:
+    //         return parseIfStatement();
+        
+    //     case PROTO_FOR:
+    //         return parseForStatement();
+        
+    //     case PROTO_WHILE:
+    //         return parseWhileStatement();
+        
+    //     case PROTO_BREAK:
+    //         return parseBreakStatement();
+        
+    //     case PROTO_CONTINUE:
+    //         return parseContinueStatement();
+        
+    //     case PROTO_RETURN:
+    //         return parseReturnStatement();
+        
+    //     default:
+    //         return parseExpressionStatement();
+    // }
+
+    return nullptr;
+}
+
+std::unique_ptr<BlockStatement>
+Parser::parseBlockStatement()
+{
+    Token& block_token = consume(PROTO_LEFT_BRACE);
+    std::unique_ptr<BlockStatement> block_stmt = 
+        std::make_unique<BlockStatement>(block_token);
+
+    // Consume extra newlines before the first definition in the block
+    while (match(PROTO_NEWLINE));
+
+    if (! check(PROTO_RIGHT_BRACE)) {
+        do {
+            // Consume extra newlines before the next definition
+            while (match(PROTO_NEWLINE));
+
+            if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
+                block_stmt->addDefinition(parseDefinition());
+            else
+                block_stmt->addDefinition(parseStatementDefinition());
+        } while (match(PROTO_NEWLINE));
+    }
+
+    // Consume extra newlines after the last definition in the block
+    while (match(PROTO_NEWLINE));
+
+    try {
+        consume(PROTO_RIGHT_BRACE);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing closing right brace to end the block",
+            "expected a closing right brace to end the block",
+            false
+        );
+    }
+
+    return block_stmt;
 }
 
 

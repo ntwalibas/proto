@@ -29,9 +29,11 @@
 #include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
+#include "ast/statements/statement.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/block.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
 #include "ast/program.h"
@@ -52,12 +54,17 @@ class Parser
         std::unique_ptr<Definition> parseDefinition();
         std::unique_ptr<VariableDefinition> parseVariableDefinition(Token& var_token);
         std::unique_ptr<FunctionDefinition> parseFunctionDefinition(Token& fun_token);
+        std::unique_ptr<Definition> parseStatementDefinition();
 
         // Declarations
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();
         std::unique_ptr<SimpleTypeDeclaration> parseSimpleTypeDeclaration(bool is_const);
         std::unique_ptr<ArrayTypeDeclaration> parseArrayTypeDeclaration(bool is_const);
         std::unique_ptr<VariableDeclaration> parseVariableDeclaration();
+
+        // Statements
+        std::unique_ptr<Statement> parseStatement();
+        std::unique_ptr<BlockStatement> parseBlockStatement();
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();

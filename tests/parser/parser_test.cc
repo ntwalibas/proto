@@ -8,6 +8,7 @@
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/block.h"
 #include "parser/parser.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -172,6 +173,18 @@ TEST_F(ParserTest, parseVariableDeclarationTest)
     EXPECT_EQ(var_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*var_type);
     EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
+}
+
+
+// Statements
+TEST_F(ParserTest, parseBlockStatementTest)
+{
+    std::string source = "{\n\n\nstart: int32 = 0\n\n step: int32 = 2}";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
+    EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
+    EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
 }
 
 
