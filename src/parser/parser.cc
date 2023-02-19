@@ -450,7 +450,26 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseSubscriptExpression();
+    return parseSignExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseSignExpression()
+{
+    if (match(PROTO_PLUS) || match(PROTO_MINUS)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> rec_expr = parseSignExpression();
+        std::unique_ptr<UnaryExpression> sign_expr =
+            std::make_unique<UnaryExpression>(
+                op_token,
+                (op_token.type == PROTO_PLUS) ? UnaryType::Plus : UnaryType::Minus,
+                std::move(rec_expr)
+            );
+
+        return sign_expr;
+    }
+
+    return parseBitwiseNotExpression();
 }
 
 std::unique_ptr<Expression>

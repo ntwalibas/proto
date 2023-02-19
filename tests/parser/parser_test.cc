@@ -194,6 +194,23 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseSignExpressionTest)
+{
+    std::string source = "-10";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseSignExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+    UnaryExpression& sign_expr = dynamic_cast<UnaryExpression&>(*expr);
+
+    // We have the right data on the signed expression
+    EXPECT_EQ(sign_expr.getToken().getLexeme(), "-");
+    EXPECT_EQ(sign_expr.getUnaryType(), UnaryType::Minus);
+    EXPECT_EQ(sign_expr.getExpression()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseBitwiseNotExpressionTest)
 {
     std::string source = "~~False";
