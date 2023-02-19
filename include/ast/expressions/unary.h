@@ -48,7 +48,7 @@ class UnaryExpression : public Expression
         Token& getToken();
 
         /**
-         * Returns the type of unary held in this expression.
+         * Returns the type of unary operator held in this expression.
          */
         enum UnaryType& getUnaryType();
 
