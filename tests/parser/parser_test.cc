@@ -8,6 +8,7 @@
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/binary.h"
+#include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
@@ -193,6 +194,23 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseBitwiseNotExpressionTest)
+{
+    std::string source = "~~False";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseBitwiseNotExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+    UnaryExpression& bitnot_expr = dynamic_cast<UnaryExpression&>(*expr);
+
+    // We have the right data on the bitwise not expression
+    EXPECT_EQ(bitnot_expr.getToken().getLexeme(), "~");
+    EXPECT_EQ(bitnot_expr.getUnaryType(), UnaryType::BitwiseNot);
+    EXPECT_EQ(bitnot_expr.getExpression()->getType(), ExpressionType::Unary);
+}
+
 TEST_F(ParserTest, parseSubscriptExpressionTest)
 {
     std::string source = "values[0]";
@@ -206,6 +224,7 @@ TEST_F(ParserTest, parseSubscriptExpressionTest)
 
     // We have the right data on the subscript expression
     EXPECT_EQ(sub_expr.getToken().getLexeme(), "[");
+    EXPECT_EQ(sub_expr.getBinaryType(), BinaryType::Subscript);
     EXPECT_EQ(sub_expr.getLeft()->getType(), ExpressionType::Variable);
     EXPECT_EQ(sub_expr.getRight()->getType(), ExpressionType::Literal);
 }

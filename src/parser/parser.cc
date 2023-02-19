@@ -30,6 +30,7 @@
 #include "ast/statements/statement.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/binary.h"
+#include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
@@ -449,6 +450,25 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
+    return parseSubscriptExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseBitwiseNotExpression()
+{
+    if (match(PROTO_BITWISE_NOT)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> rec_expr = parseBitwiseNotExpression();
+        std::unique_ptr<UnaryExpression> bitnot_expr =
+            std::make_unique<UnaryExpression>(
+                op_token,
+                UnaryType::BitwiseNot,
+                std::move(rec_expr)
+            );
+
+        return bitnot_expr;
+    }
+
     return parseSubscriptExpression();
 }
 
