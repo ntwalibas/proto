@@ -32,6 +32,7 @@ enum class BinaryType
     Mul,
     Div,
     Mod,
+    Pow,
 
     // Bit
     BitwiseAnd,
