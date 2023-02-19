@@ -26,7 +26,33 @@
 
 enum class BinaryType
 {
-    
+    // Arithmetic
+    Plus,
+    Minus,
+    Mul,
+    Div,
+    Mod,
+
+    // Bit
+    BitwiseAnd,
+    BitwiseOr,
+    LeftShift,
+    RightShift,
+
+    // Logical
+    LogicalAnd,
+    LogicalOr,
+
+    // Comparison
+    Equal,
+    NotEqual,
+    Greater,
+    GreaterOrEqual,
+    Lesser,
+    LesserOrEqual,
+
+    // Access
+    Subscript
 };
 
 
