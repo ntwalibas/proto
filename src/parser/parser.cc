@@ -38,6 +38,7 @@
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
 #include "ast/statements/break.h"
+#include "ast/statements/while.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token_type.h"
@@ -392,8 +393,8 @@ Parser::parseStatement()
         // case PROTO_FOR:
         //     return parseForStatement();
         
-        // case PROTO_WHILE:
-        //     return parseWhileStatement();
+        case PROTO_WHILE:
+            return parseWhileStatement();
         
         case PROTO_CONTINUE:
             return parseContinueStatement();
@@ -447,6 +448,47 @@ Parser::parseBlockStatement()
     }
 
     return block_stmt;
+}
+
+std::unique_ptr<WhileStatement>
+Parser::parseWhileStatement()
+{
+    Token wh_token = consume(PROTO_WHILE);
+
+    try {
+        consume(PROTO_LEFT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing left opening parenthesis",
+            "expected a left opening parenthesis before loop condition",
+            false
+        );
+    }
+
+    while(match(PROTO_NEWLINE));
+    std::unique_ptr<Expression> cond_expr = parseExpression();
+    while(match(PROTO_NEWLINE));
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing right closing parenthesis",
+            "expected right closing parenthesis after loop condition",
+            false
+        );
+    }
+
+    // Consume possible newlines after condition, before body
+    while(match(PROTO_NEWLINE));
+
+    return std::make_unique<WhileStatement>(
+        wh_token,
+        std::move(cond_expr),
+        parseBlockStatement()
+    );
 }
 
 std::unique_ptr<ContinueStatement>

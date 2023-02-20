@@ -16,6 +16,7 @@
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
 #include "ast/statements/break.h"
+#include "ast/statements/while.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "parser/parser.h"
@@ -194,6 +195,43 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseWhileStatementTest)
+{
+    std::string source = "while(True){makeItHappen()}";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<WhileStatement> wh_stmt = parser.parseWhileStatement();
+    EXPECT_EQ(wh_stmt->getToken().getLexeme(), "while");
+    EXPECT_EQ(wh_stmt->getCondition()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(wh_stmt->getBody()->getDefinitions().size(), 1);
+
+    // We miss the opening parenthesis
+    std::string noLeftParenSource = "while True){makeItHappen()}";
+    Lexer noLeftParenLexer(std::make_shared<std::string>(noLeftParenSource), source_path);
+    Parser noLeftParenParser(noLeftParenLexer);
+    EXPECT_THROW({
+        try {
+            noLeftParenParser.parseWhileStatement();
+        } catch (ParserError& e) {
+            EXPECT_STREQ(e.getSecondaryMessage(), "expected a left opening parenthesis before loop condition");
+            throw;
+        }
+    }, ParserError);
+
+    // We miss the closing parenthesis
+    std::string noRightParenSource = "while(True{makeItHappen()}";
+    Lexer noRightParenLexer(std::make_shared<std::string>(noRightParenSource), source_path);
+    Parser noRightParenParser(noRightParenLexer);
+    EXPECT_THROW({
+        try {
+            noRightParenParser.parseWhileStatement();
+        } catch (ParserError& e) {
+            EXPECT_STREQ(e.getSecondaryMessage(), "expected right closing parenthesis after loop condition");
+            throw;
+        }
+    }, ParserError);
 }
 
 TEST_F(ParserTest, parseContinueStatementTest)
