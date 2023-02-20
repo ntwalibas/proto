@@ -223,13 +223,16 @@ Parser::parseFunctionDefinition(Token& fun_token)
         fun_def->addParameter(parseVariableDeclaration());
     } while (match(PROTO_COMMA));
 
+    // Allow newlines before closing parenthesis
+    while (match(PROTO_NEWLINE));
+
     try {
         consume(PROTO_RIGHT_PAREN);
     } catch (std::invalid_argument const& e) {
         throw ParserError(
             peekBack(),
-            "missing opening right parenthesis after function parameters",
-            "expected an opening right parenthesis after function parameters",
+            "missing closing right parenthesis after function parameters",
+            "expected a closing right parenthesis after function parameters",
             false
         );
     }
@@ -419,9 +422,6 @@ Parser::parseBlockStatement()
     Token& block_token = consume(PROTO_LEFT_BRACE);
     std::unique_ptr<BlockStatement> block_stmt = 
         std::make_unique<BlockStatement>(block_token);
-
-    // Consume extra newlines before the first definition in the block
-    while (match(PROTO_NEWLINE));
 
     do {
         // Consume extra newlines before the next definition
@@ -1035,6 +1035,9 @@ Parser::parseArrayExpression()
 
         array_exp->addContent(parsePrimaryExpression());
     } while (match(PROTO_COMMA));
+
+    // Allow newlines before closing bracket
+    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_BRACKET);
