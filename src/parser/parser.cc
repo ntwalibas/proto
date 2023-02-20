@@ -450,7 +450,30 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseTermExpression();
+    return parseBitshiftExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseBitshiftExpression()
+{
+    std::unique_ptr<Expression> left = parseTermExpression();
+
+    while (match(PROTO_LEFT_SHIFT) || match(PROTO_RIGHT_SHIFT)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseTermExpression();
+        std::unique_ptr<Expression> shift_expr =
+            std::make_unique<BinaryExpression>(
+                op_token,
+                (op_token.type == PROTO_LEFT_SHIFT) ?
+                    BinaryType::LeftShift : BinaryType::RightShift,
+                std::move(left),
+                std::move(right)
+            );
+
+        left = std::move(shift_expr);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expression>

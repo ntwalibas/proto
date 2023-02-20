@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseBitshiftExpressionTest)
+{
+    std::string source = "uint << 5";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseBitshiftExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& shift_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the bit shift expression
+    EXPECT_EQ(shift_expr.getToken().getLexeme(), "<<");
+    EXPECT_EQ(shift_expr.getBinaryType(), BinaryType::LeftShift);
+    EXPECT_EQ(shift_expr.getLeft()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(shift_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseTermExpressionTest)
 {
     std::string source = "(2 * counter) + 1";
