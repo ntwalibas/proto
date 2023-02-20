@@ -195,6 +195,35 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseExpressionTest)
+{
+    std::string source = "2 * 5 + 1";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& add_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the binary expression
+    EXPECT_EQ(add_expr.getToken().getLexeme(), "+");
+    EXPECT_EQ(add_expr.getLeft()->getType(), ExpressionType::Binary);
+    EXPECT_EQ(add_expr.getRight()->getType(), ExpressionType::Literal);
+    LiteralExpression& one_expr = dynamic_cast<LiteralExpression&>(*(add_expr.getRight()));
+    EXPECT_EQ(one_expr.getToken().getLexeme(), "1");
+
+    // We have the right data on the lhs of the binary expression
+    std::unique_ptr<Expression>& left_expr = add_expr.getLeft();
+    BinaryExpression& mul_expr = dynamic_cast<BinaryExpression&>(*left_expr);
+    EXPECT_EQ(mul_expr.getLeft()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(mul_expr.getRight()->getType(), ExpressionType::Literal);
+    LiteralExpression& two_expr = dynamic_cast<LiteralExpression&>(*(mul_expr.getLeft()));
+    LiteralExpression& five_expr = dynamic_cast<LiteralExpression&>(*(mul_expr.getRight()));
+    EXPECT_EQ(two_expr.getToken().getLexeme(), "2");
+    EXPECT_EQ(five_expr.getToken().getLexeme(), "5");
+}
+
 TEST_F(ParserTest, parseAssignmentExpressionTest)
 {
     std::string source = "a = b = 0";
