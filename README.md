@@ -1,7 +1,11 @@
 # Proto
 
-Proto is a very simple programming language that I intend to use to build other more fully-featured languages upon.
-I kept it simple because for my side project in programming languages, I can just reuse the frontend provided here.
+Proto (for prototype and primitive) is a single-file programming language that I will be using
+as I play with different parts of a compiler and programming languages concepts.
+
+It is also serves as a tool to help me learn and update my C++ knowledge.
+
+I intend to use it later to build something more fully featured upon it.
 
 
 ## Testing
