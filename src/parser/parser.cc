@@ -41,6 +41,7 @@
 #include "ast/statements/while.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
+#include "ast/statements/for.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
@@ -396,8 +397,8 @@ Parser::parseStatement()
         // case PROTO_IF:
         //     return parseIfStatement();
         
-        // case PROTO_FOR:
-        //     return parseForStatement();
+        case PROTO_FOR:
+            return parseForStatement();
         
         case PROTO_WHILE:
             return parseWhileStatement();
@@ -451,6 +452,95 @@ Parser::parseBlockStatement()
     }
 
     return block_stmt;
+}
+
+std::unique_ptr<ForStatement>
+Parser::parseForStatement()
+{
+    Token for_token = consume(PROTO_FOR);
+
+    try {
+        consume(PROTO_LEFT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing left opening parenthesis",
+            "expected a left opening parenthesis before loop condition",
+            false
+        );
+    }
+    
+    // Initialization clause
+    std::unique_ptr<Definition> init_clause = nullptr;
+    while(match(PROTO_NEWLINE));
+    if (! match(PROTO_SEMICOLON)) {
+        if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
+            init_clause = parseDefinition();
+        else
+            init_clause = parseExpression();
+
+        while(match(PROTO_NEWLINE));
+
+        try {
+            consume(PROTO_SEMICOLON);
+        } catch (std::invalid_argument const& e) {
+            throw ParserError(
+                peekBack(),
+                "missing semicolon after for loop initialization clause",
+                "expected a semicolon after initialization clause",
+                false
+            );
+        }
+    }
+    
+    // Termination clause
+    std::unique_ptr<Expression> term_clause = nullptr;
+    while(match(PROTO_NEWLINE));
+    if (! match(PROTO_SEMICOLON)) {
+        term_clause = parseExpression();
+        while(match(PROTO_NEWLINE));
+
+        try {
+            consume(PROTO_SEMICOLON);
+        } catch (std::invalid_argument const& e) {
+            throw ParserError(
+                peekBack(),
+                "missing semicolon after for loop termination clause",
+                "expected a semicolon after termination clause",
+                false
+            );
+        }
+    }
+    
+    // Increment clause
+    std::unique_ptr<Expression> incr_clause = nullptr;
+    while(match(PROTO_NEWLINE));
+    if (! check(PROTO_RIGHT_PAREN)) {
+        incr_clause = parseExpression();
+        while(match(PROTO_NEWLINE));
+    }
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing right closing parenthesis",
+            "expected right closing parenthesis after loop increment clause",
+            false
+        );
+    }
+
+    // Consume possible newlines after loop header, before body
+    while(match(PROTO_NEWLINE));
+
+    return std::make_unique<ForStatement>(
+        for_token,
+        std::move(init_clause),
+        std::move(term_clause),
+        std::move(incr_clause),
+        parseBlockStatement()
+    );
 }
 
 std::unique_ptr<WhileStatement>

@@ -19,6 +19,7 @@
 #include "ast/statements/while.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
+#include "ast/statements/for.h"
 #include "parser/parser.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -195,6 +196,67 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseForStatementTest)
+{
+    // We have a variable definition as init clause
+    std::string defSource = "for(i: int32 = 10; i > 0; i = i - 1){}";
+    Lexer defLexer(std::make_shared<std::string>(defSource), source_path);
+    Parser defParser(defLexer);
+    std::unique_ptr<ForStatement> def_for_stmt = defParser.parseForStatement();
+    EXPECT_EQ(def_for_stmt->getToken().getLexeme(), "for");
+    EXPECT_EQ(def_for_stmt->getBody()->getDefinitions().size(), 0);
+    // Check init clause
+    std::unique_ptr<Definition>& def_init_clause = def_for_stmt->getInitClause();
+    EXPECT_EQ(def_init_clause->getType(), DefinitionType::Variable);
+    // Check term clause
+    std::unique_ptr<Expression>& def_term_clause = def_for_stmt->getTermClause();
+    EXPECT_EQ(def_term_clause->getType(), ExpressionType::Binary);
+    // Check incr clause
+    std::unique_ptr<Expression>& def_incr_clause = def_for_stmt->getIncrClause();
+    EXPECT_EQ(def_incr_clause->getType(), ExpressionType::Assignment);
+
+   // We have an expression as init clause
+    std::string exprSource = "for(i = 10; i > 0; i = i - 1){}";
+    Lexer exprLexer(std::make_shared<std::string>(exprSource), source_path);
+    Parser exprParser(exprLexer);
+    std::unique_ptr<ForStatement> expr_for_stmt = exprParser.parseForStatement();
+    std::unique_ptr<Definition>& expr_init_clause = expr_for_stmt->getInitClause();
+    EXPECT_EQ(expr_init_clause->getType(), DefinitionType::Statement);
+    AssignmentExpression& init_clause = dynamic_cast<AssignmentExpression&>(*expr_init_clause);
+    EXPECT_EQ(init_clause.getLvalue()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(init_clause.getRvalue()->getType(), ExpressionType::Literal);
+
+   // We have no init clause
+    std::string noInitSource = "for(; i > 0; i = i - 1){}";
+    Lexer noInitLexer(std::make_shared<std::string>(noInitSource), source_path);
+    Parser noInitParser(noInitLexer);
+    std::unique_ptr<ForStatement> noInit_for_stmt = noInitParser.parseForStatement();
+    EXPECT_EQ(noInit_for_stmt->getInitClause(), nullptr);
+
+   // We have no term clause
+    std::string noTermSource = "for(i = 10;; i = i - 1){}";
+    Lexer noTermLexer(std::make_shared<std::string>(noTermSource), source_path);
+    Parser noTermParser(noTermLexer);
+    std::unique_ptr<ForStatement> noTerm_for_stmt = noTermParser.parseForStatement();
+    EXPECT_EQ(noTerm_for_stmt->getTermClause(), nullptr);
+
+   // We have no incr clause
+    std::string noIncrSource = "for(i = 10; i > 0;){}";
+    Lexer noIncrLexer(std::make_shared<std::string>(noIncrSource), source_path);
+    Parser noIncrParser(noIncrLexer);
+    std::unique_ptr<ForStatement> noIncr_for_stmt = noIncrParser.parseForStatement();
+    EXPECT_EQ(noIncr_for_stmt->getIncrClause(), nullptr);
+
+   // We have no clauses
+    std::string noClausesSource = "for(;;){}";
+    Lexer noClausesLexer(std::make_shared<std::string>(noClausesSource), source_path);
+    Parser noClausesParser(noClausesLexer);
+    std::unique_ptr<ForStatement> noClauses_for_stmt = noClausesParser.parseForStatement();
+    EXPECT_EQ(noClauses_for_stmt->getInitClause(), nullptr);
+    EXPECT_EQ(noClauses_for_stmt->getTermClause(), nullptr);
+    EXPECT_EQ(noClauses_for_stmt->getIncrClause(), nullptr);
 }
 
 TEST_F(ParserTest, parseWhileStatementTest)
