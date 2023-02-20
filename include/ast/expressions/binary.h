@@ -37,6 +37,7 @@ enum class BinaryType
     // Bit
     BitwiseAnd,
     BitwiseOr,
+    BitwiseXor,
     LeftShift,
     RightShift,
 
