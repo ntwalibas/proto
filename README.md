@@ -3,7 +3,7 @@
 Proto (for prototype and primitive) is a single-file programming language that I will be using
 as I play with different parts of a compiler and programming languages concepts.
 
-It is also serves as a tool to help me learn and update my C++ knowledge.
+It also serves as a tool to help me learn and update my C++ knowledge.
 
 I intend to use it later to build something more fully featured upon it.
 
