@@ -4,6 +4,7 @@
 
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/expressions/assignment.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/literal.h"
@@ -194,6 +195,23 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseAssignmentExpressionTest)
+{
+    std::string source = "a = b = 0";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseAssignmentExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Assignment);
+    AssignmentExpression& assign_expr = dynamic_cast<AssignmentExpression&>(*expr);
+
+    // We have the right data on the assignment expression
+    EXPECT_EQ(assign_expr.getToken().getLexeme(), "=");
+    EXPECT_EQ(assign_expr.getLvalue()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(assign_expr.getRvalue()->getType(), ExpressionType::Assignment);
+}
+
 TEST_F(ParserTest, parseLogicalOrExpressionTest)
 {
     std::string source = "True || False";
