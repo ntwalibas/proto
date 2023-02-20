@@ -36,6 +36,7 @@
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
+#include "ast/statements/break.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token_type.h"
@@ -393,11 +394,11 @@ Parser::parseStatement()
         // case PROTO_WHILE:
         //     return parseWhileStatement();
         
-        // case PROTO_BREAK:
-        //     return parseBreakStatement();
-        
         // case PROTO_CONTINUE:
         //     return parseContinueStatement();
+        
+        case PROTO_BREAK:
+            return parseBreakStatement();
         
         case PROTO_RETURN:
             return parseReturnStatement();
@@ -445,6 +446,14 @@ Parser::parseBlockStatement()
     }
 
     return block_stmt;
+}
+
+std::unique_ptr<BreakStatement>
+Parser::parseBreakStatement()
+{
+    return std::make_unique<BreakStatement>(
+        consume(PROTO_BREAK)
+    );
 }
 
 std::unique_ptr<ReturnStatement>

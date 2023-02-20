@@ -14,6 +14,7 @@
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
+#include "ast/statements/break.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "parser/parser.h"
@@ -192,6 +193,15 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseBreakStatementTest)
+{
+    std::string source = "break";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<BreakStatement> br_stmt = parser.parseBreakStatement();
+    EXPECT_EQ(br_stmt->getToken().getLexeme(), "break");
 }
 
 TEST_F(ParserTest, parseReturnStatementTest)
