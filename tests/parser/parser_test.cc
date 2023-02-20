@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseBitwiseAndExpressionTest)
+{
+    std::string source = "1 & 0";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseBitwiseAndExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& bitand_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the bitwise and expression
+    EXPECT_EQ(bitand_expr.getToken().getLexeme(), "&");
+    EXPECT_EQ(bitand_expr.getBinaryType(), BinaryType::BitwiseAnd);
+    EXPECT_EQ(bitand_expr.getLeft()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(bitand_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseBitshiftExpressionTest)
 {
     std::string source = "uint << 5";

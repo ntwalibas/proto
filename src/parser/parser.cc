@@ -450,7 +450,29 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseBitshiftExpression();
+    return parseBitwiseAndExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseBitwiseAndExpression()
+{
+    std::unique_ptr<Expression> left = parseBitshiftExpression();
+
+    while (match(PROTO_BITWISE_AND)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseBitshiftExpression();
+        std::unique_ptr<Expression> bitand_expr =
+            std::make_unique<BinaryExpression>(
+                op_token,
+                BinaryType::BitwiseAnd,
+                std::move(left),
+                std::move(right)
+            );
+
+        left = std::move(bitand_expr);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expression>
