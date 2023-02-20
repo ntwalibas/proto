@@ -454,6 +454,28 @@ Parser::parseExpression()
 }
 
 std::unique_ptr<Expression>
+Parser::parseLogicalOrExpression()
+{
+    std::unique_ptr<Expression> left = parseLogicalAndExpression();
+
+    while (match(PROTO_LOGICAL_OR)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseLogicalAndExpression();
+        std::unique_ptr<Expression> logicor_expr =
+            std::make_unique<BinaryExpression>(
+                op_token,
+                BinaryType::LogicalOr,
+                std::move(left),
+                std::move(right)
+            );
+
+        left = std::move(logicor_expr);
+    }
+
+    return left;
+}
+
+std::unique_ptr<Expression>
 Parser::parseLogicalAndExpression()
 {
     std::unique_ptr<Expression> left = parseLogicalNotExpression();
