@@ -1209,6 +1209,9 @@ Parser::parseCallExpression()
         call_expr->addArgument(parseExpression());
     } while (match(PROTO_COMMA));
 
+    // Consume extra newlines before closing the call
+    while (match(PROTO_NEWLINE));
+
     try {
         consume(PROTO_RIGHT_PAREN);
     } catch (std::invalid_argument const& e) {
