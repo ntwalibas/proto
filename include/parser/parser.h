@@ -34,6 +34,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/return.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token.h"
@@ -66,6 +67,7 @@ class Parser
         // Statements
         std::unique_ptr<Statement> parseStatement();
         std::unique_ptr<BlockStatement> parseBlockStatement();
+        std::unique_ptr<ReturnStatement> parseReturnStatement();
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();

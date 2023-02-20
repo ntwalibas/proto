@@ -35,6 +35,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/return.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "common/token_type.h"
@@ -398,8 +399,8 @@ Parser::parseStatement()
         // case PROTO_CONTINUE:
         //     return parseContinueStatement();
         
-        // case PROTO_RETURN:
-        //     return parseReturnStatement();
+        case PROTO_RETURN:
+            return parseReturnStatement();
         
         default:
             return parseExpression();
@@ -444,6 +445,16 @@ Parser::parseBlockStatement()
     }
 
     return block_stmt;
+}
+
+std::unique_ptr<ReturnStatement>
+Parser::parseReturnStatement()
+{
+    Token ret_token = consume(PROTO_RETURN);
+    return std::make_unique<ReturnStatement>(
+        ret_token,
+        parseExpression()
+    );
 }
 
 

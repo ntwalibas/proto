@@ -13,6 +13,7 @@
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
+#include "ast/statements/return.h"
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "parser/parser.h"
@@ -191,6 +192,16 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseReturnStatementTest)
+{
+    std::string source = "return a + b";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<ReturnStatement> ret_stmt = parser.parseReturnStatement();
+    EXPECT_EQ(ret_stmt->getToken().getLexeme(), "return");
+    EXPECT_EQ(ret_stmt->getExpression()->getType(), ExpressionType::Binary);
 }
 
 
