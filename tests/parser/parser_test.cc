@@ -194,6 +194,23 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseLogicalNotExpressionTest)
+{
+    std::string source = "!False";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseLogicalNotExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+    UnaryExpression& logicnot_expr = dynamic_cast<UnaryExpression&>(*expr);
+
+    // We have the right data on the logical not expression
+    EXPECT_EQ(logicnot_expr.getToken().getLexeme(), "!");
+    EXPECT_EQ(logicnot_expr.getUnaryType(), UnaryType::LogicalNot);
+    EXPECT_EQ(logicnot_expr.getExpression()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseComparisonExpressionTest)
 {
     std::string source = "counter <> 0";
@@ -339,7 +356,7 @@ TEST_F(ParserTest, parseSignExpressionTest)
 
 TEST_F(ParserTest, parseBitwiseNotExpressionTest)
 {
-    std::string source = "~~False";
+    std::string source = "~~1";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseBitwiseNotExpression();

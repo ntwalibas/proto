@@ -450,6 +450,22 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
+    return parseLogicalNotExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseLogicalNotExpression()
+{
+    if (match(PROTO_LOGICAL_NOT)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> rec_expr = parseLogicalNotExpression();
+        return std::make_unique<UnaryExpression>(
+            op_token,
+            UnaryType::LogicalNot,
+            std::move(rec_expr)
+        );
+    }
+
     return parseComparisonExpression();
 }
 
