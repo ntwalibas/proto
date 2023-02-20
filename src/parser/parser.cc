@@ -450,7 +450,87 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseBitwiseOrExpression();
+    return parseComparisonExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseComparisonExpression()
+{
+    std::unique_ptr<Expression> left = parseBitwiseOrExpression();
+
+    while (
+        match(PROTO_EQUAL_EQUAL)    ||
+        match(PROTO_NOT_EQUAL)      ||
+        match(PROTO_LESS)           ||
+        match(PROTO_LESS_EQUAL)     ||
+        match(PROTO_GREATER)        ||
+        match(PROTO_GREATER_EQUAL)
+    ) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseBitwiseOrExpression();
+        std::unique_ptr<Expression> comp_expr = nullptr;
+        switch (op_token.type) {
+            case PROTO_EQUAL_EQUAL:
+                comp_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Equal,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_NOT_EQUAL:
+                comp_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::NotEqual,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_LESS:
+                comp_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Less,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_LESS_EQUAL:
+                comp_expr =  std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::LessOrEqual,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_GREATER:
+                comp_expr =  std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Greater,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_GREATER_EQUAL:
+                comp_expr =  std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::GreaterOrEqual,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+            
+            default:;
+        }
+
+        left = std::move(comp_expr);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expression>

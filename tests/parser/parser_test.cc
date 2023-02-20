@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseComparisonExpressionTest)
+{
+    std::string source = "counter <> 0";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseComparisonExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& comp_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the comparison expression
+    EXPECT_EQ(comp_expr.getToken().getLexeme(), "<>");
+    EXPECT_EQ(comp_expr.getBinaryType(), BinaryType::NotEqual);
+    EXPECT_EQ(comp_expr.getLeft()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(comp_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseBitwiseOrExpressionTest)
 {
     std::string source = "1 | 0";
