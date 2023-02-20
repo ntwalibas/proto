@@ -69,6 +69,7 @@ class Parser
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();
+        std::unique_ptr<Expression> parseTermExpression();
         std::unique_ptr<Expression> parseFactorExpression();
         std::unique_ptr<Expression> parseSignExpression();
         std::unique_ptr<Expression> parseBitwiseNotExpression();

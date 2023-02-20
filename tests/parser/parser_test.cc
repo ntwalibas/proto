@@ -194,9 +194,27 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseTermExpressionTest)
+{
+    std::string source = "(2 * counter) + 1";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseTermExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& term_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the term expression
+    EXPECT_EQ(term_expr.getToken().getLexeme(), "+");
+    EXPECT_EQ(term_expr.getBinaryType(), BinaryType::Plus);
+    EXPECT_EQ(term_expr.getLeft()->getType(), ExpressionType::Group);
+    EXPECT_EQ(term_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseFactorExpressionTest)
 {
-    std::string source = "2 * (counter)";
+    std::string source = "2 * counter";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseFactorExpression();
@@ -205,11 +223,11 @@ TEST_F(ParserTest, parseFactorExpressionTest)
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
     BinaryExpression& fact_expr = dynamic_cast<BinaryExpression&>(*expr);
 
-    // We have the right data on the subscript expression
+    // We have the right data on the factor expression
     EXPECT_EQ(fact_expr.getToken().getLexeme(), "*");
     EXPECT_EQ(fact_expr.getBinaryType(), BinaryType::Mul);
     EXPECT_EQ(fact_expr.getLeft()->getType(), ExpressionType::Literal);
-    EXPECT_EQ(fact_expr.getRight()->getType(), ExpressionType::Group);
+    EXPECT_EQ(fact_expr.getRight()->getType(), ExpressionType::Variable);
 }
 
 TEST_F(ParserTest, parseSignExpressionTest)

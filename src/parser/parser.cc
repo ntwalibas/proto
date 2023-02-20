@@ -450,7 +450,30 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseFactorExpression();
+    return parseTermExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseTermExpression()
+{
+    std::unique_ptr<Expression> left = parseFactorExpression();
+
+    while (match(PROTO_PLUS) || match(PROTO_MINUS)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseFactorExpression();
+        std::unique_ptr<Expression> term_expr =
+            std::make_unique<BinaryExpression>(
+                op_token,
+                (op_token.type == PROTO_PLUS) ?
+                    BinaryType::Plus : BinaryType::Minus,
+                std::move(left),
+                std::move(right)
+            );
+
+        left = std::move(term_expr);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expression>
