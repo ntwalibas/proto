@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseBitwiseOrExpressionTest)
+{
+    std::string source = "1 | 0";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseBitwiseOrExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& bitor_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the bitwise or expression
+    EXPECT_EQ(bitor_expr.getToken().getLexeme(), "|");
+    EXPECT_EQ(bitor_expr.getBinaryType(), BinaryType::BitwiseOr);
+    EXPECT_EQ(bitor_expr.getLeft()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(bitor_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseBitwiseXorExpressionTest)
 {
     std::string source = "1 ^ 0";

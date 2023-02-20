@@ -69,6 +69,7 @@ class Parser
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();
+        std::unique_ptr<Expression> parseBitwiseOrExpression();
         std::unique_ptr<Expression> parseBitwiseXorExpression();
         std::unique_ptr<Expression> parseBitwiseAndExpression();
         std::unique_ptr<Expression> parseBitshiftExpression();
