@@ -30,6 +30,7 @@
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/statements/statement.h"
+#include "ast/statements/continue.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/group.h"
 #include "ast/expressions/array.h"
@@ -68,8 +69,9 @@ class Parser
         // Statements
         std::unique_ptr<Statement> parseStatement();
         std::unique_ptr<BlockStatement> parseBlockStatement();
-        std::unique_ptr<ReturnStatement> parseReturnStatement();
+        std::unique_ptr<ContinueStatement> parseContinueStatement();
         std::unique_ptr<BreakStatement> parseBreakStatement();
+        std::unique_ptr<ReturnStatement> parseReturnStatement();
 
         // Expressions
         std::unique_ptr<Expression> parseExpression();

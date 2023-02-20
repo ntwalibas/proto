@@ -29,6 +29,7 @@
 #include "ast/definitions/variable.h"
 #include "ast/definitions/function.h"
 #include "ast/statements/statement.h"
+#include "ast/statements/continue.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/binary.h"
 #include "ast/expressions/unary.h"
@@ -394,8 +395,8 @@ Parser::parseStatement()
         // case PROTO_WHILE:
         //     return parseWhileStatement();
         
-        // case PROTO_CONTINUE:
-        //     return parseContinueStatement();
+        case PROTO_CONTINUE:
+            return parseContinueStatement();
         
         case PROTO_BREAK:
             return parseBreakStatement();
@@ -446,6 +447,14 @@ Parser::parseBlockStatement()
     }
 
     return block_stmt;
+}
+
+std::unique_ptr<ContinueStatement>
+Parser::parseContinueStatement()
+{
+    return std::make_unique<ContinueStatement>(
+        consume(PROTO_CONTINUE)
+    );
 }
 
 std::unique_ptr<BreakStatement>

@@ -7,6 +7,7 @@
 #include "ast/expressions/assignment.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
+#include "ast/statements/continue.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/binary.h"
 #include "ast/expressions/unary.h"
@@ -193,6 +194,15 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseContinueStatementTest)
+{
+    std::string source = "continue";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<ContinueStatement> cont_stmt = parser.parseContinueStatement();
+    EXPECT_EQ(cont_stmt->getToken().getLexeme(), "continue");
 }
 
 TEST_F(ParserTest, parseBreakStatementTest)
