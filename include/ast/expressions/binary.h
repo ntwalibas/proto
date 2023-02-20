@@ -50,8 +50,8 @@ enum class BinaryType
     NotEqual,
     Greater,
     GreaterOrEqual,
-    Lesser,
-    LesserOrEqual,
+    Less,
+    LessOrEqual,
 
     // Access
     Subscript
