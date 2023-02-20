@@ -259,6 +259,9 @@ Parser::parseFunctionDefinition(Token& fun_token)
         }
     }
 
+    // Allow newlines before function body
+    while (match(PROTO_NEWLINE));
+
     fun_def->setBody(parseBlockStatement());
 
     return fun_def;
