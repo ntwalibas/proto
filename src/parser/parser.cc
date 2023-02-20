@@ -450,7 +450,67 @@ Parser::parseBlockStatement()
 std::unique_ptr<Expression>
 Parser::parseExpression()
 {
-    return parseSignExpression();
+    return parseFactorExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseFactorExpression()
+{
+    std::unique_ptr<Expression> left = parseSignExpression();
+
+    while (
+        match(PROTO_MUL)    ||
+        match(PROTO_DIV)    ||
+        match(PROTO_MOD)    ||
+        match(PROTO_POW)
+    ) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> right = parseSignExpression();
+        std::unique_ptr<Expression> fact_expr = nullptr;
+        switch (op_token.type) {
+            case PROTO_MUL:
+                fact_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Mul,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_DIV:
+                fact_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Div,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_MOD:
+                fact_expr = std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Mod,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+
+            case PROTO_POW:
+                fact_expr =  std::make_unique<BinaryExpression>(
+                    op_token,
+                    BinaryType::Pow,
+                    std::move(left),
+                    std::move(right)
+                );
+                break;
+            
+            default:;
+        }
+
+        left = std::move(fact_expr);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expression>
@@ -488,13 +548,13 @@ Parser::parseBitwiseNotExpression()
 std::unique_ptr<Expression>
 Parser::parseSubscriptExpression()
 {
-    std::unique_ptr<Expression> lvalue = parsePrimaryExpression();
+    std::unique_ptr<Expression> left = parsePrimaryExpression();
 
     // Notice the `if` statement and not `while` statement
     // That's because we don't allow multi-dimensional arrays at the moment
     if (match(PROTO_LEFT_BRACKET)) {
         Token op_token = peekBack();
-        std::unique_ptr<Expression> rvalue = parsePrimaryExpression();
+        std::unique_ptr<Expression> right = parsePrimaryExpression();
 
         try {
             consume(PROTO_RIGHT_BRACKET);
@@ -511,14 +571,14 @@ Parser::parseSubscriptExpression()
             std::make_unique<BinaryExpression>(
                 op_token,
                 BinaryType::Subscript,
-                std::move(lvalue),
-                std::move(rvalue)
+                std::move(left),
+                std::move(right)
             );
         
-        lvalue = std::move(sub_expr);
+        left = std::move(sub_expr);
     }
 
-    return lvalue;
+    return left;
 }
 
 std::unique_ptr<Expression>

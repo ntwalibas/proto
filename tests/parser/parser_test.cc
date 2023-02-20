@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseFactorExpressionTest)
+{
+    std::string source = "2 * (counter)";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseFactorExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& fact_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the subscript expression
+    EXPECT_EQ(fact_expr.getToken().getLexeme(), "*");
+    EXPECT_EQ(fact_expr.getBinaryType(), BinaryType::Mul);
+    EXPECT_EQ(fact_expr.getLeft()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(fact_expr.getRight()->getType(), ExpressionType::Group);
+}
+
 TEST_F(ParserTest, parseSignExpressionTest)
 {
     std::string source = "-10";
