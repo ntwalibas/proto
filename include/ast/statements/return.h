@@ -44,7 +44,7 @@ class ReturnStatement : public Statement
         std::unique_ptr<Expression>& getExpression();
 
     protected:
-        Token                       token;      /* Token that indicates the start of this block. */
+        Token                       token;      /* Token associated to this statement. */
         std::unique_ptr<Expression> expression; /* Expression to be returned. */
 };
 
