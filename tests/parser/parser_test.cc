@@ -194,6 +194,24 @@ TEST_F(ParserTest, parseBlockStatementTest)
 
 
 // Expressions
+TEST_F(ParserTest, parseLogicalAndExpressionTest)
+{
+    std::string source = "True && False";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseLogicalAndExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
+    BinaryExpression& logicand_expr = dynamic_cast<BinaryExpression&>(*expr);
+
+    // We have the right data on the logical and expression
+    EXPECT_EQ(logicand_expr.getToken().getLexeme(), "&&");
+    EXPECT_EQ(logicand_expr.getBinaryType(), BinaryType::LogicalAnd);
+    EXPECT_EQ(logicand_expr.getLeft()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(logicand_expr.getRight()->getType(), ExpressionType::Literal);
+}
+
 TEST_F(ParserTest, parseLogicalNotExpressionTest)
 {
     std::string source = "!False";
