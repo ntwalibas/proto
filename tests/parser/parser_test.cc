@@ -20,6 +20,7 @@
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "ast/statements/for.h"
+#include "ast/statements/if.h"
 #include "parser/parser.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
@@ -196,6 +197,39 @@ TEST_F(ParserTest, parseBlockStatementTest)
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
     EXPECT_EQ(block_stmt->getToken().getLexeme(), "{");
     EXPECT_EQ(block_stmt->getDefinitions().size(), 2);
+}
+
+TEST_F(ParserTest, parseIfStatementTest)
+{
+    // We only have an if branch
+    std::string ifSource = "if(name == \"John Doe\"){IdentifyHim()}";
+    Lexer ifLexer(std::make_shared<std::string>(ifSource), source_path);
+    Parser ifParser(ifLexer);
+    std::unique_ptr<IfStatement> if_stmt = ifParser.parseIfStatement();
+    EXPECT_EQ(if_stmt->getToken().getLexeme(), "if");
+    EXPECT_EQ(if_stmt->getCondition()->getType(), ExpressionType::Binary);
+    EXPECT_EQ(if_stmt->getBody()->getDefinitions().size(), 1);
+
+    // We add an elif branch
+    std::string elifSource = "if(True){} elif(False){}";
+    Lexer elifLexer(std::make_shared<std::string>(elifSource), source_path);
+    Parser elifParser(elifLexer);
+    std::unique_ptr<IfStatement> elif_stmt = elifParser.parseIfStatement();
+    EXPECT_EQ(elif_stmt->getElifBranches().size(), 1);
+    std::unique_ptr<ElifBranch>& elif_branch = elif_stmt->getElifBranches()[0];
+    EXPECT_EQ(elif_branch->getToken().getLexeme(), "elif");
+    EXPECT_EQ(elif_branch->getCondition()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(elif_branch->getBody()->getDefinitions().size(), 0);
+
+    // We add the else branch
+    std::string elseSource = "if(True){} elif(False){} else{print()}";
+    Lexer elseLexer(std::make_shared<std::string>(elseSource), source_path);
+    Parser elseParser(elseLexer);
+    std::unique_ptr<IfStatement> else_stmt = elseParser.parseIfStatement();
+    EXPECT_NE(else_stmt->getElseBranch(), nullptr);
+    std::unique_ptr<ElseBranch>& else_branch = else_stmt->getElseBranch();
+    EXPECT_EQ(else_branch->getToken().getLexeme(), "else");
+    EXPECT_EQ(else_branch->getBody()->getDefinitions().size(), 1);
 }
 
 TEST_F(ParserTest, parseForStatementTest)

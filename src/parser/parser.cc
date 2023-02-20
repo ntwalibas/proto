@@ -42,6 +42,7 @@
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "ast/statements/for.h"
+#include "ast/statements/if.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
@@ -394,8 +395,8 @@ Parser::parseStatement()
         case PROTO_LEFT_BRACE:
             return parseBlockStatement();
         
-        // case PROTO_IF:
-        //     return parseIfStatement();
+        case PROTO_IF:
+            return parseIfStatement();
         
         case PROTO_FOR:
             return parseForStatement();
@@ -454,6 +455,141 @@ Parser::parseBlockStatement()
     return block_stmt;
 }
 
+std::unique_ptr<IfStatement>
+Parser::parseIfStatement()
+{
+    Token if_token = consume(PROTO_IF);
+
+    try {
+        consume(PROTO_LEFT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing left opening parenthesis",
+            "expected a left opening parenthesis before if condition",
+            false
+        );
+    }
+
+    while (match(PROTO_NEWLINE));
+    std::unique_ptr<Expression> cond_expr = parseExpression();
+    while (match(PROTO_NEWLINE));
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing right closing parenthesis",
+            "expected right closing parenthesis after if condition",
+            false
+        );
+    }
+
+    // Consume possible newlines after condition, before body
+    while (match(PROTO_NEWLINE));
+
+    std::unique_ptr<IfStatement> if_stmt = std::make_unique<IfStatement>(
+        if_token,
+        std::move(cond_expr),
+        parseBlockStatement()
+    );
+
+    // Consume possible newlines before `elif` header, after `if` body
+    // But we only do so if the next two tokens are both newlines
+    // We do this because newlines are the separators between statements
+    // so we don't want to consume the `if` end-of-statement marker
+    while (checkNext(PROTO_NEWLINE) && match(PROTO_NEWLINE));
+
+    // We parse `elif` branches
+    while (
+        (check(PROTO_NEWLINE) && checkNext(PROTO_ELIF)) ||
+        check(PROTO_ELIF)
+    ) {
+        // We consume the current newline, if any
+        match(PROTO_NEWLINE);
+
+        if_stmt->addElifBranch(parseElifBranch());
+
+        // We continue consuming newline, but not the end-of-statement marker
+        while (checkNext(PROTO_NEWLINE) && match(PROTO_NEWLINE));
+    }
+
+    // Consume newlines without consuming the end-of-statement marker
+    while (checkNext(PROTO_NEWLINE) && match(PROTO_NEWLINE));
+
+    // We parse `else` branch
+    while (
+        (check(PROTO_NEWLINE) && checkNext(PROTO_ELSE)) ||
+        check(PROTO_ELSE)
+    ) {
+        // We consume the current newline, if any
+        match(PROTO_NEWLINE);
+
+        if_stmt->setElseBranch(parseElseBranch());
+
+        // We continue consuming newline, but not the end-of-statement marker
+        while (checkNext(PROTO_NEWLINE) && match(PROTO_NEWLINE));
+    }
+
+    return if_stmt;
+}
+
+std::unique_ptr<ElifBranch>
+Parser::parseElifBranch()
+{
+    Token elif_token = consume(PROTO_ELIF);
+
+    try {
+        consume(PROTO_LEFT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing left opening parenthesis",
+            "expected a left opening parenthesis before elif condition",
+            false
+        );
+    }
+
+    while (match(PROTO_NEWLINE));
+    std::unique_ptr<Expression> cond_expr = parseExpression();
+    while (match(PROTO_NEWLINE));
+
+    try {
+        consume(PROTO_RIGHT_PAREN);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing right closing parenthesis",
+            "expected right closing parenthesis after elif condition",
+            false
+        );
+    }
+
+    // Consume possible newlines after condition, before body
+    while (match(PROTO_NEWLINE));
+
+    return std::make_unique<ElifBranch>(
+        elif_token,
+        std::move(cond_expr),
+        parseBlockStatement()
+    );
+}
+
+std::unique_ptr<ElseBranch>
+Parser::parseElseBranch()
+{
+    Token else_token = consume(PROTO_ELSE);
+
+    // Consume possible newlines before the body
+    while (match(PROTO_NEWLINE));
+
+    return std::make_unique<ElseBranch>(
+        else_token,
+        parseBlockStatement()
+    );
+}
+
 std::unique_ptr<ForStatement>
 Parser::parseForStatement()
 {
@@ -472,14 +608,14 @@ Parser::parseForStatement()
     
     // Initialization clause
     std::unique_ptr<Definition> init_clause = nullptr;
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
     if (! match(PROTO_SEMICOLON)) {
         if (check(PROTO_IDENTIFIER) && checkNext(PROTO_COLON))
             init_clause = parseDefinition();
         else
             init_clause = parseExpression();
 
-        while(match(PROTO_NEWLINE));
+        while (match(PROTO_NEWLINE));
 
         try {
             consume(PROTO_SEMICOLON);
@@ -495,10 +631,10 @@ Parser::parseForStatement()
     
     // Termination clause
     std::unique_ptr<Expression> term_clause = nullptr;
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
     if (! match(PROTO_SEMICOLON)) {
         term_clause = parseExpression();
-        while(match(PROTO_NEWLINE));
+        while (match(PROTO_NEWLINE));
 
         try {
             consume(PROTO_SEMICOLON);
@@ -514,10 +650,10 @@ Parser::parseForStatement()
     
     // Increment clause
     std::unique_ptr<Expression> incr_clause = nullptr;
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
     if (! check(PROTO_RIGHT_PAREN)) {
         incr_clause = parseExpression();
-        while(match(PROTO_NEWLINE));
+        while (match(PROTO_NEWLINE));
     }
 
     try {
@@ -532,7 +668,7 @@ Parser::parseForStatement()
     }
 
     // Consume possible newlines after loop header, before body
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
 
     return std::make_unique<ForStatement>(
         for_token,
@@ -559,9 +695,9 @@ Parser::parseWhileStatement()
         );
     }
 
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
     std::unique_ptr<Expression> cond_expr = parseExpression();
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
 
     try {
         consume(PROTO_RIGHT_PAREN);
@@ -575,7 +711,7 @@ Parser::parseWhileStatement()
     }
 
     // Consume possible newlines after condition, before body
-    while(match(PROTO_NEWLINE));
+    while (match(PROTO_NEWLINE));
 
     return std::make_unique<WhileStatement>(
         wh_token,

@@ -41,6 +41,7 @@
 #include "ast/expressions/call.h"
 #include "ast/statements/block.h"
 #include "ast/statements/for.h"
+#include "ast/statements/if.h"
 #include "common/token.h"
 #include "lexer/lexer.h"
 #include "ast/program.h"
@@ -71,6 +72,7 @@ class Parser
         // Statements
         std::unique_ptr<Statement> parseStatement();
         std::unique_ptr<BlockStatement> parseBlockStatement();
+        std::unique_ptr<IfStatement> parseIfStatement();
         std::unique_ptr<ForStatement> parseForStatement();
         std::unique_ptr<WhileStatement> parseWhileStatement();
         std::unique_ptr<ContinueStatement> parseContinueStatement();
@@ -107,6 +109,9 @@ class Parser
         Token                           previous;   /* Last token to be consumed. */
         Token                           current;    /* Token to be consumed. */
         Token                           next;       /* Next token to be consumed. */
+
+        std::unique_ptr<ElifBranch> parseElifBranch();
+        std::unique_ptr<ElseBranch> parseElseBranch();
 
         // Returns the token that comes before the one currently being parsed.
         Token& peekBack();
