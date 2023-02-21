@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 
+#include <algorithm>
 #include <exception>
 #include <cstdbool>
 #include <memory>

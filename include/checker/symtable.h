@@ -18,7 +18,6 @@
 #ifndef PROTO_COMMON_SYMTABLE_H
 #define PROTO_COMMON_SYMTABLE_H
 
-#include <algorithm>
 #include <cstdbool>
 #include <memory>
 #include <string>
