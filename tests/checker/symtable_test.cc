@@ -28,6 +28,7 @@ TEST_F(SymtableTest, addGetDefinitionsTest)
     symtable.addDefinition("nil", nil);
 
     EXPECT_EQ(symtable.getDefinitions().size(), 2);
+    EXPECT_THROW(symtable.addDefinition("var", var), std::invalid_argument);
 }
 
 TEST_F(SymtableTest, getDefinitionTest)
