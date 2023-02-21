@@ -449,7 +449,7 @@ Lexer::peek()
 char
 Lexer::peekBack()
 {
-    return * (current + 1);
+    return * (current - 1);
 }
 
 // Create a token.
