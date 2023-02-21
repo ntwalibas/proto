@@ -6,6 +6,7 @@ cc_library(
         "utils/*.h",
         "lexer/*.h",
         "parser/*.h",
+        "checker/*.h",
         "ast/*.h",
         "ast/declarations/*.h",
         "ast/definitions/*.h",

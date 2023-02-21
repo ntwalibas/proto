@@ -1,0 +1,7 @@
+cc_library(
+    name = "checker",
+    srcs = glob(["*.cc"]),
+    copts = ["-Iinclude"],
+    deps = ["//include:include"],
+    visibility = ["//visibility:public"],
+)
