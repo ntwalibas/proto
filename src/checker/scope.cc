@@ -57,9 +57,8 @@ Scope::getDefinition(std::string const& def_name, bool deep)
     try {
         return symtable.getDefinition(def_name);
     } catch (std::out_of_range const& e) {
-        if (deep && parent != nullptr) {
+        if (deep && parent)
             return parent->getDefinition(def_name, deep);
-        }
 
         throw;
     }
@@ -76,7 +75,7 @@ bool
 Scope::hasDefinition(std::string const& def_name, bool deep)
 {
     bool res = symtable.hasDefinition(def_name);
-    if (res == false && parent != nullptr)
+    if (!res && parent)
         return parent->hasDefinition(def_name, deep);
     else
         return res;
