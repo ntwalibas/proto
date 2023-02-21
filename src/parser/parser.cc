@@ -1440,6 +1440,10 @@ Parser::synchronize()
     
     while (! atEnd()) {
         switch(peek().type) {
+            case PROTO_IF:
+            case PROTO_FOR:
+            case PROTO_WHILE:
+                return;
             case PROTO_IDENTIFIER:
                 if (checkNext(PROTO_COLON))
                     return;
