@@ -46,10 +46,10 @@ class VariableDefinitionChecker
         std::unique_ptr<VariableDefinition>& variable_def;
 
         // Check the type of the variable definition
-        void checkHeader();
+        std::unique_ptr<TypeDeclaration>& checkHeader();
 
         // Check the initializer expression of the variable definition
-        std::unique_ptr<TypeDeclaration> checkBody();
+        std::unique_ptr<TypeDeclaration>& checkBody();
 };
 
 #endif

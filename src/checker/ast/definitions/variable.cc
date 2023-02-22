@@ -22,6 +22,7 @@
 #include "ast/definitions/variable.h"
 #include "ast/declarations/type.h"
 #include "checker/checker_error.h"
+#include "inference/inference.h"
 
 
 VariableDefinitionChecker::VariableDefinitionChecker(
@@ -45,14 +46,25 @@ void
 VariableDefinitionChecker::check()
 {
     try {
-        checkHeader();
+        std::unique_ptr<TypeDeclaration>& var_type = checkHeader();
+        std::unique_ptr<TypeDeclaration>& init_type = checkBody();
+
+        if (! typeDeclarationEquals(var_type, init_type)) {
+            throw CheckerError(
+                variable_def->getToken(),
+                "mismatched types",
+                "the variable definition is declared with type [" + var_type->getTypeName() +
+                "] but the initializer expression has type [" + init_type->getTypeName() + "]",
+                true
+            );
+        }
     } catch (CheckerError const& e) {
         throw;
     }
 }
 
 // Check the type of the variable definition
-void
+std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkHeader()
 {
     std::unique_ptr<TypeDeclaration>& type_decl = 
@@ -60,11 +72,13 @@ VariableDefinitionChecker::checkHeader()
     
     TypeDeclarationChecker type_checker(type_decl);
     type_checker.check();
+
+    return type_decl;
 }
 
 // Check the initializer expression of the variable definition
-std::unique_ptr<TypeDeclaration>
+std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
-    return nullptr;
+    return Inference::infer(variable_def->getInitializer());
 }
