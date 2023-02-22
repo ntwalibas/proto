@@ -18,7 +18,12 @@
 #ifndef PROTO_AST_EXPRESSION_H
 #define PROTO_AST_EXPRESSION_H
 
+#include <utility>
+#include <cstddef>
+#include <memory>
+
 #include "ast/statements/statement.h"
+#include "ast/declarations/type.h"
 
 
 enum class ExpressionType {
@@ -46,7 +51,8 @@ class Expression : public Statement
         Expression(
             enum ExpressionType type
         ) : Statement(StatementType::Expression),
-            type(type)
+            type(type),
+            type_decl(nullptr)
         {}
         virtual ~Expression() {}
 
@@ -58,8 +64,26 @@ class Expression : public Statement
             return type;
         }
 
+        /**
+         * Set the type declaration of this expression.
+         */
+        void setTypeDeclaration(std::unique_ptr<TypeDeclaration>&& type_decl_)
+        {
+            type_decl = std::move(type_decl_);
+        }
+
+        /**
+         * Returns the type declaration of this expression.
+         */
+        std::unique_ptr<TypeDeclaration>& getTypeDeclaration()
+        {
+            return type_decl;
+        }
+
     protected:
-        enum ExpressionType type;   /* The type of expression of the derived class. */
+        enum ExpressionType     type;       /* The type of expression of the derived class. */
+        std::unique_ptr<
+            TypeDeclaration>    type_decl;  /* Type (declaration) of this expression. */
 };
 
 #endif
