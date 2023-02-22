@@ -23,17 +23,12 @@
 #include "utils/inference.h"
 
 
-LiteralInference::LiteralInference(
-    std::unique_ptr<LiteralExpression>& expr
-) : expr(expr)
-{}
-
 /**
  * Infer the type (declaration) of this literal expression
  * and set it on the expression.
  */
 std::unique_ptr<TypeDeclaration>&
-LiteralInference::infer()
+LiteralInference::infer(std::unique_ptr<LiteralExpression>& expr)
 {
     switch (expr->getLiteralType()) {
         case LiteralType::Boolean:

@@ -40,12 +40,9 @@ TEST_F(LiteralTest, inferTest) {
 
         std::unique_ptr<LiteralExpression> lit_expr =
             std::make_unique<LiteralExpression>(expr_tok, LiteralType::Boolean);
-        
-        LiteralInference expr_inference(lit_expr);
-        expr_inference.infer();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            lit_expr->getTypeDeclaration();
+            LiteralInference::infer(lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -69,12 +66,9 @@ TEST_F(LiteralTest, inferTest) {
 
         std::unique_ptr<LiteralExpression> lit_expr =
             std::make_unique<LiteralExpression>(expr_tok, LiteralType::Integer);
-        
-        LiteralInference expr_inference(lit_expr);
-        expr_inference.infer();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            lit_expr->getTypeDeclaration();
+            LiteralInference::infer(lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -98,12 +92,9 @@ TEST_F(LiteralTest, inferTest) {
 
         std::unique_ptr<LiteralExpression> lit_expr =
             std::make_unique<LiteralExpression>(expr_tok, LiteralType::Float);
-        
-        LiteralInference expr_inference(lit_expr);
-        expr_inference.infer();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            lit_expr->getTypeDeclaration();
+            LiteralInference::infer(lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -127,11 +118,9 @@ TEST_F(LiteralTest, inferTest) {
 
         std::unique_ptr<LiteralExpression> lit_expr =
             std::make_unique<LiteralExpression>(expr_tok, LiteralType::String);
-        
-        LiteralInference expr_inference(lit_expr);
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            expr_inference.infer();
+            LiteralInference::infer(lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =

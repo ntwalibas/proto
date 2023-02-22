@@ -27,16 +27,12 @@
 class LiteralInference
 {
     public:
-        LiteralInference(std::unique_ptr<LiteralExpression>& expr);
-
         /**
          * Infer the type (declaration) of this literal expression
          * and set it on the expression.
          */
-        std::unique_ptr<TypeDeclaration>& infer();
-
-    private:
-        std::unique_ptr<LiteralExpression>& expr;
+        static std::unique_ptr<TypeDeclaration>&
+        infer(std::unique_ptr<LiteralExpression>& expr);
 };
 
 #endif
