@@ -28,7 +28,7 @@
  * and set it on the expression.
  */
 std::unique_ptr<TypeDeclaration>&
-LiteralInference::infer(std::unique_ptr<LiteralExpression>& expr)
+LiteralInference::infer(LiteralExpression* expr)
 {
     switch (expr->getLiteralType()) {
         case LiteralType::Boolean:

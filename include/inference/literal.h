@@ -32,7 +32,7 @@ class LiteralInference
          * and set it on the expression.
          */
         static std::unique_ptr<TypeDeclaration>&
-        infer(std::unique_ptr<LiteralExpression>& expr);
+        infer(LiteralExpression* expr);
 };
 
 #endif

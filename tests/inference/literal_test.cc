@@ -38,15 +38,14 @@ TEST_F(LiteralTest, inferTest) {
             0
         );
 
-        std::unique_ptr<LiteralExpression> lit_expr =
-            std::make_unique<LiteralExpression>(expr_tok, LiteralType::Boolean);
+        LiteralExpression lit_expr(expr_tok, LiteralType::Boolean);
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            LiteralInference::infer(lit_expr);
+            LiteralInference::infer(&lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
-            dynamic_cast<SimpleTypeDeclaration&>(*expr_type);
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getToken().getLexeme(), "bool");
     }
 
@@ -64,15 +63,14 @@ TEST_F(LiteralTest, inferTest) {
             0
         );
 
-        std::unique_ptr<LiteralExpression> lit_expr =
-            std::make_unique<LiteralExpression>(expr_tok, LiteralType::Integer);
+        LiteralExpression lit_expr(expr_tok, LiteralType::Integer);
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            LiteralInference::infer(lit_expr);
+            LiteralInference::infer(&lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
-            dynamic_cast<SimpleTypeDeclaration&>(*expr_type);
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getToken().getLexeme(), "uint64");
     }
 
@@ -90,15 +88,14 @@ TEST_F(LiteralTest, inferTest) {
             0
         );
 
-        std::unique_ptr<LiteralExpression> lit_expr =
-            std::make_unique<LiteralExpression>(expr_tok, LiteralType::Float);
+        LiteralExpression lit_expr(expr_tok, LiteralType::Float);
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            LiteralInference::infer(lit_expr);
+            LiteralInference::infer(&lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
-            dynamic_cast<SimpleTypeDeclaration&>(*expr_type);
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getToken().getLexeme(), "float64");
     }
 
@@ -116,15 +113,14 @@ TEST_F(LiteralTest, inferTest) {
             0
         );
 
-        std::unique_ptr<LiteralExpression> lit_expr =
-            std::make_unique<LiteralExpression>(expr_tok, LiteralType::String);
+        LiteralExpression lit_expr(expr_tok, LiteralType::String);
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            LiteralInference::infer(lit_expr);
+            LiteralInference::infer(&lit_expr);
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
-            dynamic_cast<SimpleTypeDeclaration&>(*expr_type);
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getToken().getLexeme(), "string");
     }
 }
