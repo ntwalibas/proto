@@ -1,12 +1,17 @@
 cc_test(
   name = "checker_test",
   size = "small",
-  srcs = glob(["*.cc"]),
+  srcs = glob([
+    "*.cc",
+    "ast/declarations/*.cc",
+  ]),
   deps = [
     "@com_google_googletest//:gtest_main",
-    "//src/common:common",
-    "//src/checker:checker",
     "//include:include",
+    "//src/common:common",
+    "//src/lexer:lexer",
+    "//src/parser:parser",
+    "//src/checker:checker",
   ],
   copts = ["-Iinclude"],
 )

@@ -3,8 +3,13 @@ cc_library(
     srcs = glob([
         "*.cc",
         "ast/*.cc",
+        "ast/declarations/*.cc",
     ]),
     copts = ["-Iinclude"],
-    deps = ["//include:include"],
+    deps = [
+        "//include:include",
+        "//src/common:common",
+        "//src/ast:ast",
+    ],
     visibility = ["//visibility:public"],
 )
