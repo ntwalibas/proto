@@ -18,7 +18,6 @@
 #include "checker/checker_error.h"
 #include "checker/ast/program.h"
 #include "checker/checker.h"
-#include "common/token.h"
 
 
 Checker::Checker(

@@ -16,7 +16,6 @@
  */
 
 #include "checker/ast/program.h"
-#include "common/token.h"
 #include "ast/program.h"
 
 

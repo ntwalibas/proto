@@ -15,9 +15,10 @@
  *  limitations under the License.
  */
 
-
 #ifndef PROTO_CHECKER_H
 #define PROTO_CHECKER_H
+
+#include <vector>
 
 #include "checker_error.h"
 #include "ast/program.h"
@@ -34,7 +35,7 @@ class Checker
         void check();
 
         /* List of non-fatal errors to be displayed all at once. */
-        std::vector<CheckerError>  errors;
+        std::vector<CheckerError> errors;
 
     private:
         /* Program to check, including definitions attached to it. */
