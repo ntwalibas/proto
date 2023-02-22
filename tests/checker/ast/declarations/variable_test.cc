@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <memory>
 
-#include <iostream>
-
 #include "checker/ast/definitions/variable.h"
 #include "ast/definitions/definition.h"
 #include "ast/definitions/variable.h"
