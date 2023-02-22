@@ -1,0 +1,14 @@
+cc_test(
+  name = "inference_test",
+  size = "small",
+  srcs = glob(["*.cc"]),
+  deps = [
+    "@com_google_googletest//:gtest_main",
+    "//include:include",
+    "//src/common:common",
+    "//src/ast:ast",
+    "//src/utils:utils",
+    "//src/inference:inference",
+  ],
+  copts = ["-Iinclude"],
+)

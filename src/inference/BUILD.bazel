@@ -1,0 +1,10 @@
+cc_library(
+    name = "inference",
+    srcs = glob(["*.cc"]),
+    copts = ["-Iinclude"],
+    deps = [
+        "//include:include",
+        "//src/utils:utils",
+    ],
+    visibility = ["//visibility:public"],
+)
