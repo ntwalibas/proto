@@ -32,7 +32,7 @@ LiteralInference::LiteralInference(
  * Infer the type (declaration) of this literal expression
  * and set it on the expression.
  */
-void
+std::unique_ptr<TypeDeclaration>&
 LiteralInference::infer()
 {
     switch (expr->getLiteralType()) {
@@ -41,27 +41,27 @@ LiteralInference::infer()
                 true,
                 "bool"
             ));
-            return;
+            return expr->getTypeDeclaration();
 
         case LiteralType::Integer:
             expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
                 "uint64"
             ));
-            return;
+            return expr->getTypeDeclaration();
 
         case LiteralType::Float:
             expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
                 "float64"
             ));
-            return;
+            return expr->getTypeDeclaration();
 
         case LiteralType::String:
             expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
                 "string"
             ));
-            return;
+            return expr->getTypeDeclaration();
     }
 }

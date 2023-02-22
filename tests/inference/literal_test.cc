@@ -129,10 +129,9 @@ TEST_F(LiteralTest, inferTest) {
             std::make_unique<LiteralExpression>(expr_tok, LiteralType::String);
         
         LiteralInference expr_inference(lit_expr);
-        expr_inference.infer();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            lit_expr->getTypeDeclaration();
+            expr_inference.infer();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =

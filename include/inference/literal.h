@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "ast/expressions/literal.h"
+#include "ast/declarations/type.h"
 
 
 class LiteralInference
@@ -32,7 +33,7 @@ class LiteralInference
          * Infer the type (declaration) of this literal expression
          * and set it on the expression.
          */
-        void infer();
+        std::unique_ptr<TypeDeclaration>& infer();
 
     private:
         std::unique_ptr<LiteralExpression>& expr;
