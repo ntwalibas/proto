@@ -16,6 +16,7 @@
  */
 
 #include <cstdbool>
+#include <string>
 
 #include "ast/declarations/type.h"
 #include "common/token.h"
@@ -28,7 +29,6 @@ TypeDeclaration::getTypeCategory()
     return category;
 }
 
-
 // Simple type declaration
 SimpleTypeDeclaration::SimpleTypeDeclaration(
     bool is_const,
@@ -37,6 +37,15 @@ SimpleTypeDeclaration::SimpleTypeDeclaration(
     is_const(is_const),
     token(token)
 {}
+
+/**
+ * Returns the type name.
+ */
+std::string
+SimpleTypeDeclaration::getTypeName()
+{
+    return token.getLexeme();
+}
 
 /**
  * Returns true is this type declaration is const-qualified.
@@ -84,6 +93,19 @@ ArrayTypeDeclaration::ArrayTypeDeclaration(
     size(size),
     simple_type(simple_type)
 {}
+
+/**
+ * Returns the type name.
+ */
+std::string
+ArrayTypeDeclaration::getTypeName()
+{
+    std::string name = "[";
+    name += std::to_string(size);
+    name += "]";
+    name += simple_type.getTypeName();
+    return name;
+}
 
 /**
  * Returns true is this type declaration is const-qualified.
@@ -134,4 +156,33 @@ bool
 ArrayTypeDeclaration::operator!=(ArrayTypeDeclaration& type_decl)
 {
     return !(*this == type_decl);
+}
+
+/**
+ * Compares two type declarations.
+ */
+bool
+typeDeclarationEquals(
+    std::unique_ptr<TypeDeclaration>& left,
+    std::unique_ptr<TypeDeclaration>& right
+)
+{
+    enum TypeCategory category = left->getTypeCategory();
+    if (category != right->getTypeCategory())
+        return false;
+
+    if (category == TypeCategory::Simple) {
+        SimpleTypeDeclaration* left_decl =
+            static_cast<SimpleTypeDeclaration*>(left.get());
+        SimpleTypeDeclaration* right_decl =
+            static_cast<SimpleTypeDeclaration*>(right.get());
+        return (* left_decl == * right_decl);
+    }
+    else {
+        ArrayTypeDeclaration* left_decl =
+            static_cast<ArrayTypeDeclaration*>(left.get());
+        ArrayTypeDeclaration* right_decl =
+            static_cast<ArrayTypeDeclaration*>(right.get());
+        return (* left_decl == * right_decl);
+    }
 }

@@ -41,6 +41,11 @@ class TypeDeclaration : public Declaration
          */
         enum TypeCategory& getTypeCategory();
 
+        /**
+         * Returns the type name.
+         */
+        virtual std::string getTypeName() = 0;
+
     protected:
         TypeDeclaration(
             enum TypeCategory category
@@ -56,6 +61,11 @@ class SimpleTypeDeclaration : public TypeDeclaration
 {
     public:
         SimpleTypeDeclaration(bool is_const, Token& token);
+
+        /**
+         * Returns the type name.
+         */
+        std::string getTypeName();
 
         /**
          * Returns true is this type declaration is const-qualified.
@@ -83,6 +93,11 @@ class ArrayTypeDeclaration : public TypeDeclaration
 {
     public:
         ArrayTypeDeclaration(bool is_const, Token& token, long size, SimpleTypeDeclaration& simple_type);
+
+        /**
+         * Returns the type name.
+         */
+        std::string getTypeName();
 
         /**
          * Returns true is this type declaration is const-qualified.
@@ -116,5 +131,15 @@ class ArrayTypeDeclaration : public TypeDeclaration
         long                    size;           /* Size of the array. */
         SimpleTypeDeclaration   simple_type;    /* The simple type to store in the array. */
 };
+
+
+/**
+ * Compares two type declarations.
+ */
+bool
+typeDeclarationEquals(
+    std::unique_ptr<TypeDeclaration>& left,
+    std::unique_ptr<TypeDeclaration>& right
+);
 
 #endif
