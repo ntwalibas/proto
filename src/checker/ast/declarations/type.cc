@@ -60,7 +60,7 @@ checkSimpleType(SimpleTypeDeclaration& simple_type_decl)
         throw CheckerError(
             decl_token,
             "unknown type",
-            std::string("type [") + decl_lexeme + std::string("] does not exist"),
+            "type [" + decl_lexeme + "] does not exist",
             true
         );
 }
