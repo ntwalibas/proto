@@ -102,7 +102,7 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
     EXPECT_EQ(def->getType(), DefinitionType::Variable);
-    VariableDefinition& var_def = dynamic_cast<VariableDefinition&>(*def);
+    VariableDefinition& var_def = static_cast<VariableDefinition&>(*def);
 
     // We have the correct variable name
     EXPECT_EQ(var_def.getToken().getLexeme(), "name");
@@ -110,13 +110,13 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
     // We have the correct type
     std::unique_ptr<TypeDeclaration>& var_type = var_def.getTypeDeclaration();
     EXPECT_EQ(var_type -> getTypeCategory(), TypeCategory::Simple);
-    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*var_type);
+    SimpleTypeDeclaration& simple_type = static_cast<SimpleTypeDeclaration&>(*var_type);
     EXPECT_EQ(simple_type.getToken().getLexeme(), "string");
 
     // We have the correct initializer
     std::unique_ptr<Expression>& var_init = var_def.getInitializer();
     EXPECT_EQ(var_init->getType(), ExpressionType::Literal);
-    LiteralExpression& lit_expr = dynamic_cast<LiteralExpression&>(*var_init);
+    LiteralExpression& lit_expr = static_cast<LiteralExpression&>(*var_init);
     EXPECT_EQ(lit_expr.getToken().getLexeme(), "John Doe");
     EXPECT_EQ(lit_expr.getLiteralType(), LiteralType::String);
 }
@@ -128,7 +128,7 @@ TEST_F(ParserTest, parseFunctionDefinitionTest)
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
     EXPECT_EQ(def->getType(), DefinitionType::Function);
-    FunctionDefinition& fun_def = dynamic_cast<FunctionDefinition&>(*def);
+    FunctionDefinition& fun_def = static_cast<FunctionDefinition&>(*def);
 
     // We have the correct function name
     EXPECT_EQ(fun_def.getToken().getLexeme(), "sum");
@@ -142,7 +142,7 @@ TEST_F(ParserTest, parseFunctionDefinitionTest)
 
     // We have the correct return type
     std::unique_ptr<TypeDeclaration>& ret_type = fun_def.getReturnType();
-    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*ret_type);
+    SimpleTypeDeclaration& simple_type = static_cast<SimpleTypeDeclaration&>(*ret_type);
     EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
 }
 
@@ -183,7 +183,7 @@ TEST_F(ParserTest, parseVariableDeclarationTest)
     // We have the correct type
     std::unique_ptr<TypeDeclaration>& var_type = var_decl->getTypeDeclaration();
     EXPECT_EQ(var_type->getTypeCategory(), TypeCategory::Simple);
-    SimpleTypeDeclaration& simple_type = dynamic_cast<SimpleTypeDeclaration&>(*var_type);
+    SimpleTypeDeclaration& simple_type = static_cast<SimpleTypeDeclaration&>(*var_type);
     EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
 }
 
@@ -258,7 +258,7 @@ TEST_F(ParserTest, parseForStatementTest)
     std::unique_ptr<ForStatement> expr_for_stmt = exprParser.parseForStatement();
     std::unique_ptr<Definition>& expr_init_clause = expr_for_stmt->getInitClause();
     EXPECT_EQ(expr_init_clause->getType(), DefinitionType::Statement);
-    AssignmentExpression& init_clause = dynamic_cast<AssignmentExpression&>(*expr_init_clause);
+    AssignmentExpression& init_clause = static_cast<AssignmentExpression&>(*expr_init_clause);
     EXPECT_EQ(init_clause.getLvalue()->getType(), ExpressionType::Variable);
     EXPECT_EQ(init_clause.getRvalue()->getType(), ExpressionType::Literal);
 
@@ -369,22 +369,22 @@ TEST_F(ParserTest, parseExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& add_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& add_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the binary expression
     EXPECT_EQ(add_expr.getToken().getLexeme(), "+");
     EXPECT_EQ(add_expr.getLeft()->getType(), ExpressionType::Binary);
     EXPECT_EQ(add_expr.getRight()->getType(), ExpressionType::Literal);
-    LiteralExpression& one_expr = dynamic_cast<LiteralExpression&>(*(add_expr.getRight()));
+    LiteralExpression& one_expr = static_cast<LiteralExpression&>(*(add_expr.getRight()));
     EXPECT_EQ(one_expr.getToken().getLexeme(), "1");
 
     // We have the right data on the lhs of the binary expression
     std::unique_ptr<Expression>& left_expr = add_expr.getLeft();
-    BinaryExpression& mul_expr = dynamic_cast<BinaryExpression&>(*left_expr);
+    BinaryExpression& mul_expr = static_cast<BinaryExpression&>(*left_expr);
     EXPECT_EQ(mul_expr.getLeft()->getType(), ExpressionType::Literal);
     EXPECT_EQ(mul_expr.getRight()->getType(), ExpressionType::Literal);
-    LiteralExpression& two_expr = dynamic_cast<LiteralExpression&>(*(mul_expr.getLeft()));
-    LiteralExpression& five_expr = dynamic_cast<LiteralExpression&>(*(mul_expr.getRight()));
+    LiteralExpression& two_expr = static_cast<LiteralExpression&>(*(mul_expr.getLeft()));
+    LiteralExpression& five_expr = static_cast<LiteralExpression&>(*(mul_expr.getRight()));
     EXPECT_EQ(two_expr.getToken().getLexeme(), "2");
     EXPECT_EQ(five_expr.getToken().getLexeme(), "5");
 }
@@ -398,7 +398,7 @@ TEST_F(ParserTest, parseAssignmentExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Assignment);
-    AssignmentExpression& assign_expr = dynamic_cast<AssignmentExpression&>(*expr);
+    AssignmentExpression& assign_expr = static_cast<AssignmentExpression&>(*expr);
 
     // We have the right data on the assignment expression
     EXPECT_EQ(assign_expr.getToken().getLexeme(), "=");
@@ -415,7 +415,7 @@ TEST_F(ParserTest, parseLogicalOrExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& logicor_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& logicor_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the logical or expression
     EXPECT_EQ(logicor_expr.getToken().getLexeme(), "||");
@@ -433,7 +433,7 @@ TEST_F(ParserTest, parseLogicalAndExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& logicand_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& logicand_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the logical and expression
     EXPECT_EQ(logicand_expr.getToken().getLexeme(), "&&");
@@ -451,7 +451,7 @@ TEST_F(ParserTest, parseLogicalNotExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& logicnot_expr = dynamic_cast<UnaryExpression&>(*expr);
+    UnaryExpression& logicnot_expr = static_cast<UnaryExpression&>(*expr);
 
     // We have the right data on the logical not expression
     EXPECT_EQ(logicnot_expr.getToken().getLexeme(), "!");
@@ -468,7 +468,7 @@ TEST_F(ParserTest, parseComparisonExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& comp_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& comp_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the comparison expression
     EXPECT_EQ(comp_expr.getToken().getLexeme(), "<>");
@@ -486,7 +486,7 @@ TEST_F(ParserTest, parseBitwiseOrExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& bitor_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& bitor_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the bitwise or expression
     EXPECT_EQ(bitor_expr.getToken().getLexeme(), "|");
@@ -504,7 +504,7 @@ TEST_F(ParserTest, parseBitwiseXorExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& bitxor_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& bitxor_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the bitwise xor expression
     EXPECT_EQ(bitxor_expr.getToken().getLexeme(), "^");
@@ -522,7 +522,7 @@ TEST_F(ParserTest, parseBitwiseAndExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& bitand_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& bitand_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the bitwise and expression
     EXPECT_EQ(bitand_expr.getToken().getLexeme(), "&");
@@ -540,7 +540,7 @@ TEST_F(ParserTest, parseBitshiftExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& shift_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& shift_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the bit shift expression
     EXPECT_EQ(shift_expr.getToken().getLexeme(), "<<");
@@ -558,7 +558,7 @@ TEST_F(ParserTest, parseTermExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& term_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& term_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the term expression
     EXPECT_EQ(term_expr.getToken().getLexeme(), "+");
@@ -576,7 +576,7 @@ TEST_F(ParserTest, parseFactorExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& fact_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& fact_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the factor expression
     EXPECT_EQ(fact_expr.getToken().getLexeme(), "*");
@@ -594,7 +594,7 @@ TEST_F(ParserTest, parseSignExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& sign_expr = dynamic_cast<UnaryExpression&>(*expr);
+    UnaryExpression& sign_expr = static_cast<UnaryExpression&>(*expr);
 
     // We have the right data on the signed expression
     EXPECT_EQ(sign_expr.getToken().getLexeme(), "-");
@@ -611,7 +611,7 @@ TEST_F(ParserTest, parseBitwiseNotExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& bitnot_expr = dynamic_cast<UnaryExpression&>(*expr);
+    UnaryExpression& bitnot_expr = static_cast<UnaryExpression&>(*expr);
 
     // We have the right data on the bitwise not expression
     EXPECT_EQ(bitnot_expr.getToken().getLexeme(), "~");
@@ -628,7 +628,7 @@ TEST_F(ParserTest, parseSubscriptExpressionTest)
 
     // We have the correct type of expression
     EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& sub_expr = dynamic_cast<BinaryExpression&>(*expr);
+    BinaryExpression& sub_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the subscript expression
     EXPECT_EQ(sub_expr.getToken().getLexeme(), "[");
@@ -646,7 +646,7 @@ TEST_F(ParserTest, parsePrimaryExpressionTest)
 
     // We have the correct expression type
     EXPECT_EQ(expr->getType(), ExpressionType::Variable);
-    VariableExpression& var_expr = dynamic_cast<VariableExpression&>(*expr);
+    VariableExpression& var_expr = static_cast<VariableExpression&>(*expr);
 
     // We have the correct variable expression name
     EXPECT_EQ(var_expr.getToken().getLexeme(), "name");
