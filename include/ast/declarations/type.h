@@ -35,6 +35,10 @@ class TypeDeclaration : public Declaration
 {
     public:
         virtual ~TypeDeclaration() {}
+
+        /**
+         * Returns the category of type declaration, simple or array.
+         */
         enum TypeCategory& getTypeCategory();
 
     protected:
@@ -62,6 +66,12 @@ class SimpleTypeDeclaration : public TypeDeclaration
          * Returns the token associated with this type declaration.
          */
         Token& getToken();
+
+        /**
+         * Compares the given type declaration is equal to the current type declaration.
+         */
+        bool operator==(SimpleTypeDeclaration& type_decl);
+        bool operator!=(SimpleTypeDeclaration& type_decl);
 
     protected:
         bool    is_const;   /* Whether this type declaration is qualified as const. */
@@ -93,6 +103,12 @@ class ArrayTypeDeclaration : public TypeDeclaration
          * Returns the simple stored in the array.
          */
         SimpleTypeDeclaration& getSimpleType();
+
+        /**
+         * Compares the given type declaration is equal to the current type declaration.
+         */
+        bool operator==(ArrayTypeDeclaration& type_decl);
+        bool operator!=(ArrayTypeDeclaration& type_decl);
 
     protected:
         bool                    is_const;       /* Whether this type declaration is qualified as const. */

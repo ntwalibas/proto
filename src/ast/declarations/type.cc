@@ -56,6 +56,21 @@ SimpleTypeDeclaration::getToken()
     return token;
 }
 
+/**
+ * Compares the given type declaration is equal to the current type declaration.
+ */
+bool
+SimpleTypeDeclaration::operator==(SimpleTypeDeclaration& type_decl)
+{
+    return token.getLexeme() == type_decl.getToken().getLexeme();
+}
+
+bool
+SimpleTypeDeclaration::operator!=(SimpleTypeDeclaration& type_decl)
+{
+    return !(*this == type_decl);
+}
+
 
 // Array type declaration
 ArrayTypeDeclaration::ArrayTypeDeclaration(
@@ -104,4 +119,19 @@ SimpleTypeDeclaration&
 ArrayTypeDeclaration::getSimpleType()
 {
     return simple_type;
+}
+
+/**
+ * Compares the given type declaration is equal to the current type declaration.
+ */
+bool
+ArrayTypeDeclaration::operator==(ArrayTypeDeclaration& type_decl)
+{
+    return (size == type_decl.getSize()) && (simple_type == type_decl.getSimpleType());
+}
+
+bool
+ArrayTypeDeclaration::operator!=(ArrayTypeDeclaration& type_decl)
+{
+    return !(*this == type_decl);
 }
