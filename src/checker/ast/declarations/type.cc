@@ -21,7 +21,7 @@
 #include "checker/ast/declarations/type.h"
 #include "checker/checker_error.h"
 #include "ast/declarations/type.h"
-#include "checker/symtable.h"
+#include "symbols/symtable.h"
 
 static void checkSimpleType(SimpleTypeDeclaration& simple_type_decl);
 

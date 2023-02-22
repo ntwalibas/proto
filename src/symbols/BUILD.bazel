@@ -1,9 +1,10 @@
 cc_library(
-    name = "common",
+    name = "symbols",
     srcs = glob(["*.cc"]),
     copts = ["-Iinclude"],
     deps = [
         "//include:include",
+        # "//src/ast:ast",
     ],
     visibility = ["//visibility:public"],
 )

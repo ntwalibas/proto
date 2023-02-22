@@ -12,6 +12,7 @@ cc_library(
         "//src/common:common",
         "//src/ast:ast",
         "//src/inference:inference",
+        "//src/symbols:symbols",
     ],
     visibility = ["//visibility:public"],
 )

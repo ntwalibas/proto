@@ -15,8 +15,8 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_COMMON_SCOPE_H
-#define PROTO_COMMON_SCOPE_H
+#ifndef PROTO_SYMBOLS_SCOPE_H
+#define PROTO_SYMBOLS_SCOPE_H
 
 #include <cstdbool>
 #include <memory>

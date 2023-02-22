@@ -15,8 +15,8 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_COMMON_SYMTABLE_H
-#define PROTO_COMMON_SYMTABLE_H
+#ifndef PROTO_SYMBOLS_SYMTABLE_H
+#define PROTO_SYMBOLS_SYMTABLE_H
 
 #include <cstdbool>
 #include <memory>

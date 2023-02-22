@@ -21,8 +21,8 @@
 #include <string>
 
 #include "ast/definitions/definition.h"
-#include "checker/symtable.h"
-#include "checker/scope.h"
+#include "symbols/symtable.h"
+#include "symbols/scope.h"
 
 
 Scope::Scope(

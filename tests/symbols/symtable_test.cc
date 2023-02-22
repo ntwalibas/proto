@@ -2,15 +2,23 @@
 #include <exception>
 #include <cstddef>
 #include <memory>
+#include <string>
 
 #include "ast/definitions/definition.h"
-#include "checker/symtable.h"
+#include "symbols/symtable.h"
+#include "parser/parser.h"
+#include "lexer/lexer.h"
 
 
 class SymtableTest: public ::testing::Test
 {
     protected:
         void SetUp() override {
+            std::string source = "count: bool = True";
+            std::string source_path = "main.pro";
+            Lexer lexer(std::make_shared<std::string>(source), source_path);
+            Parser parser(lexer);
+            var = parser.parseDefinition();
         }
 
         void TearDown() override {
@@ -18,7 +26,7 @@ class SymtableTest: public ::testing::Test
         }
 
         DefinitionsSymtable symtable;
-        std::unique_ptr<Definition> var = std::make_unique<Definition>(DefinitionType::Variable);
+        std::unique_ptr<Definition> var = nullptr;
         std::unique_ptr<Definition> nil = nullptr;
 };
 

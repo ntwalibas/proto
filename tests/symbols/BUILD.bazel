@@ -1,0 +1,14 @@
+cc_test(
+  name = "symbols_test",
+  size = "small",
+  srcs = glob(["*.cc",]),
+  deps = [
+    "@com_google_googletest//:gtest_main",
+    "//include:include",
+    "//src/ast:ast",
+    "//src/common:common",
+    "//src/lexer:lexer",
+    "//src/parser:parser",
+  ],
+  copts = ["-Iinclude"],
+)

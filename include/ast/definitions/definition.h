@@ -18,6 +18,9 @@
 #ifndef PROTO_AST_DEFINITION_H
 #define PROTO_AST_DEFINITION_H
 
+#include "common/token.h"
+
+
 enum class DefinitionType {
     Function,
     Variable,
@@ -38,6 +41,11 @@ class Definition
         {
             return type;
         }
+
+        /**
+         * Returns the token associated with this statement.
+         */
+        virtual Token& getToken() = 0;
 
     protected:
         enum DefinitionType type;     /* The type of definition of the derived class. */

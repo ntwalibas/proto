@@ -53,7 +53,7 @@ class Statement : public Definition
         }
 
         /**
-         * Returns the token associated with the while statement.
+         * Returns the token associated with this statement.
          */
         virtual Token& getToken() = 0;
 

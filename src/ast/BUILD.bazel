@@ -11,6 +11,8 @@ cc_library(
     deps = [
         "//include:include",
         "//src/common:common",
+        "//src/utils:utils",
+        "//src/symbols:symbols",
     ],
     visibility = ["//visibility:public"],
 )

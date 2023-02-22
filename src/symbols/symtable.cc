@@ -24,7 +24,7 @@
 #include <map>
 
 #include "ast/definitions/definition.h"
-#include "checker/symtable.h"
+#include "symbols/symtable.h"
 
 
 /**
