@@ -19,6 +19,7 @@
 #define PROTO_AST_STATEMENT_H
 
 #include "ast/definitions/definition.h"
+#include "common/token.h"
 
 
 enum class StatementType {
@@ -50,6 +51,11 @@ class Statement : public Definition
         {
             return type;
         }
+
+        /**
+         * Returns the token associated with the while statement.
+         */
+        virtual Token& getToken() = 0;
 
     protected:
         enum StatementType type;     /* The type of definition of the derived class. */
