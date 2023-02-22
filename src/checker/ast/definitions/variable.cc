@@ -26,7 +26,7 @@
 
 
 VariableDefinitionChecker::VariableDefinitionChecker(
-    std::unique_ptr<VariableDefinition>& variable_def
+    VariableDefinition* variable_def
 ) : variable_def(variable_def)
 {}
 

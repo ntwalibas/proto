@@ -27,7 +27,7 @@
 class VariableDefinitionChecker
 {
     public:
-        VariableDefinitionChecker(std::unique_ptr<VariableDefinition>& variable_def);
+        VariableDefinitionChecker(VariableDefinition* variable_def);
 
         /**
          * Checking a variable definition (like all definitions) is a two-step process:
@@ -43,7 +43,7 @@ class VariableDefinitionChecker
         void check();
 
     private:
-        std::unique_ptr<VariableDefinition>& variable_def;
+        VariableDefinition* variable_def;
 
         // Check the type of the variable definition
         std::unique_ptr<TypeDeclaration>& checkHeader();

@@ -34,9 +34,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
         VariableDefinitionChecker checker(var_def);
         EXPECT_NO_THROW(checker.check());
@@ -48,9 +46,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
         VariableDefinitionChecker checker(var_def);
         EXPECT_THROW({
