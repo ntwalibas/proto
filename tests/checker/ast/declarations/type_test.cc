@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <memory>
+#include <string>
 
 #include "checker/ast/declarations/type.h"
 #include "checker/checker_error.h"
