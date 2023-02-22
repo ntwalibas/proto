@@ -36,11 +36,8 @@ std::unique_ptr<TypeDeclaration>&
 Inference::infer(std::unique_ptr<Expression>& expr)
 {
     switch (expr->getType()) {
-        case ExpressionType::Literal: {
-            LiteralExpression* lit_expr = static_cast<LiteralExpression*>(expr.get());
-            std::unique_ptr<TypeDeclaration>& type_decl = LiteralInference::infer(lit_expr);
-            return type_decl;
-        }
+        case ExpressionType::Literal:
+            return LiteralInference::infer(static_cast<LiteralExpression*>(expr.get()));
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");
