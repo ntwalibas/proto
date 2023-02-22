@@ -15,12 +15,18 @@
  *  limitations under the License.
  */
 
+#include <cstddef>
 #include <utility>
 #include <memory>
 #include <vector>
 
 #include "ast/definitions/definition.h"
+#include "symbols/scope.h"
 #include "ast/program.h"
+
+
+Program::Program() : scope(std::make_shared<Scope>(nullptr))
+{}
 
 
 /**
@@ -29,9 +35,7 @@
 void
 Program::addDefinition(std::unique_ptr<Definition>&& definition)
 {
-    definitions.push_back(
-        std::move(definition)
-    );
+    definitions.push_back(std::move(definition));
 }
 
 
@@ -42,4 +46,14 @@ std::vector<std::unique_ptr<Definition>>&
 Program::getDefinitions()
 {
     return definitions;
+}
+
+
+/**
+ * Returns the program associated with this scope. 
+ */
+std::shared_ptr<Scope>&
+Program::getScope()
+{
+    return scope;
 }

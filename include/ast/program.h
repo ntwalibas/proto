@@ -22,11 +22,14 @@
 #include <vector>
 
 #include "definitions/definition.h"
+#include "symbols/scope.h"
 
 
 class Program
 {
     public:
+        Program();
+
         /**
          * Adds a definition to this program.
          */
@@ -37,8 +40,14 @@ class Program
          */
         std::vector<std::unique_ptr<Definition>>& getDefinitions();
 
+        /**
+         * Returns the program associated with this scope. 
+         */
+        std::shared_ptr<Scope>& getScope();
+
     private:
-        std::vector<std::unique_ptr<Definition>> definitions;   /* Vector of all the definitions in this program. */
+        std::vector<std::unique_ptr<Definition>>    definitions;    /* Vector of all the definitions in this program. */
+        std::shared_ptr<Scope>                      scope;          /* The scope where to find all definitions in this program. */
 };
 
 #endif
