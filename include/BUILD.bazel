@@ -9,6 +9,7 @@ cc_library(
         "checker/*.h",
         "checker/ast/*.h",
         "checker/ast/declarations/*.h",
+        "checker/ast/definitions/*.h",
         "ast/*.h",
         "ast/declarations/*.h",
         "ast/definitions/*.h",
