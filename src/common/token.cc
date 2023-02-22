@@ -38,7 +38,7 @@ Token::Token(
 Token::Token(
     enum TokenType type,
     std::shared_ptr<std::string>& source,
-    std::string& source_path,
+    std::string const& source_path,
     std::string::iterator start,
     std::string::size_type length,
     std::string::size_type line,
