@@ -19,6 +19,7 @@
 
 #include "checker/ast/definitions/variable.h"
 #include "checker/ast/declarations/type.h"
+#include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
 #include "ast/declarations/type.h"
 #include "checker/checker_error.h"
@@ -94,5 +95,14 @@ VariableDefinitionChecker::checkHeader()
 std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
-    return Inference(variable_def->getInitializer(), scope).infer();
+    try {
+        return Inference(variable_def->getInitializer(), scope).infer();
+    } catch (InferenceError & e) {
+        throw CheckerError(
+            e.getToken(),
+            e.getPrimaryMessage(),
+            e.getSecondaryMessage(),
+            e.isFatal()
+        );
+    }
 }
