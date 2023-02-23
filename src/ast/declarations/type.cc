@@ -29,6 +29,7 @@ TypeDeclaration::getTypeCategory()
     return category;
 }
 
+
 // Simple type declaration
 SimpleTypeDeclaration::SimpleTypeDeclaration(
     bool is_const,
@@ -37,6 +38,26 @@ SimpleTypeDeclaration::SimpleTypeDeclaration(
     is_const(is_const),
     token(token)
 {}
+
+// SimpleTypeDeclaration::SimpleTypeDeclaration(
+//     SimpleTypeDeclaration const& type_decl
+// ) : TypeDeclaration(TypeCategory::Simple)
+// {
+//     is_const = type_decl.isConst();
+//     token = type_decl.getToken();
+// }
+
+// SimpleTypeDeclaration& operator=(
+//     SimpleTypeDeclaration const& type_decl
+// )
+// {
+//     if (this != &type_decl) {
+//         is_const = type_decl.isConst();
+//         token = type_decl.getToken();
+//     }
+
+//     return *this;
+// }
 
 /**
  * Returns the type name.
@@ -184,5 +205,24 @@ typeDeclarationEquals(
         ArrayTypeDeclaration* right_decl =
             static_cast<ArrayTypeDeclaration*>(right.get());
         return (* left_decl == * right_decl);
+    }
+}
+
+
+/**
+ * Returns a copy of the given type declaration.
+ */
+std::unique_ptr<TypeDeclaration>
+copy(std::unique_ptr<TypeDeclaration>& type_decl)
+{
+    if (type_decl->getTypeCategory() == TypeCategory::Simple) {
+        SimpleTypeDeclaration* sim_type_del =
+            static_cast<SimpleTypeDeclaration*>(type_decl.get());
+        return std::make_unique<SimpleTypeDeclaration>(*sim_type_del);
+    }
+    else {
+        ArrayTypeDeclaration* arr_type_del =
+            static_cast<ArrayTypeDeclaration*>(type_decl.get());
+        return std::make_unique<ArrayTypeDeclaration>(*arr_type_del);
     }
 }

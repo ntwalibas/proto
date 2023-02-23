@@ -61,6 +61,11 @@ class SimpleTypeDeclaration : public TypeDeclaration
 {
     public:
         SimpleTypeDeclaration(bool is_const, Token& token);
+        SimpleTypeDeclaration(SimpleTypeDeclaration const& type_decl) noexcept = default;
+        SimpleTypeDeclaration(SimpleTypeDeclaration&& type_decl) noexcept = default;
+        SimpleTypeDeclaration& operator=(SimpleTypeDeclaration const& type_decl) noexcept = default;
+        SimpleTypeDeclaration& operator=(SimpleTypeDeclaration&& type_decl) noexcept = default;
+        ~SimpleTypeDeclaration() noexcept = default;
 
         /**
          * Returns the type name.
@@ -93,6 +98,11 @@ class ArrayTypeDeclaration : public TypeDeclaration
 {
     public:
         ArrayTypeDeclaration(bool is_const, Token& token, long size, SimpleTypeDeclaration& simple_type);
+        ArrayTypeDeclaration(ArrayTypeDeclaration const& type_decl) noexcept = default;
+        ArrayTypeDeclaration(ArrayTypeDeclaration&& type_decl) noexcept = default;
+        ArrayTypeDeclaration& operator=(ArrayTypeDeclaration const& type_decl) noexcept = default;
+        ArrayTypeDeclaration& operator=(ArrayTypeDeclaration&& type_decl) noexcept = default;
+        ~ArrayTypeDeclaration() noexcept = default;
 
         /**
          * Returns the type name.
@@ -141,5 +151,12 @@ typeDeclarationEquals(
     std::unique_ptr<TypeDeclaration>& left,
     std::unique_ptr<TypeDeclaration>& right
 );
+
+
+/**
+ * Returns a copy of the given type declaration.
+ */
+std::unique_ptr<TypeDeclaration>
+copy(std::unique_ptr<TypeDeclaration>& source);
 
 #endif
