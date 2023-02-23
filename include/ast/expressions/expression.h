@@ -65,6 +65,11 @@ class Expression : public Statement
         }
 
         /**
+         * Returns the token associated with this expression.
+         */
+        virtual Token& getToken() = 0;
+
+        /**
          * Set the type declaration of this expression.
          */
         void setTypeDeclaration(std::unique_ptr<TypeDeclaration>&& type_decl_)

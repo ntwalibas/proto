@@ -7,6 +7,7 @@
 
 #include "ast/declarations/declaration.h"
 #include "ast/expressions/expression.h"
+#include "inference/inference_error.h"
 #include "ast/expressions/literal.h"
 #include "inference/inference.h"
 #include "symbols/scope.h"
@@ -127,7 +128,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
 
         EXPECT_THROW(
             Inference(expr, scope).inferArrayType(),
-            std::length_error
+            InferenceError
         );
     }
 
@@ -140,7 +141,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
 
         EXPECT_THROW(
             Inference(expr, scope).inferArrayType(),
-            std::invalid_argument
+            InferenceError
         );
     }
 
@@ -153,7 +154,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
 
         EXPECT_THROW(
             Inference(expr, scope).inferArrayType(),
-            std::domain_error
+            InferenceError
         );
     }
 }
@@ -192,7 +193,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(Inference(expr, scope).inferVariableType(), std::out_of_range);
+        EXPECT_THROW(Inference(expr, scope).inferVariableType(), InferenceError);
     }
 }
 

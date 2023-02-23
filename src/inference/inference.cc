@@ -23,6 +23,7 @@
 
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
@@ -115,11 +116,17 @@ Inference::inferArrayType()
     std::vector<std::unique_ptr<Expression>>& contents =
         arr_expr->getContents();
     
-    if (contents.size() == 0)
-        throw std::length_error("An array expression cannot be empty.");
+    if (contents.size() == 0) {
+        throw InferenceError(
+            arr_expr->getToken(),
+            "empty array",
+            "an array cannot be empty",
+            false
+        );
+    }
 
     std::unique_ptr<TypeDeclaration>& first_element_type_decl =
-            Inference(contents[0], scope).infer();
+        Inference(contents[0], scope).infer();
     
     // Pre-emptively set the type of the array
     expr->setTypeDeclaration(createArrayTypeDeclaration(
@@ -129,14 +136,27 @@ Inference::inferArrayType()
     ));
 
     for (auto it = contents.begin(); it != contents.end(); ++it) {
-        if ((*it)->getType() == ExpressionType::Array)
-            throw std::domain_error("Arrays within arrays are not currently supported");
+        if ((*it)->getType() == ExpressionType::Array) {
+            throw InferenceError(
+                (*it)->getToken(),
+                "unsupported expression",
+                "multi-dimensional arrays are not currently supported",
+                false
+            );
+        }
 
         std::unique_ptr<TypeDeclaration>& it_type_decl =
             Inference(*it, scope).infer();
         
-        if (! typeDeclarationEquals(first_element_type_decl, it_type_decl))
-            throw std::invalid_argument("Array elements do not have the same types.");
+        if (! typeDeclarationEquals(first_element_type_decl, it_type_decl)) {
+            throw InferenceError(
+                (*it)->getToken(),
+                "invalid array element type",
+                "array elements must have the same type, expected [" +
+                first_element_type_decl->getTypeName() + "]",
+                false
+            );
+        }
     }
 
     return expr->getTypeDeclaration();
@@ -148,11 +168,29 @@ std::unique_ptr<TypeDeclaration>&
 Inference::inferVariableType()
 {
     VariableExpression* var_expr = static_cast<VariableExpression*>(expr.get());
-    
-    std::unique_ptr<Definition>& def = scope->getDefinition(var_expr->getToken().getLexeme());
 
-    if (def->getType() != DefinitionType::Variable)
-        throw std::invalid_argument("There is no variable with the given name");
+    if (! scope->hasDefinition(var_expr->getToken().getLexeme(), true)) {
+        throw InferenceError(
+            var_expr->getToken(),
+            "variable used before definition",
+            "no variable defined with this name",
+            false
+        );
+    }
+    
+    std::unique_ptr<Definition>& def = scope->getDefinition(
+        var_expr->getToken().getLexeme(),
+        true
+    );
+
+    if (def->getType() != DefinitionType::Variable) {
+        throw InferenceError(
+            var_expr->getToken(),
+            "variable used before definition",
+            "no variable defined with this name, a function of the same name exists",
+            false
+        );
+    }
 
     VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
     expr->setTypeDeclaration(
