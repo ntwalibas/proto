@@ -103,30 +103,26 @@ Inference::inferArrayType()
     
     if (contents.size() == 0)
         throw std::length_error("An array expression cannot be empty.");
+
+    std::unique_ptr<TypeDeclaration>& first_element_type_decl =
+            Inference(contents[0]).infer();
     
-    auto curr_it = contents.begin();
-    auto next_it = std::next(curr_it);
-    for (; next_it != contents.end(); ++curr_it, next_it = std::next(curr_it)) {
-        std::unique_ptr<TypeDeclaration>& curr_type_decl =
-            Inference(*curr_it).infer();
+    // Pre-emptively set the type of the array
+    expr->setTypeDeclaration(createArrayTypeDeclaration(
+        true,
+        contents.size(),
+        first_element_type_decl->getTypeName()
+    ));
 
-        std::unique_ptr<TypeDeclaration>& next_type_decl =
-            Inference(*next_it).infer();
+    for (auto it = contents.begin(); it != contents.end(); ++it) {
+        if ((*it)->getType() == ExpressionType::Array)
+            throw std::domain_error("Arrays within arrays are not currently supported");
+
+        std::unique_ptr<TypeDeclaration>& it_type_decl =
+            Inference(*it).infer();
         
-        if (! typeDeclarationEquals(curr_type_decl, next_type_decl))
+        if (! typeDeclarationEquals(first_element_type_decl, it_type_decl))
             throw std::invalid_argument("Array elements do not have the same types.");
-        
-        // Pre-emptively set the type of the array
-        if (curr_it == contents.begin()) {
-            if (curr_type_decl->getTypeCategory() == TypeCategory::Array)
-                throw std::domain_error("Arrays within arrays are not currently supported");
-
-            expr->setTypeDeclaration(createArrayTypeDeclaration(
-                true,
-                contents.size(),
-                curr_type_decl->getTypeName()
-            ));
-        }
     }
 
     return expr->getTypeDeclaration();

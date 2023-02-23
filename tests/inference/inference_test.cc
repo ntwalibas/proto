@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <exception>
 #include <cstddef>
 #include <utility>
 #include <memory>
@@ -112,5 +113,44 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         ArrayTypeDeclaration& type_decl =
             static_cast<ArrayTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "[4]uint64");
+    }
+
+    // Empty array
+    {
+        std::string source = "[]";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(
+            Inference(expr).inferArrayType(),
+            std::length_error
+        );
+    }
+
+    // Non-uniform array
+    {
+        std::string source = "[0, True]";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(
+            Inference(expr).inferArrayType(),
+            std::invalid_argument
+        );
+    }
+
+    // Array within array
+    {
+        std::string source = "[0, [True]]";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(
+            Inference(expr).inferArrayType(),
+            std::domain_error
+        );
     }
 }
