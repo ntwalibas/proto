@@ -23,9 +23,7 @@
 #include "common/token_type.h"
 #include "utils/inference.h"
 #include "common/token.h"
-
-static Token
-makeToken(enum TokenType token_type, std::string const& lexeme);
+#include "utils/token.h"
 
 
 /**
@@ -34,7 +32,7 @@ makeToken(enum TokenType token_type, std::string const& lexeme);
 std::unique_ptr<SimpleTypeDeclaration>
 createSimpleTypeDeclaration(bool is_const, std::string const& name)
 {
-    Token token = makeToken(PROTO_IDENTIFIER, name);
+    Token token = createBuiltinToken(PROTO_IDENTIFIER, name);
     return std::make_unique<SimpleTypeDeclaration>(
         is_const,
         token
@@ -48,35 +46,18 @@ createSimpleTypeDeclaration(bool is_const, std::string const& name)
 std::unique_ptr<ArrayTypeDeclaration>
 createArrayTypeDeclaration(bool is_const, long size, std::string const& name)
 {
-    Token simple_token = makeToken(PROTO_IDENTIFIER, name);
+    Token simple_token = createBuiltinToken(PROTO_IDENTIFIER, name);
     std::unique_ptr<SimpleTypeDeclaration> simple_decl =
         std::make_unique<SimpleTypeDeclaration>(
             is_const,
             simple_token
         );
     
-    Token array_token = makeToken(PROTO_LEFT_BRACKET, "[");
+    Token array_token = createBuiltinToken(PROTO_LEFT_BRACKET, "[");
     return std::make_unique<ArrayTypeDeclaration>(
         is_const,
         array_token,
         size,
         * simple_decl
-    );
-}
-
-static Token
-makeToken(enum TokenType token_type, std::string const& lexeme)
-{
-    std::shared_ptr<std::string> source =
-        std::make_shared<std::string>(lexeme);
-
-    return Token(
-        token_type,
-        source,
-        std::string("__builtin__"),
-        source->begin(),
-        source->length(),
-        1,
-        source->length() + 1
     );
 }

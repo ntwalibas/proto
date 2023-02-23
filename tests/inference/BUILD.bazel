@@ -8,6 +8,8 @@ cc_test(
     "//src/common:common",
     "//src/ast:ast",
     "//src/utils:utils",
+    "//src/lexer:lexer",
+    "//src/parser:parser",
     "//src/inference:inference",
   ],
   copts = ["-Iinclude"],

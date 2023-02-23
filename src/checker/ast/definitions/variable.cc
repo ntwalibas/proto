@@ -80,5 +80,5 @@ VariableDefinitionChecker::checkHeader()
 std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
-    return Inference::infer(variable_def->getInitializer());
+    return Inference(variable_def->getInitializer()).infer();
 }

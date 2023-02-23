@@ -5,6 +5,7 @@ cc_library(
     deps = [
         "//include:include",
         "//src/utils:utils",
+        "//src/ast:ast",
     ],
     visibility = ["//visibility:public"],
 )

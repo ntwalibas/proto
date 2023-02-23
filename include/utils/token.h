@@ -15,33 +15,16 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_AST_INFERENCE_H
-#define PROTO_AST_INFERENCE_H
+#ifndef PROTO_UTILS_TOKEN_H
+#define PROTO_UTILS_TOKEN_H
 
-#include <memory>
-
-#include "ast/expressions/expression.h"
-#include "ast/declarations/type.h"
+#include "common/token.h"
 
 
-class Inference
-{
-    public:
-        Inference(std::unique_ptr<Expression>& expr);
-
-        /**
-         * Infer the type (declaration) of an arbitrary expression.
-         */
-        std::unique_ptr<TypeDeclaration>& infer();
-
-        // Literals
-        std::unique_ptr<TypeDeclaration>& inferLiteralType();
-
-        // Arrays
-        std::unique_ptr<TypeDeclaration>& inferArrayType();
-    
-    private:
-        std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */
-};
+/**
+ * Creates a builtin token given the token type and lexeme.
+ */
+Token
+createBuiltinToken(enum TokenType token_type, std::string const& lexeme);
 
 #endif
