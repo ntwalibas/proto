@@ -9,6 +9,7 @@
 #include "ast/expressions/expression.h"
 #include "ast/expressions/literal.h"
 #include "inference/inference.h"
+#include "symbols/scope.h"
 #include "parser/parser.h"
 #include "lexer/lexer.h"
 
@@ -29,6 +30,7 @@ TEST_F(InferenceTest, inferTest) {
 }
 
 TEST_F(InferenceTest, inferLiteralTypeTest) {
+    std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::shared_ptr<std::string> source = nullptr;
 
     // Booleans literals
@@ -39,7 +41,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr).inferLiteralType();
+            Inference(expr, scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -55,7 +57,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr).inferLiteralType();
+            Inference(expr, scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -71,7 +73,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr).inferLiteralType();
+            Inference(expr, scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -87,7 +89,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr).inferLiteralType();
+            Inference(expr, scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -97,6 +99,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
 }
 
 TEST_F(InferenceTest, inferArrayTypeTest) {
+    std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::shared_ptr<std::string> source = nullptr;
 
     // Well-formed array
@@ -107,7 +110,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr).inferArrayType();
+            Inference(expr, scope).inferArrayType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Array);
         ArrayTypeDeclaration& type_decl =
@@ -123,7 +126,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(
-            Inference(expr).inferArrayType(),
+            Inference(expr, scope).inferArrayType(),
             std::length_error
         );
     }
@@ -136,7 +139,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(
-            Inference(expr).inferArrayType(),
+            Inference(expr, scope).inferArrayType(),
             std::invalid_argument
         );
     }
@@ -149,7 +152,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(
-            Inference(expr).inferArrayType(),
+            Inference(expr, scope).inferArrayType(),
             std::domain_error
         );
     }

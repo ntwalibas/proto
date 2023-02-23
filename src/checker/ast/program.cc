@@ -39,7 +39,7 @@ ProgramChecker::check()
             case DefinitionType::Variable: {
                 VariableDefinition* var_def =
                     static_cast<VariableDefinition*>(def.get());
-                VariableDefinitionChecker checker(var_def);
+                VariableDefinitionChecker checker(var_def, program.getScope());
                 try {
                     checker.check();
 

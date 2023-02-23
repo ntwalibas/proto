@@ -22,15 +22,20 @@
 #include <vector>
 
 #include "ast/expressions/expression.h"
+#include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "inference/inference.h"
 #include "utils/inference.h"
+#include "symbols/scope.h"
+
 
 Inference::Inference(
-    std::unique_ptr<Expression>& expr
-) : expr(expr)
+    std::unique_ptr<Expression>& expr,
+    std::shared_ptr<Scope> const& scope
+) : expr(expr),
+    scope(scope)
 {}
 
 
@@ -105,7 +110,7 @@ Inference::inferArrayType()
         throw std::length_error("An array expression cannot be empty.");
 
     std::unique_ptr<TypeDeclaration>& first_element_type_decl =
-            Inference(contents[0]).infer();
+            Inference(contents[0], scope).infer();
     
     // Pre-emptively set the type of the array
     expr->setTypeDeclaration(createArrayTypeDeclaration(
@@ -119,7 +124,7 @@ Inference::inferArrayType()
             throw std::domain_error("Arrays within arrays are not currently supported");
 
         std::unique_ptr<TypeDeclaration>& it_type_decl =
-            Inference(*it).infer();
+            Inference(*it, scope).infer();
         
         if (! typeDeclarationEquals(first_element_type_decl, it_type_decl))
             throw std::invalid_argument("Array elements do not have the same types.");

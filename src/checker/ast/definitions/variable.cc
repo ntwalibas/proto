@@ -26,8 +26,10 @@
 
 
 VariableDefinitionChecker::VariableDefinitionChecker(
-    VariableDefinition* variable_def
-) : variable_def(variable_def)
+    VariableDefinition* variable_def,
+    std::shared_ptr<Scope> const& scope
+) : variable_def(variable_def),
+    scope(scope)
 {}
 
 
@@ -80,5 +82,5 @@ VariableDefinitionChecker::checkHeader()
 std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
-    return Inference(variable_def->getInitializer()).infer();
+    return Inference(variable_def->getInitializer(), scope).infer();
 }

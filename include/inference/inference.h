@@ -22,12 +22,16 @@
 
 #include "ast/expressions/expression.h"
 #include "ast/declarations/type.h"
+#include "symbols/scope.h"
 
 
 class Inference
 {
     public:
-        Inference(std::unique_ptr<Expression>& expr);
+        Inference(
+            std::unique_ptr<Expression>& expr,
+            std::shared_ptr<Scope> const& scope
+        );
 
         /**
          * Infer the type (declaration) of an arbitrary expression.
@@ -42,6 +46,7 @@ class Inference
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */
+        std::shared_ptr<Scope>          scope;  /* Scope within which this expression occurs. */
 };
 
 #endif

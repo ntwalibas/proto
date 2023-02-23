@@ -22,12 +22,16 @@
 
 #include "ast/definitions/variable.h"
 #include "ast/declarations/type.h"
+#include "symbols/scope.h"
 
 
 class VariableDefinitionChecker
 {
     public:
-        VariableDefinitionChecker(VariableDefinition* variable_def);
+        VariableDefinitionChecker(
+            VariableDefinition* variable_def,
+            std::shared_ptr<Scope> const& scope
+        );
 
         /**
          * Checking a variable definition (like all definitions) is a two-step process:
@@ -44,6 +48,7 @@ class VariableDefinitionChecker
 
     private:
         VariableDefinition* variable_def;
+        std::shared_ptr<Scope> const& scope;
 
         // Check the type of the variable definition
         std::unique_ptr<TypeDeclaration>& checkHeader();

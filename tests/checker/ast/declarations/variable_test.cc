@@ -2,12 +2,15 @@
 #include <gmock/gmock.h>
 #include <exception>
 #include <cstddef>
+#include <utility>
+#include <cstddef>
 #include <memory>
 
 #include "checker/ast/definitions/variable.h"
 #include "ast/definitions/definition.h"
 #include "ast/definitions/variable.h"
 #include "checker/checker_error.h"
+#include "symbols/scope.h"
 #include "parser/parser.h"
 #include "lexer/lexer.h"
 
@@ -22,6 +25,7 @@ class VariableDefinitionCheckerTest: public ::testing::Test
         }
 
         std::string source_path = "main.pro";
+        std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
 };
 
 TEST_F(VariableDefinitionCheckerTest, checkTest)
@@ -34,7 +38,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
         std::unique_ptr<Definition> def = parser.parseDefinition();
         VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def);
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_NO_THROW(checker.check());
     }
     
@@ -46,7 +50,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
         std::unique_ptr<Definition> def = parser.parseDefinition();
         VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def);
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_THROW({
             try {
                 checker.check();
