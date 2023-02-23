@@ -24,13 +24,14 @@ class InferenceTest: public ::testing::Test
         }
     
     std::string source_path = "main.pro";
+    std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
+    std::unique_ptr<Definition> var_def = nullptr;
 };
 
 TEST_F(InferenceTest, inferTest) {
 }
 
 TEST_F(InferenceTest, inferLiteralTypeTest) {
-    std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::shared_ptr<std::string> source = nullptr;
 
     // Booleans literals
@@ -99,7 +100,6 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
 }
 
 TEST_F(InferenceTest, inferArrayTypeTest) {
-    std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::shared_ptr<std::string> source = nullptr;
 
     // Well-formed array
@@ -155,5 +155,43 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
             Inference(expr, scope).inferArrayType(),
             std::domain_error
         );
+    }
+}
+
+TEST_F(InferenceTest, inferVariableTypeTest) {
+    std::shared_ptr<std::string> source = nullptr;
+
+    {
+        std::string source = "count: uint64 = 0";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        var_def = parser.parseDefinition();
+        scope->addDefinition("count", var_def);
+    }
+
+    // Variable is in scope
+    {
+        std::string source = "count";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferVariableType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint64");
+    }
+
+    // Variable is not in scope
+    {
+        std::string source = "name";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(Inference(expr, scope).inferVariableType(), std::out_of_range);
     }
 }

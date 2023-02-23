@@ -43,6 +43,9 @@ class Inference
 
         // Arrays
         std::unique_ptr<TypeDeclaration>& inferArrayType();
+
+        // Variables
+        std::unique_ptr<TypeDeclaration>& inferVariableType();
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */

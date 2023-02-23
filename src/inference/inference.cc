@@ -21,7 +21,9 @@
 #include <memory>
 #include <vector>
 
+#include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/definitions/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
@@ -52,6 +54,9 @@ Inference::infer()
 
         case ExpressionType::Array:
             return inferArrayType();
+
+        case ExpressionType::Variable:
+            return inferVariableType();
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");
@@ -130,5 +135,24 @@ Inference::inferArrayType()
             throw std::invalid_argument("Array elements do not have the same types.");
     }
 
+    return expr->getTypeDeclaration();
+}
+
+
+// Variables
+std::unique_ptr<TypeDeclaration>&
+Inference::inferVariableType()
+{
+    VariableExpression* var_expr = static_cast<VariableExpression*>(expr.get());
+    
+    std::unique_ptr<Definition>& def = scope->getDefinition(var_expr->getToken().getLexeme());
+
+    if (def->getType() != DefinitionType::Variable)
+        throw std::invalid_argument("There is no variable with the given name");
+
+    VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
+    expr->setTypeDeclaration(
+        copy(var_def->getTypeDeclaration())
+    );
     return expr->getTypeDeclaration();
 }
