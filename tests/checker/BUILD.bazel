@@ -4,6 +4,7 @@ cc_test(
   srcs = glob([
     "*.cc",
     "ast/declarations/*.cc",
+    "ast/definitions/*.cc",
   ]),
   deps = [
     "@com_google_googletest//:gtest_main",

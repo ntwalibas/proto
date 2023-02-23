@@ -47,6 +47,18 @@ VariableDefinitionChecker::VariableDefinitionChecker(
 void
 VariableDefinitionChecker::check()
 {
+    // Check for redefinition
+    if (scope->hasDefinition(variable_def->getToken().getLexeme())) {
+        throw CheckerError(
+            variable_def->getToken(),
+            "variable redefinition",
+            "there already exists a definition (function or variable) "
+            "with the same name as this variable in the current scope",
+            false
+        );
+    }
+
+    // Check the validity of the definition
     try {
         std::unique_ptr<TypeDeclaration>& var_type = checkHeader();
         std::unique_ptr<TypeDeclaration>& init_type = checkBody();
