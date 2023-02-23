@@ -39,26 +39,6 @@ SimpleTypeDeclaration::SimpleTypeDeclaration(
     token(token)
 {}
 
-// SimpleTypeDeclaration::SimpleTypeDeclaration(
-//     SimpleTypeDeclaration const& type_decl
-// ) : TypeDeclaration(TypeCategory::Simple)
-// {
-//     is_const = type_decl.isConst();
-//     token = type_decl.getToken();
-// }
-
-// SimpleTypeDeclaration& operator=(
-//     SimpleTypeDeclaration const& type_decl
-// )
-// {
-//     if (this != &type_decl) {
-//         is_const = type_decl.isConst();
-//         token = type_decl.getToken();
-//     }
-
-//     return *this;
-// }
-
 /**
  * Returns the type name.
  */
