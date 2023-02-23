@@ -37,16 +37,11 @@ struct Token
         std::string::size_type line,
         std::string::size_type column
     );
-
-    /**
-     * Copy constructor.
-     */
-    Token(Token const& token);
-
-    /**
-     * Copy assignment.
-     */
-    Token& operator=(Token const& token);
+    Token(Token const& token) = default;
+    Token& operator=(Token const& token) noexcept = default;
+    Token(Token&& token) noexcept = default;
+    Token& operator=(Token&& token) noexcept = default;
+    ~Token() noexcept = default;
 
     /**
      * Returns the lexeme for the given token.

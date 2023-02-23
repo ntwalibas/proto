@@ -52,40 +52,6 @@ Token::Token(
     column(column)
 {}
 
-
- /**
- * Copy constructor.
- */
-Token::Token(Token const& token)
-{
-    type = token.type;
-    source = token.source;
-    source_path = token.source_path;
-    start = token.start;
-    length = token.length;
-    line = token.line;
-    column = token.column;
-}
-
-/**
- * Copy assignment.
- */
-Token&
-Token::operator=(Token const& token)
-{
-    if (this != &token) {
-        type = token.type;
-        source = token.source;
-        source_path = token.source_path;
-        start = token.start;
-        length = token.length;
-        line = token.line;
-        column = token.column;
-    }
-
-    return *this;
-}
-
 /**
  * Returns the lexeme for the given token.
  */
