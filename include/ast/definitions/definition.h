@@ -43,7 +43,7 @@ class Definition
         }
 
         /**
-         * Returns the token associated with this statement.
+         * Returns the token associated with this definition.
          */
         virtual Token& getToken() = 0;
 
