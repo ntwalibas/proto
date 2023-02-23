@@ -46,6 +46,9 @@ class Inference
 
         // Variables
         std::unique_ptr<TypeDeclaration>& inferVariableType();
+
+        // Groups
+        std::unique_ptr<TypeDeclaration>& inferGroupType();
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */

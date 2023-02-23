@@ -195,3 +195,20 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         EXPECT_THROW(Inference(expr, scope).inferVariableType(), std::out_of_range);
     }
 }
+
+TEST_F(InferenceTest, inferGroupTypeTest) {
+    std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("(True)");
+
+    Lexer lexer(source, source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseExpression();
+
+    std::unique_ptr<TypeDeclaration>& expr_type =
+        Inference(expr, scope).inferGroupType();
+    
+    EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+    SimpleTypeDeclaration& type_decl =
+        static_cast<SimpleTypeDeclaration&>(*expr_type);
+    EXPECT_EQ(type_decl.getTypeName(), "bool");
+}

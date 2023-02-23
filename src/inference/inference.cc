@@ -27,6 +27,7 @@
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
+#include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "inference/inference.h"
 #include "utils/inference.h"
@@ -57,6 +58,9 @@ Inference::infer()
 
         case ExpressionType::Variable:
             return inferVariableType();
+        
+        case ExpressionType::Group:
+            return inferGroupType();
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");
@@ -153,6 +157,23 @@ Inference::inferVariableType()
     VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
     expr->setTypeDeclaration(
         copy(var_def->getTypeDeclaration())
+    );
+    return expr->getTypeDeclaration();
+}
+
+
+// Groups
+std::unique_ptr<TypeDeclaration>&
+Inference::inferGroupType()
+{
+    GroupExpression* gr_expr = static_cast<GroupExpression*>(expr.get());
+    std::unique_ptr<Expression>& grouped_expr = gr_expr->getExpression();
+
+    std::unique_ptr<TypeDeclaration>& grouped_type_decl =
+        Inference(grouped_expr, scope).infer();
+
+    expr->setTypeDeclaration(
+        copy(grouped_type_decl)
     );
     return expr->getTypeDeclaration();
 }
