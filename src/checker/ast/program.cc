@@ -15,7 +15,10 @@
  *  limitations under the License.
  */
 
+#include "checker/ast/definitions/function.h"
 #include "checker/ast/definitions/variable.h"
+#include "ast/definitions/function.h"
+#include "ast/definitions/variable.h"
 #include "ast/statements/statement.h"
 #include "checker/checker_error.h"
 #include "checker/ast/program.h"
@@ -59,7 +62,25 @@ ProgramChecker::check()
             }
 
             case DefinitionType::Function: {
-                throw std::invalid_argument("Function definitions are not currently checked.");
+                FunctionDefinition* fun_def =
+                    static_cast<FunctionDefinition*>(def.get());
+                FunctionDefinitionChecker checker(fun_def, program.getScope());
+                try {
+                    checker.check();
+
+                    // Add the function definition to the symbol table
+                    program.getScope()->addDefinition(
+                        def->getToken().getLexeme(),
+                        def
+                    );
+                } catch (CheckerError const& e) {
+                    if (! e.isFatal())
+                        errors.push_back(e);
+
+                    throw;
+                }
+
+                break;
             }
 
             case DefinitionType::Statement: {

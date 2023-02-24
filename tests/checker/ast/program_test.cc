@@ -54,4 +54,25 @@ TEST_F(ProgramCheckerTest, checkTest)
             }
         }, CheckerError);
     }
+
+    // Statement at program (file) scope
+    {
+        std::string source = "count = count + 1";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        Program prog = parser.parseProgram();
+        ProgramChecker checker(prog);
+        EXPECT_THROW({
+            try {
+                checker.check();
+            } catch (CheckerError const& e) {
+                EXPECT_STREQ(
+                    e.getSecondaryMessage(),
+                    "a statement cannot occur at file scope, it must be inside a function"
+                );
+                
+                throw;
+            }
+        }, CheckerError);
+    }
 }
