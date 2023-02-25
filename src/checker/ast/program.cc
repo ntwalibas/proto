@@ -54,8 +54,8 @@ ProgramChecker::check()
                 } catch (CheckerError const& e) {
                     if (! e.isFatal())
                         errors.push_back(e);
-
-                    throw;
+                    else
+                        throw;
                 }
 
                 break;
@@ -76,8 +76,8 @@ ProgramChecker::check()
                 } catch (CheckerError const& e) {
                     if (! e.isFatal())
                         errors.push_back(e);
-
-                    throw;
+                    else
+                        throw;
                 }
 
                 break;
