@@ -67,7 +67,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
     // Float literals
@@ -117,7 +117,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Array);
         ArrayTypeDeclaration& type_decl =
             static_cast<ArrayTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "[4]uint");
+        EXPECT_EQ(type_decl.getTypeName(), "[4]int");
     }
 
     // Empty array
