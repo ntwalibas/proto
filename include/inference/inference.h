@@ -49,6 +49,9 @@ class Inference
 
         // Groups
         std::unique_ptr<TypeDeclaration>& inferGroupType();
+
+        // Function calls
+        std::unique_ptr<TypeDeclaration>& inferCallType();
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */

@@ -29,6 +29,7 @@ class InferenceTest: public ::testing::Test
     std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::unique_ptr<Definition> var_def = nullptr;
     std::unique_ptr<VariableDeclaration> var_decl = nullptr;
+    std::unique_ptr<Definition> fun_def = nullptr;
 };
 
 TEST_F(InferenceTest, inferTest) {
@@ -236,4 +237,45 @@ TEST_F(InferenceTest, inferGroupTypeTest) {
     SimpleTypeDeclaration& type_decl =
         static_cast<SimpleTypeDeclaration&>(*expr_type);
     EXPECT_EQ(type_decl.getTypeName(), "bool");
+}
+
+TEST_F(InferenceTest, inferCallTypeTest) {
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("sum: function(a:uint32, b: uint32) -> uint32{}");
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        fun_def = parser.parseDefinition();
+        scope->addDefinition("sum", fun_def);
+    }
+
+    // Function was found
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("sum(2, 2)");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferCallType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint32");
+    }
+
+    // Function not in scope
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("mul(2, 2)");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(Inference(expr, scope).inferCallType(), InferenceError);
+    }
 }

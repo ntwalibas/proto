@@ -27,11 +27,13 @@
 #include "ast/declarations/variable.h"
 #include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
+#include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/array.h"
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
+#include "ast/expressions/call.h"
 #include "inference/inference.h"
 #include "utils/inference.h"
 #include "symbols/scope.h"
@@ -177,7 +179,8 @@ Inference::inferVariableType()
         throw InferenceError(
             var_expr->getToken(),
             "variable used before definition or declaration",
-            "expected a variable definition or a function parameter with this name",
+            "expected a variable definition or a function parameter named [" +
+            var_expr->getToken().getLexeme() + "]",
             false
         );
     }
@@ -204,7 +207,8 @@ Inference::inferVariableType()
             throw InferenceError(
                 var_expr->getToken(),
                 "variable used before definition",
-                "no variable defined with this name, a function of the same name exists",
+                "no variable defined named [" + var_expr->getToken().getLexeme() +
+                "] was defined or declared",
                 false
             );
         }
@@ -232,5 +236,43 @@ Inference::inferGroupType()
     expr->setTypeDeclaration(
         copy(grouped_type_decl)
     );
+    return expr->getTypeDeclaration();
+}
+
+
+// Function calls
+std::unique_ptr<TypeDeclaration>&
+Inference::inferCallType()
+{
+    CallExpression* call_expr = static_cast<CallExpression*>(expr.get());
+
+    if (! scope->hasDefinition(call_expr->getToken().getLexeme(), true)) {
+        throw InferenceError(
+            call_expr->getToken(),
+            "no such function",
+            "no function with name [" + call_expr->getToken().getLexeme() + "] was defined",
+            false
+        );
+    }
+
+    std::unique_ptr<Definition>& def = scope->getDefinition(
+        call_expr->getToken().getLexeme(),
+        true
+    );
+
+    if (def->getType() != DefinitionType::Function) {
+        throw InferenceError(
+            call_expr->getToken(),
+            "function called but not defined",
+            "no function with name [" + call_expr->getToken().getLexeme() + "] was defined",
+            false
+        );
+    }
+
+    FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
+    expr->setTypeDeclaration(
+        copy(fun_def->getReturnType())
+    );
+
     return expr->getTypeDeclaration();
 }
