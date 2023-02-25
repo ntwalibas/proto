@@ -47,17 +47,16 @@ std::unique_ptr<ArrayTypeDeclaration>
 createArrayTypeDeclaration(bool is_const, long size, std::string const& name)
 {
     Token simple_token = createBuiltinToken(PROTO_IDENTIFIER, name);
-    std::unique_ptr<SimpleTypeDeclaration> simple_decl =
-        std::make_unique<SimpleTypeDeclaration>(
-            is_const,
-            simple_token
-        );
+    SimpleTypeDeclaration simple_decl(
+        is_const,
+        simple_token
+    );
     
     Token array_token = createBuiltinToken(PROTO_LEFT_BRACKET, "[");
     return std::make_unique<ArrayTypeDeclaration>(
         is_const,
         array_token,
         size,
-        * simple_decl
+        simple_decl
     );
 }
