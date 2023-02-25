@@ -21,8 +21,10 @@
 #include <memory>
 #include <vector>
 
+#include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/declarations/variable.h"
 #include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
 #include "ast/expressions/variable.h"
@@ -169,33 +171,50 @@ Inference::inferVariableType()
 {
     VariableExpression* var_expr = static_cast<VariableExpression*>(expr.get());
 
-    if (! scope->hasDefinition(var_expr->getToken().getLexeme(), true)) {
+    bool decl_found = scope->hasVariableDeclaration(var_expr->getToken().getLexeme(), true);
+    bool def_found = scope->hasDefinition(var_expr->getToken().getLexeme(), true);
+    if (! decl_found && ! def_found) {
         throw InferenceError(
             var_expr->getToken(),
-            "variable used before definition",
-            "no variable defined with this name",
+            "variable used before definition or declaration",
+            "expected a variable definition or a function parameter with this name",
             false
+        );
+    }
+
+    // Function parameters take precedence because they overshadow global variables;
+    // But also because we forbid parameters from being redefined inside a function.
+    if (decl_found) {
+        std::unique_ptr<VariableDeclaration>& decl = scope->getVariableDeclaration(
+            var_expr->getToken().getLexeme(),
+            true
+        );
+
+        expr->setTypeDeclaration(
+            copy(decl->getTypeDeclaration())
+        );
+    }
+    else {
+        std::unique_ptr<Definition>& def = scope->getDefinition(
+            var_expr->getToken().getLexeme(),
+            true
+        );
+
+        if (def->getType() != DefinitionType::Variable) {
+            throw InferenceError(
+                var_expr->getToken(),
+                "variable used before definition",
+                "no variable defined with this name, a function of the same name exists",
+                false
+            );
+        }
+
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
+        expr->setTypeDeclaration(
+            copy(var_def->getTypeDeclaration())
         );
     }
     
-    std::unique_ptr<Definition>& def = scope->getDefinition(
-        var_expr->getToken().getLexeme(),
-        true
-    );
-
-    if (def->getType() != DefinitionType::Variable) {
-        throw InferenceError(
-            var_expr->getToken(),
-            "variable used before definition",
-            "no variable defined with this name, a function of the same name exists",
-            false
-        );
-    }
-
-    VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
-    expr->setTypeDeclaration(
-        copy(var_def->getTypeDeclaration())
-    );
     return expr->getTypeDeclaration();
 }
 

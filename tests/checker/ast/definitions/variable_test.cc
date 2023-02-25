@@ -73,4 +73,27 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         VariableDefinitionChecker checker(var_def.get(), scope);
         EXPECT_THROW(checker.check(), CheckerError);
     }
+
+    // Variable definition already in scope
+    {
+        std::shared_ptr<std::string> source =
+            std::make_shared<std::string>("other: bool");
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<VariableDeclaration> decl =
+            parser.parseVariableDeclaration();
+        scope->addVariableDeclaration("other", decl);
+
+        std::shared_ptr<std::string> defSource =
+            std::make_shared<std::string>("other: bool = True");
+        Lexer defLexer(defSource, source_path);
+        Parser defParser(defLexer);
+        std::unique_ptr<Definition> def = defParser.parseDefinition();
+        std::unique_ptr<VariableDefinition> var_def(
+            static_cast<VariableDefinition*>(def.release())
+        );
+
+        VariableDefinitionChecker checker(var_def.get(), scope);
+        EXPECT_THROW(checker.check(), CheckerError);
+    }
 }

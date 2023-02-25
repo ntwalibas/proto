@@ -45,14 +45,14 @@ Symtable::addDefinition(
 }
 
 bool
-Symtable::addDeclaration(
+Symtable::addVariableDeclaration(
     std::string const& decl_name,
-    std::unique_ptr<Declaration>& declaration
+    std::unique_ptr<VariableDeclaration>& declaration
 )
 {
     const auto [it, success] = declarations.insert({
         decl_name,
-        DeclarationSymbol(declaration, false)
+        VariableDeclarationSymbol(declaration, false)
     });
 
     return success;
@@ -71,8 +71,8 @@ Symtable::getDefinition(std::string const& def_name)
     return def_sym.definition;
 }
 
-std::unique_ptr<Declaration>&
-Symtable::getDeclaration(std::string const& decl_name)
+std::unique_ptr<VariableDeclaration>&
+Symtable::getVariableDeclaration(std::string const& decl_name)
 {
     auto decl_sym = declarations.at(decl_name);
     // Attempting to obtain a declaration is equivalent to using it
@@ -97,7 +97,7 @@ Symtable::hasDefinition(std::string const& def_name)
 }
 
 bool
-Symtable::hasDeclaration(std::string const& decl_name)
+Symtable::hasVariableDeclaration(std::string const& decl_name)
 {
     try {
         auto& decl_sym = declarations.at(decl_name);
@@ -118,8 +118,8 @@ Symtable::getDefinitions()
     return definitions;
 }
 
-std::map<std::string, struct DeclarationSymbol>&
-Symtable::getDeclarations()
+std::map<std::string, struct VariableDeclarationSymbol>&
+Symtable::getVariableDeclarations()
 {
     return declarations;
 }
@@ -147,7 +147,7 @@ Symtable::clearDefinitions() noexcept
  * Deletes all the declarations in this table.
  */
 void
-Symtable::clearDeclarations() noexcept
+Symtable::clearVariableDeclarations() noexcept
 {
     declarations.clear();
 }
@@ -161,9 +161,9 @@ DefinitionSymbol::DefinitionSymbol(
     used(used)
 {}
 
-// Declaration symbol
-DeclarationSymbol::DeclarationSymbol(
-    std::unique_ptr<Declaration>& declaration,
+// VariableDeclaration symbol
+VariableDeclarationSymbol::VariableDeclarationSymbol(
+    std::unique_ptr<VariableDeclaration>& declaration,
     bool used
 ) : declaration(declaration),
     used(used)

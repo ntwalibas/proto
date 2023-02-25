@@ -7,6 +7,7 @@
 
 #include "ast/declarations/declaration.h"
 #include "ast/expressions/expression.h"
+#include "ast/declarations/variable.h"
 #include "inference/inference_error.h"
 #include "ast/expressions/literal.h"
 #include "inference/inference.h"
@@ -27,6 +28,7 @@ class InferenceTest: public ::testing::Test
     std::string source_path = "main.pro";
     std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
     std::unique_ptr<Definition> var_def = nullptr;
+    std::unique_ptr<VariableDeclaration> var_decl = nullptr;
 };
 
 TEST_F(InferenceTest, inferTest) {
@@ -101,8 +103,6 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
 }
 
 TEST_F(InferenceTest, inferArrayTypeTest) {
-    std::shared_ptr<std::string> source = nullptr;
-
     // Well-formed array
     {
         std::string source = "[0, 1, 2, 3]";
@@ -160,8 +160,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
 }
 
 TEST_F(InferenceTest, inferVariableTypeTest) {
-    std::shared_ptr<std::string> source = nullptr;
-
+    // Variable definition
     {
         std::string source = "count: uint64 = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
@@ -170,7 +169,16 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         scope->addDefinition("count", var_def);
     }
 
-    // Variable is in scope
+    // Variable declaration
+    {
+        std::string source = "other: bool";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        var_decl = parser.parseVariableDeclaration();
+        scope->addVariableDeclaration("other", var_decl);
+    }
+
+    // Variable definition is in scope
     {
         std::string source = "count";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
@@ -186,7 +194,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         EXPECT_EQ(type_decl.getTypeName(), "uint64");
     }
 
-    // Variable is not in scope
+    // Variable definition is not in scope
     {
         std::string source = "name";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
@@ -194,6 +202,22 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(Inference(expr, scope).inferVariableType(), InferenceError);
+    }
+
+    // Variable declaration is in scope
+    {
+        std::string source = "other";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferVariableType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "bool");
     }
 }
 

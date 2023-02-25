@@ -48,6 +48,17 @@ VariableDefinitionChecker::VariableDefinitionChecker(
 void
 VariableDefinitionChecker::check()
 {
+    // Check if this variable tries to shadow a function parameter
+    if (scope->hasVariableDeclaration(variable_def->getToken().getLexeme(), true)) {
+        throw CheckerError(
+            variable_def->getToken(),
+            "variable shadows function parameter",
+            "a variable cannot overshadow a function parameter, "
+            "consider renaming it",
+            true
+        );
+    }
+
     // Check for redefinition
     if (scope->hasDefinition(variable_def->getToken().getLexeme())) {
         throw CheckerError(

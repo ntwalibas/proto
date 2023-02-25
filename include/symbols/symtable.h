@@ -24,8 +24,8 @@
 #include <array>
 #include <map>
 
-#include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
+#include "ast/declarations/variable.h"
 
 
 class Symtable
@@ -35,26 +35,26 @@ class Symtable
          * Add a symbol to the table.
          */
         bool addDefinition(std::string const& def_name, std::unique_ptr<Definition>& definition);
-        bool addDeclaration(std::string const& decl_name, std::unique_ptr<Declaration>& declaration);
+        bool addVariableDeclaration(std::string const& decl_name, std::unique_ptr<VariableDeclaration>& declaration);
 
         /**
          * Returns a symbol, given its name.
          * Throws std::out_of_range if no such symbol could be found.
          */
         std::unique_ptr<Definition>& getDefinition(std::string const& def_name);
-        std::unique_ptr<Declaration>& getDeclaration(std::string const& decl_name);
+        std::unique_ptr<VariableDeclaration>& getVariableDeclaration(std::string const& decl_name);
 
         /**
          * Returns true if the given symbol exists in this table.
          */
         bool hasDefinition(std::string const& def_name);\
-        bool hasDeclaration(std::string const& decl_name);
+        bool hasVariableDeclaration(std::string const& decl_name);
 
         /**
          * Returns all the symbols present in this table.
          */
         std::map<std::string, struct DefinitionSymbol>& getDefinitions();
-        std::map<std::string, struct DeclarationSymbol>& getDeclarations();
+        std::map<std::string, struct VariableDeclarationSymbol>& getVariableDeclarations();
 
         /**
          * Deletes all the symbols in this table.
@@ -69,11 +69,11 @@ class Symtable
         /**
          * Deletes all the declarations in this table.
          */
-        void clearDeclarations() noexcept;
+        void clearVariableDeclarations() noexcept;
 
     private:
         std::map<std::string, struct DefinitionSymbol>  definitions;    /* Map between symbol name and symbol information. */
-        std::map<std::string, struct DeclarationSymbol> declarations;   /* Map between symbol name and symbol information. */
+        std::map<std::string, struct VariableDeclarationSymbol> declarations;   /* Map between symbol name and symbol information. */
 };
 
 struct DefinitionSymbol
@@ -84,12 +84,12 @@ struct DefinitionSymbol
     bool                            used;           /* Has this symbol been used. */
 };
 
-struct DeclarationSymbol
+struct VariableDeclarationSymbol
 {
-    DeclarationSymbol(std::unique_ptr<Declaration>& declaration, bool used);
+    VariableDeclarationSymbol(std::unique_ptr<VariableDeclaration>& declaration, bool used);
 
-    std::unique_ptr<Declaration>&   declaration;    /* Declaration bound to this symbol. */
-    bool                            used;           /* Has this symbol been used. */
+    std::unique_ptr<VariableDeclaration>&   declaration;    /* VariableDeclaration bound to this symbol. */
+    bool                                    used;           /* Has this symbol been used. */
 };
 
 

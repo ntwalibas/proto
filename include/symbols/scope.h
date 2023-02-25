@@ -35,7 +35,7 @@ class Scope
          * Add a symbol to this scope symtable.
          */
         void addDefinition(std::string const& def_name, std::unique_ptr<Definition>& definition);
-        void addDeclaration(std::string const& decl_name, std::unique_ptr<Declaration>& declaration);
+        void addVariableDeclaration(std::string const& decl_name, std::unique_ptr<VariableDeclaration>& declaration);
 
         /**
          * Returns a symbol in this scope's symtable, given its name.
@@ -45,7 +45,7 @@ class Scope
          * the symbol will be searched for in the parent scope.
          */
         std::unique_ptr<Definition>& getDefinition(std::string const& def_name, bool deep = false);
-        std::unique_ptr<Declaration>& getDeclaration(std::string const& decl_name, bool deep = false);
+        std::unique_ptr<VariableDeclaration>& getVariableDeclaration(std::string const& decl_name, bool deep = false);
 
         /**
          * Returns true if the given symbol exists in this scope's symtable.
@@ -54,11 +54,11 @@ class Scope
          * the symbol will be searched for in the parent scope.
          */
         bool hasDefinition(std::string const& def_name, bool deep = false);
-        bool hasDeclaration(std::string const& decl_name, bool deep = false);
+        bool hasVariableDeclaration(std::string const& decl_name, bool deep = false);
 
     private:
         std::shared_ptr<Scope>  parent;     /* The scope parent to this one. */
-        Symtable     symtable;   /* Symtable for definitions found in this scope. */
+        Symtable                symtable;   /* Symtable for definitions found in this scope. */
 };
 
 #endif

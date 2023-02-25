@@ -44,12 +44,12 @@ Scope::addDefinition(
 }
 
 void
-Scope::addDeclaration(
+Scope::addVariableDeclaration(
     std::string const& decl_name,
-    std::unique_ptr<Declaration>& declaration
+    std::unique_ptr<VariableDeclaration>& declaration
 )
 {
-    symtable.addDeclaration(decl_name, declaration);
+    symtable.addVariableDeclaration(decl_name, declaration);
 }
 
 
@@ -73,14 +73,14 @@ Scope::getDefinition(std::string const& def_name, bool deep)
     }
 }
 
-std::unique_ptr<Declaration>&
-Scope::getDeclaration(std::string const& decl_name, bool deep)
+std::unique_ptr<VariableDeclaration>&
+Scope::getVariableDeclaration(std::string const& decl_name, bool deep)
 {
     try {
-        return symtable.getDeclaration(decl_name);
+        return symtable.getVariableDeclaration(decl_name);
     } catch (std::out_of_range const& e) {
         if (deep && parent)
-            return parent->getDeclaration(decl_name, deep);
+            return parent->getVariableDeclaration(decl_name, deep);
 
         throw;
     }
@@ -104,11 +104,11 @@ Scope::hasDefinition(std::string const& def_name, bool deep)
 }
 
 bool
-Scope::hasDeclaration(std::string const& decl_name, bool deep)
+Scope::hasVariableDeclaration(std::string const& decl_name, bool deep)
 {
-    bool res = symtable.hasDeclaration(decl_name);
+    bool res = symtable.hasVariableDeclaration(decl_name);
     if (!res && parent)
-        return parent->hasDeclaration(decl_name, deep);
+        return parent->hasVariableDeclaration(decl_name, deep);
     else
         return res;
 }
