@@ -90,7 +90,7 @@ Inference::inferLiteralType()
         case LiteralType::Integer:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
-                "uint64"
+                "uint"
             ));
             return lit_expr->getTypeDeclaration();
 

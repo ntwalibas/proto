@@ -67,7 +67,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint64");
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
     // Float literals
@@ -117,7 +117,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Array);
         ArrayTypeDeclaration& type_decl =
             static_cast<ArrayTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "[4]uint64");
+        EXPECT_EQ(type_decl.getTypeName(), "[4]uint");
     }
 
     // Empty array
@@ -163,7 +163,7 @@ TEST_F(InferenceTest, inferArrayTypeTest) {
 TEST_F(InferenceTest, inferVariableTypeTest) {
     // Variable definition
     {
-        std::string source = "count: uint64 = 0";
+        std::string source = "count: uint = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         var_def = parser.parseDefinition();
@@ -192,7 +192,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint64");
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
     // Variable definition is not in scope
@@ -242,7 +242,7 @@ TEST_F(InferenceTest, inferGroupTypeTest) {
 TEST_F(InferenceTest, inferCallTypeTest) {
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("sum: function(a:uint32, b: uint32) -> uint32{}");
+        std::make_shared<std::string>("sum: function(a:uint, b: uint) -> uint{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         fun_def = parser.parseDefinition();
@@ -264,7 +264,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint32");
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
     // Function not in scope

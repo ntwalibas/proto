@@ -185,12 +185,8 @@ const std::array<std::string, 10>
 BuiltinTypesSymtable::builtin_types = {
     "void",
     "bool",
-    "uint32",
-    "uint64",
-    "int32",
-    "int64",
-    "float32",
-    "float64",
-    "char",
+    "uint",
+    "int",
+    "float",
     "string"
 };

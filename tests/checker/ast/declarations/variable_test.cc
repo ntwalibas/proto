@@ -32,7 +32,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
 {
     // Correct variable definition
     {
-        std::string source = "count: uint64 = 0";
+        std::string source = "count: uint = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -44,7 +44,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
     
     // Type mismatch between variable type and initializer
     {
-        std::string source = "count: uint64 = True";
+        std::string source = "count: uint = True";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -56,7 +56,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
                 checker.check();
             } catch (CheckerError const& e) {
                 EXPECT_STREQ(e.getPrimaryMessage(), "mismatched types");
-                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("[uint64]"));
+                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("[uint]"));
                 EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("[bool]"));
                 
                 throw;

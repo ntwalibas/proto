@@ -25,7 +25,7 @@ TEST(createArrayTypeDeclaration, createArrayTypeDeclarationTest)
     std::unique_ptr<ArrayTypeDeclaration> type_decl = createArrayTypeDeclaration(
         false,
         1,
-        "int32"
+        "int"
     );
     EXPECT_EQ(type_decl->isConst(), false);
     EXPECT_EQ(type_decl->getToken().type, PROTO_LEFT_BRACKET);

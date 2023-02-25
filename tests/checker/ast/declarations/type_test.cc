@@ -24,7 +24,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
 {
     // Bad simple type declaration
     {
-        std::string source = "int";
+        std::string source = "int32";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<TypeDeclaration> type_decl = parser.parseTypeDeclaration();
@@ -34,7 +34,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
             try {
                 checker.check();
             } catch (CheckerError& e) {
-                EXPECT_STREQ(e.getSecondaryMessage(), "type [int] does not exist");
+                EXPECT_STREQ(e.getSecondaryMessage(), "type [int32] does not exist");
                 throw;
             }
         }, CheckerError);
@@ -42,7 +42,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
 
     // Good simple type declaration
     {
-        std::string source = "int32";
+        std::string source = "int";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<TypeDeclaration> type_decl = parser.parseTypeDeclaration();
@@ -52,7 +52,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
 
     // Bad array type declaration
     {
-        std::string source = "[1]const int";
+        std::string source = "[1]const int32";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<TypeDeclaration> type_decl = parser.parseTypeDeclaration();
@@ -62,7 +62,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
             try {
                 checker.check();
             } catch (CheckerError& e) {
-                EXPECT_STREQ(e.getSecondaryMessage(), "type [int] does not exist");
+                EXPECT_STREQ(e.getSecondaryMessage(), "type [int32] does not exist");
                 throw;
             }
         }, CheckerError);
@@ -70,7 +70,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
 
     // Good array type declaration
     {
-        std::string source = "[10]int32";
+        std::string source = "[10]int";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<TypeDeclaration> type_decl = parser.parseTypeDeclaration();

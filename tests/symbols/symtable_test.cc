@@ -62,5 +62,5 @@ TEST_F(SymtableTest, hasDefinitionTest)
 TEST(BuiltinTypesSymtable, isBuiltinTypeTest)
 {
     EXPECT_EQ(BuiltinTypesSymtable::isBuiltinType("bool"), true);
-    EXPECT_EQ(BuiltinTypesSymtable::isBuiltinType("int"), false);
+    EXPECT_EQ(BuiltinTypesSymtable::isBuiltinType("int32"), false);
 }

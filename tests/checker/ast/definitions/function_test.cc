@@ -29,7 +29,7 @@ TEST_F(FunctionCheckerTest, checkTest)
     // All parameters and return types are valid
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint32, b:uint32) -> uint32{}");
+            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -44,7 +44,7 @@ TEST_F(FunctionCheckerTest, checkTest)
     // We have an invalid type in the parameters
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint, b:uint32) -> uint32{}");
+            std::make_shared<std::string>("sum: function(a: uint32, b:uint) -> uint{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -59,7 +59,7 @@ TEST_F(FunctionCheckerTest, checkTest)
     // We have an invalid return type
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint32, b:uint32) -> int{}");
+            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> int32{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();

@@ -123,7 +123,7 @@ TEST_F(ParserTest, parseVariableDefinitionTest)
 
 TEST_F(ParserTest, parseFunctionDefinitionTest)
 {
-    std::string source = "sum: function(a: int32, b: int32) -> int32{}";
+    std::string source = "sum: function(a: int, b: int) -> int{}";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Definition> def = parser.parseDefinition();
@@ -143,7 +143,7 @@ TEST_F(ParserTest, parseFunctionDefinitionTest)
     // We have the correct return type
     std::unique_ptr<TypeDeclaration>& ret_type = fun_def.getReturnType();
     SimpleTypeDeclaration& simple_type = static_cast<SimpleTypeDeclaration&>(*ret_type);
-    EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
+    EXPECT_EQ(simple_type.getToken().getLexeme(), "int");
 }
 
 
@@ -172,7 +172,7 @@ TEST_F(ParserTest, parseArrayTypeDeclarationTest)
 
 TEST_F(ParserTest, parseVariableDeclarationTest)
 {
-    std::string source = "count: int32";
+    std::string source = "count: int";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<VariableDeclaration> var_decl = parser.parseVariableDeclaration();
@@ -184,14 +184,14 @@ TEST_F(ParserTest, parseVariableDeclarationTest)
     std::unique_ptr<TypeDeclaration>& var_type = var_decl->getTypeDeclaration();
     EXPECT_EQ(var_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& simple_type = static_cast<SimpleTypeDeclaration&>(*var_type);
-    EXPECT_EQ(simple_type.getToken().getLexeme(), "int32");
+    EXPECT_EQ(simple_type.getToken().getLexeme(), "int");
 }
 
 
 // Statements
 TEST_F(ParserTest, parseBlockStatementTest)
 {
-    std::string source = "{\n\n\nstart: int32 = 0\n\n step: int32 = 2}";
+    std::string source = "{\n\n\nstart: int = 0\n\n step: int = 2}";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<BlockStatement> block_stmt = parser.parseBlockStatement();
@@ -235,7 +235,7 @@ TEST_F(ParserTest, parseIfStatementTest)
 TEST_F(ParserTest, parseForStatementTest)
 {
     // We have a variable definition as init clause
-    std::string defSource = "for(i: int32 = 10; i > 0; i = i - 1){}";
+    std::string defSource = "for(i: int = 10; i > 0; i = i - 1){}";
     Lexer defLexer(std::make_shared<std::string>(defSource), source_path);
     Parser defParser(defLexer);
     std::unique_ptr<ForStatement> def_for_stmt = defParser.parseForStatement();

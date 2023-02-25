@@ -26,12 +26,12 @@ class ScopeTest: public ::testing::Test
             }
 
             {
-                std::string source = "count: uint64 = 0";
+                std::string source = "count: uint = 0";
                 std::string source_path = "main.pro";
                 Lexer lexer(std::make_shared<std::string>(source), source_path);
                 Parser parser(lexer);
-                var_uint64 = parser.parseDefinition();
-                child_scope->addDefinition("var_uint64", var_uint64);
+                var_uint = parser.parseDefinition();
+                child_scope->addDefinition("var_uint", var_uint);
             }
         }
 
@@ -42,7 +42,7 @@ class ScopeTest: public ::testing::Test
         std::shared_ptr<Scope> child_scope;
 
         std::unique_ptr<Definition> var_bool = nullptr;
-        std::unique_ptr<Definition> var_uint64 = nullptr;
+        std::unique_ptr<Definition> var_uint = nullptr;
 };
 
 TEST_F(ScopeTest, getDefinitionTest)
@@ -51,10 +51,10 @@ TEST_F(ScopeTest, getDefinitionTest)
     EXPECT_EQ(parent_scope->getDefinition("var_bool")->getType(), DefinitionType::Variable);
 
     // We can't retrieve definitions in child scope given parent sope
-    EXPECT_THROW(parent_scope->getDefinition("var_uint64", true), std::out_of_range);
+    EXPECT_THROW(parent_scope->getDefinition("var_uint", true), std::out_of_range);
 
     // We can retrieve definitions in the child scope
-    EXPECT_EQ(child_scope->getDefinition("var_uint64")->getType(), DefinitionType::Variable);
+    EXPECT_EQ(child_scope->getDefinition("var_uint")->getType(), DefinitionType::Variable);
 
     // If the definition doesn't exist in the child but in the parent scope,
     // we can still retrieve it
@@ -70,10 +70,10 @@ TEST_F(ScopeTest, hasDefinitionTest)
     EXPECT_EQ(parent_scope->hasDefinition("var_bool"), true);
 
     // We can't find definitions in child scope given parent sope
-    EXPECT_EQ(parent_scope->hasDefinition("var_uint64", true), false);
+    EXPECT_EQ(parent_scope->hasDefinition("var_uint", true), false);
 
     // We can find definitions in the child scope
-    EXPECT_EQ(child_scope->hasDefinition("var_uint64"), true);
+    EXPECT_EQ(child_scope->hasDefinition("var_uint"), true);
 
     // We can find definitions in parent scope from child scope
     EXPECT_EQ(child_scope->hasDefinition("var_bool", true), true);

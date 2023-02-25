@@ -27,7 +27,7 @@ TEST_F(ProgramCheckerTest, checkTest)
 {
     // Correct program
     {
-        std::string source = "count: uint64 = 0";
+        std::string source = "count: uint = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
