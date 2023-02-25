@@ -105,7 +105,7 @@ class BuiltinTypesSymtable
         static bool isBuiltinType(std::string const& type);
 
     private:
-        const static std::array<std::string, 10> builtin_types;
+        const static std::array<std::string, 6> builtin_types;
 };
 
 #endif

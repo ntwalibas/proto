@@ -181,12 +181,12 @@ BuiltinTypesSymtable::isBuiltinType(std::string const& type)
     ) != BuiltinTypesSymtable::builtin_types.end();
 }
 
-const std::array<std::string, 10>
+const std::array<std::string, 6>
 BuiltinTypesSymtable::builtin_types{
     "void",
     "bool",
-    "uint",
     "int",
+    "uint",
     "float",
     "string"
 };
