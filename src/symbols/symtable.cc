@@ -28,49 +28,81 @@
 
 
 /**
- * Add a definition to the table.
- * Throws std::invalid_argument if insertion happened.
+ * Add a symbol to the table.
  */
-void
-DefinitionsSymtable::addDefinition(
+bool
+Symtable::addDefinition(
     std::string const& def_name,
     std::unique_ptr<Definition>& definition
 )
 {
-    const auto [it, success] = symbols.insert({
+    const auto [it, success] = definitions.insert({
         def_name,
         DefinitionSymbol(definition, false)
     });
 
-    if (! success)
-        throw std::invalid_argument(
-            "Definition with name [" + def_name + "] already exists in the symtable."
-        );
+    return success;
+}
+
+bool
+Symtable::addDeclaration(
+    std::string const& decl_name,
+    std::unique_ptr<Declaration>& declaration
+)
+{
+    const auto [it, success] = declarations.insert({
+        decl_name,
+        DeclarationSymbol(declaration, false)
+    });
+
+    return success;
 }
 
 /**
- * Returns a definition, given its name.
- * Throws std::out_of_range if no such definition could be found.
+ * Returns a symbol, given its name.
+ * Throws std::out_of_range if no such symbol could be found.
  */
 std::unique_ptr<Definition>&
-DefinitionsSymtable::getDefinition(std::string const& def_name)
+Symtable::getDefinition(std::string const& def_name)
 {
-    auto def_sym = symbols.at(def_name);
+    auto def_sym = definitions.at(def_name);
     // Attempting to obtain a definition is equivalent to using it
     def_sym.used = true;
     return def_sym.definition;
 }
 
+std::unique_ptr<Declaration>&
+Symtable::getDeclaration(std::string const& decl_name)
+{
+    auto decl_sym = declarations.at(decl_name);
+    // Attempting to obtain a declaration is equivalent to using it
+    decl_sym.used = true;
+    return decl_sym.declaration;
+}
+
 /**
- * Returns true if the given definition exists in this table.
+ * Returns true if the given symbol exists in this table.
  */
 bool
-DefinitionsSymtable::hasDefinition(std::string const& def_name)
+Symtable::hasDefinition(std::string const& def_name)
 {
     try {
-        auto& def_sym = symbols.at(def_name);
+        auto& def_sym = definitions.at(def_name);
         // Checking if a definition exists is equivalent to using it
         def_sym.used = true;
+        return true;
+    } catch (std::out_of_range const& e) {
+        return false;
+    }
+}
+
+bool
+Symtable::hasDeclaration(std::string const& decl_name)
+{
+    try {
+        auto& decl_sym = declarations.at(decl_name);
+        // Checking if a declaration exists is equivalent to using it
+        decl_sym.used = true;
         return true;
     } catch (std::out_of_range const& e) {
         return false;
@@ -81,18 +113,43 @@ DefinitionsSymtable::hasDefinition(std::string const& def_name)
  * Returns all the symbols present in this table.
  */
 std::map<std::string, struct DefinitionSymbol>&
-DefinitionsSymtable::getDefinitions()
+Symtable::getDefinitions()
 {
-    return symbols;
+    return definitions;
+}
+
+std::map<std::string, struct DeclarationSymbol>&
+Symtable::getDeclarations()
+{
+    return declarations;
 }
 
 /**
  * Deletes all the symbols in this table.
  */
 void
-DefinitionsSymtable::clear() noexcept
+Symtable::clear() noexcept
 {
-    symbols.clear();
+    definitions.clear();
+    declarations.clear();
+}
+
+/**
+ * Deletes all the definitons in this table.
+ */
+void
+Symtable::clearDefinitions() noexcept
+{
+    definitions.clear();
+}
+
+/**
+ * Deletes all the declarations in this table.
+ */
+void
+Symtable::clearDeclarations() noexcept
+{
+    declarations.clear();
 }
 
 
@@ -101,6 +158,14 @@ DefinitionSymbol::DefinitionSymbol(
     std::unique_ptr<Definition>& definition,
     bool used
 ) : definition(definition),
+    used(used)
+{}
+
+// Declaration symbol
+DeclarationSymbol::DeclarationSymbol(
+    std::unique_ptr<Declaration>& declaration,
+    bool used
+) : declaration(declaration),
     used(used)
 {}
 

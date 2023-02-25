@@ -32,7 +32,7 @@ Scope::Scope(
 
 
 /**
- * Add a definition to this scope symtable.
+ * Add a symbol to this scope symtable.
  */
 void
 Scope::addDefinition(
@@ -43,13 +43,22 @@ Scope::addDefinition(
     symtable.addDefinition(def_name, definition);
 }
 
+void
+Scope::addDeclaration(
+    std::string const& decl_name,
+    std::unique_ptr<Declaration>& declaration
+)
+{
+    symtable.addDeclaration(decl_name, declaration);
+}
+
 
 /**
- * Returns a definition in this scope's symtable, given its name.
- * Throws std::out_of_range if no such definition could be found.
+ * Returns a symbol in this scope's symtable, given its name.
+ * Throws std::out_of_range if no such symbol could be found.
  *
- * If `deep` is true, in case the definition can't be found in the current scope,
- * the definition will be searched for in the parent scope.
+ * If `deep` is true, in case the symbol can't be found in the current scope,
+ * the symbol will be searched for in the parent scope.
  */
 std::unique_ptr<Definition>&
 Scope::getDefinition(std::string const& def_name, bool deep)
@@ -64,12 +73,25 @@ Scope::getDefinition(std::string const& def_name, bool deep)
     }
 }
 
+std::unique_ptr<Declaration>&
+Scope::getDeclaration(std::string const& decl_name, bool deep)
+{
+    try {
+        return symtable.getDeclaration(decl_name);
+    } catch (std::out_of_range const& e) {
+        if (deep && parent)
+            return parent->getDeclaration(decl_name, deep);
+
+        throw;
+    }
+}
+
 
 /**
- * Returns true if the given definition exists in this scope's symtable.
+ * Returns true if the given symbol exists in this scope's symtable.
  *
- * If `deep` is true, in case the definition can't be found in the current scope,
- * the definition will be searched for in the parent scope.
+ * If `deep` is true, in case the symbol can't be found in the current scope,
+ * the symbol will be searched for in the parent scope.
  */
 bool
 Scope::hasDefinition(std::string const& def_name, bool deep)
@@ -77,6 +99,16 @@ Scope::hasDefinition(std::string const& def_name, bool deep)
     bool res = symtable.hasDefinition(def_name);
     if (!res && parent)
         return parent->hasDefinition(def_name, deep);
+    else
+        return res;
+}
+
+bool
+Scope::hasDeclaration(std::string const& decl_name, bool deep)
+{
+    bool res = symtable.hasDeclaration(decl_name);
+    if (!res && parent)
+        return parent->hasDeclaration(decl_name, deep);
     else
         return res;
 }

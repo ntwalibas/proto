@@ -32,30 +32,33 @@ class Scope
         Scope(std::shared_ptr<Scope> const& parent);
 
         /**
-         * Add a definition to this scope symtable.
+         * Add a symbol to this scope symtable.
          */
         void addDefinition(std::string const& def_name, std::unique_ptr<Definition>& definition);
+        void addDeclaration(std::string const& decl_name, std::unique_ptr<Declaration>& declaration);
 
         /**
-         * Returns a definition in this scope's symtable, given its name.
-         * Throws std::out_of_range if no such definition could be found.
+         * Returns a symbol in this scope's symtable, given its name.
+         * Throws std::out_of_range if no such symbol could be found.
          *
-         * If `deep` is true, in case the definition can't be found in the current scope,
-         * the definition will be searched for in the parent scope.
+         * If `deep` is true, in case the symbol can't be found in the current scope,
+         * the symbol will be searched for in the parent scope.
          */
         std::unique_ptr<Definition>& getDefinition(std::string const& def_name, bool deep = false);
+        std::unique_ptr<Declaration>& getDeclaration(std::string const& decl_name, bool deep = false);
 
         /**
-         * Returns true if the given definition exists in this scope's symtable.
+         * Returns true if the given symbol exists in this scope's symtable.
          *
-         * If `deep` is true, in case the definition can't be found in the current scope,
-         * the definition will be searched for in the parent scope.
+         * If `deep` is true, in case the symbol can't be found in the current scope,
+         * the symbol will be searched for in the parent scope.
          */
         bool hasDefinition(std::string const& def_name, bool deep = false);
+        bool hasDeclaration(std::string const& decl_name, bool deep = false);
 
     private:
         std::shared_ptr<Scope>  parent;     /* The scope parent to this one. */
-        DefinitionsSymtable     symtable;   /* Symtable for definitions found in this scope. */
+        Symtable     symtable;   /* Symtable for definitions found in this scope. */
 };
 
 #endif

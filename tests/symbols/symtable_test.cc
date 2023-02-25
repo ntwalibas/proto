@@ -25,7 +25,7 @@ class SymtableTest: public ::testing::Test
             symtable.clear();
         }
 
-        DefinitionsSymtable symtable;
+        Symtable symtable;
         std::unique_ptr<Definition> var = nullptr;
         std::unique_ptr<Definition> nil = nullptr;
 };
@@ -36,7 +36,7 @@ TEST_F(SymtableTest, addGetDefinitionsTest)
     symtable.addDefinition("nil", nil);
 
     EXPECT_EQ(symtable.getDefinitions().size(), 2);
-    EXPECT_THROW(symtable.addDefinition("var", var), std::invalid_argument);
+    EXPECT_EQ(symtable.addDefinition("var", var), false);
 }
 
 TEST_F(SymtableTest, getDefinitionTest)
