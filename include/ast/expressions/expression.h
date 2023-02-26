@@ -29,7 +29,7 @@
 enum class ExpressionType {
     // Primary
     Literal,
-    Array,
+    // Array,
     Variable,
     Group,
     Call,

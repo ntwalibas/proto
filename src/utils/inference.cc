@@ -38,25 +38,3 @@ createSimpleTypeDeclaration(bool is_const, std::string const& name)
         token
     );
 }
-
-
-/**
- * Given a builtin type name and size, return an array type declaration with that name.
- */
-std::unique_ptr<ArrayTypeDeclaration>
-createArrayTypeDeclaration(bool is_const, long size, std::string const& name)
-{
-    Token simple_token = createBuiltinToken(PROTO_IDENTIFIER, name);
-    SimpleTypeDeclaration simple_decl(
-        is_const,
-        simple_token
-    );
-    
-    Token array_token = createBuiltinToken(PROTO_LEFT_BRACKET, "[");
-    return std::make_unique<ArrayTypeDeclaration>(
-        is_const,
-        array_token,
-        size,
-        simple_decl
-    );
-}

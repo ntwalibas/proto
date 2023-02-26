@@ -12,7 +12,6 @@
 #include "ast/expressions/binary.h"
 #include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
-#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
 #include "ast/statements/break.h"
@@ -157,17 +156,6 @@ TEST_F(ParserTest, parseSimpleTypeDeclarationTest)
 
     EXPECT_EQ(type_decl->isConst(), true);
     EXPECT_EQ(type_decl->getToken().getLexeme(), "string");
-}
-
-TEST_F(ParserTest, parseArrayTypeDeclarationTest)
-{
-    std::string source = "[1] int";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<ArrayTypeDeclaration> type_decl = parser.parseArrayTypeDeclaration(true);
-    EXPECT_EQ(type_decl->isConst(), true);
-    EXPECT_EQ(type_decl->getToken().getLexeme(), "[");
-    EXPECT_EQ(type_decl->getSize(), 1);
 }
 
 TEST_F(ParserTest, parseVariableDeclarationTest)
@@ -619,24 +607,6 @@ TEST_F(ParserTest, parseBitwiseNotExpressionTest)
     EXPECT_EQ(bitnot_expr.getExpression()->getType(), ExpressionType::Unary);
 }
 
-TEST_F(ParserTest, parseSubscriptExpressionTest)
-{
-    std::string source = "values[0]";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseSubscriptExpression();
-
-    // We have the correct type of expression
-    EXPECT_EQ(expr->getType(), ExpressionType::Binary);
-    BinaryExpression& sub_expr = static_cast<BinaryExpression&>(*expr);
-
-    // We have the right data on the subscript expression
-    EXPECT_EQ(sub_expr.getToken().getLexeme(), "[");
-    EXPECT_EQ(sub_expr.getBinaryType(), BinaryType::Subscript);
-    EXPECT_EQ(sub_expr.getLeft()->getType(), ExpressionType::Variable);
-    EXPECT_EQ(sub_expr.getRight()->getType(), ExpressionType::Literal);
-}
-
 TEST_F(ParserTest, parsePrimaryExpressionTest)
 {
     std::string source = "name";
@@ -650,41 +620,6 @@ TEST_F(ParserTest, parsePrimaryExpressionTest)
 
     // We have the correct variable expression name
     EXPECT_EQ(var_expr.getToken().getLexeme(), "name");
-}
-
-TEST_F(ParserTest, parseArrayExpressionTest)
-{
-    // Malformed (not closed) array expression
-    std::string malformedSource = "[1, 2";
-    Lexer malformedLexer(std::make_shared<std::string>(malformedSource), source_path);
-    Parser malformedParser(malformedLexer);
-    EXPECT_THROW({
-        try {
-            malformedParser.parseArrayExpression();
-        } catch (ParserError& e) {
-            EXPECT_STREQ(
-                e.getSecondaryMessage(),
-                "expected a closing right bracket after initializing an array"
-            );
-            throw;
-        }
-    }, ParserError);
-
-    // Empty array expression
-    std::string emptySource = "[]";
-    Lexer emptyLexer(std::make_shared<std::string>(emptySource), source_path);
-    Parser emptyParser(emptyLexer);
-    std::unique_ptr<ArrayExpression> empty_ar_expr = emptyParser.parseArrayExpression();
-    EXPECT_EQ(empty_ar_expr->getToken().getLexeme(), "[");
-    EXPECT_EQ(empty_ar_expr->getContents().size(), 0);
-
-    // Filled array expression
-    std::string source = "[1, 2, 3, 4]";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<ArrayExpression> ar_expr = parser.parseArrayExpression();
-    EXPECT_EQ(ar_expr->getToken().getLexeme(), "[");
-    EXPECT_EQ(ar_expr->getContents().size(), 4);
 }
 
 TEST_F(ParserTest, parseCallExpressionTest)

@@ -19,17 +19,3 @@ TEST(createSimpleTypeDeclaration, createSimpleTypeDeclarationTest)
     EXPECT_EQ(type_decl->getToken().getLexeme(), "bool");
     EXPECT_EQ(type_decl->getToken().source_path, "__builtin__");
 }
-
-TEST(createArrayTypeDeclaration, createArrayTypeDeclarationTest)
-{
-    std::unique_ptr<ArrayTypeDeclaration> type_decl = createArrayTypeDeclaration(
-        false,
-        1,
-        "int"
-    );
-    EXPECT_EQ(type_decl->isConst(), false);
-    EXPECT_EQ(type_decl->getToken().type, PROTO_LEFT_BRACKET);
-    EXPECT_EQ(type_decl->getSize(), 1);
-    EXPECT_EQ(type_decl->getToken().getLexeme(), "[");
-    EXPECT_EQ(type_decl->getToken().source_path, "__builtin__");
-}

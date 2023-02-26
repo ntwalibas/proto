@@ -30,7 +30,6 @@
 #include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
-#include "ast/expressions/array.h"
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "ast/expressions/call.h"
@@ -57,9 +56,6 @@ Inference::infer()
     switch (expr->getType()) {
         case ExpressionType::Literal:
             return inferLiteralType();
-
-        case ExpressionType::Array:
-            return inferArrayType();
 
         case ExpressionType::Variable:
             return inferVariableType();
@@ -108,62 +104,6 @@ Inference::inferLiteralType()
             ));
             return lit_expr->getTypeDeclaration();
     }
-}
-
-
-// Arrays
-std::unique_ptr<TypeDeclaration>&
-Inference::inferArrayType()
-{
-    ArrayExpression* arr_expr = static_cast<ArrayExpression*>(expr.get());
-
-    std::vector<std::unique_ptr<Expression>>& contents =
-        arr_expr->getContents();
-    
-    if (contents.size() == 0) {
-        throw InferenceError(
-            arr_expr->getToken(),
-            "empty array",
-            "an array cannot be empty",
-            false
-        );
-    }
-
-    std::unique_ptr<TypeDeclaration>& first_element_type_decl =
-        Inference(contents[0], scope).infer();
-    
-    // Pre-emptively set the type of the array
-    expr->setTypeDeclaration(createArrayTypeDeclaration(
-        true,
-        contents.size(),
-        first_element_type_decl->getTypeName()
-    ));
-
-    for (auto it = contents.begin(); it != contents.end(); ++it) {
-        if ((*it)->getType() == ExpressionType::Array) {
-            throw InferenceError(
-                (*it)->getToken(),
-                "unsupported expression",
-                "multi-dimensional arrays are not currently supported",
-                false
-            );
-        }
-
-        std::unique_ptr<TypeDeclaration>& it_type_decl =
-            Inference(*it, scope).infer();
-        
-        if (! typeDeclarationEquals(first_element_type_decl, it_type_decl)) {
-            throw InferenceError(
-                (*it)->getToken(),
-                "invalid array element type",
-                "array elements must have the same type, expected [" +
-                first_element_type_decl->getTypeName() + "]",
-                false
-            );
-        }
-    }
-
-    return expr->getTypeDeclaration();
 }
 
 

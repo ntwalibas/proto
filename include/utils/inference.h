@@ -30,11 +30,4 @@
 std::unique_ptr<SimpleTypeDeclaration>
 createSimpleTypeDeclaration(bool is_const, std::string const& name);
 
-
-/**
- * Given a builtin type name and size, return an array type declaration with that name.
- */
-std::unique_ptr<ArrayTypeDeclaration>
-createArrayTypeDeclaration(bool is_const, long size, std::string const& name);
-
 #endif

@@ -103,63 +103,6 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
     }
 }
 
-TEST_F(InferenceTest, inferArrayTypeTest) {
-    // Well-formed array
-    {
-        std::string source = "[0, 1, 2, 3]";
-        Lexer lexer(std::make_shared<std::string>(source), source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferArrayType();
-        
-        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Array);
-        ArrayTypeDeclaration& type_decl =
-            static_cast<ArrayTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "[4]int");
-    }
-
-    // Empty array
-    {
-        std::string source = "[]";
-        Lexer lexer(std::make_shared<std::string>(source), source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        EXPECT_THROW(
-            Inference(expr, scope).inferArrayType(),
-            InferenceError
-        );
-    }
-
-    // Non-uniform array
-    {
-        std::string source = "[0, True]";
-        Lexer lexer(std::make_shared<std::string>(source), source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        EXPECT_THROW(
-            Inference(expr, scope).inferArrayType(),
-            InferenceError
-        );
-    }
-
-    // Array within array
-    {
-        std::string source = "[0, [True]]";
-        Lexer lexer(std::make_shared<std::string>(source), source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        EXPECT_THROW(
-            Inference(expr, scope).inferArrayType(),
-            InferenceError
-        );
-    }
-}
-
 TEST_F(InferenceTest, inferVariableTypeTest) {
     // Variable definition
     {

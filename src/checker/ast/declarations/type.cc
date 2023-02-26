@@ -38,28 +38,9 @@ TypeDeclarationChecker::TypeDeclarationChecker(
 void
 TypeDeclarationChecker::check()
 {
-    if (type_decl->getTypeCategory() == TypeCategory::Simple) {
-        SimpleTypeDeclaration& simple_type_decl =
-            dynamic_cast<SimpleTypeDeclaration&>(*type_decl);
-        checkSimpleType(simple_type_decl);
-    }
-    else {
-        ArrayTypeDeclaration& array_type_decl =
-            dynamic_cast<ArrayTypeDeclaration&>(*type_decl);
-        
-        // Make sure there no size 0
-        if (array_type_decl.getSize() == 0) {
-            throw CheckerError(
-                array_type_decl.getToken(),
-                "zero size array prohibited",
-                "an array type declaration cannot declare a zero-sized array",
-                true
-            );
-        }
-
-        // Check the simple type associated with this array type
-        checkSimpleType(array_type_decl.getSimpleType());
-    }
+    SimpleTypeDeclaration& simple_type_decl =
+        dynamic_cast<SimpleTypeDeclaration&>(*type_decl);
+    checkSimpleType(simple_type_decl);
 }
 
 static void

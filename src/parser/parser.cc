@@ -34,7 +34,6 @@
 #include "ast/expressions/binary.h"
 #include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
-#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
 #include "ast/statements/break.h"
@@ -282,14 +281,11 @@ Parser::parseTypeDeclaration()
     if (check(PROTO_IDENTIFIER)) {
         return parseSimpleTypeDeclaration(is_const);
     }
-    else if (check(PROTO_LEFT_BRACKET)) {
-        return parseArrayTypeDeclaration(is_const);
-    }
     else {
         throw ParserError(
             peekBack(),
             "expected a type",
-            "a type is either a simple type or an array type",
+            "expected a type declaration",
             false
         );
     }
@@ -299,57 +295,6 @@ std::unique_ptr<SimpleTypeDeclaration>
 Parser::parseSimpleTypeDeclaration(bool is_const)
 {
     return std::make_unique<SimpleTypeDeclaration>(is_const, consume(PROTO_IDENTIFIER));
-}
-
-std::unique_ptr<ArrayTypeDeclaration>
-Parser::parseArrayTypeDeclaration(bool is_const)
-{
-    Token type_token;
-    try {
-        type_token = consume(PROTO_LEFT_BRACKET);
-    } catch (std::invalid_argument const& e) {
-        throw ParserError(
-            peek(),
-            "missing left bracket",
-            "expected a left bracket to declare an array type",
-            false
-        );
-    }
-
-    long size = 0;
-    try {
-        Token& size_str = consume(PROTO_INT);
-        size = std::stol(size_str.getLexeme());
-    } catch (std::invalid_argument const& e) {
-        throw ParserError(
-            peek(),
-            "missing array size",
-            "expected the array size",
-            false
-        );
-    }
-
-    try {
-        consume(PROTO_RIGHT_BRACKET);
-    } catch (std::invalid_argument const& e) {
-        throw ParserError(
-            peek(),
-            "missing right bracket",
-            "expected a right bracket after array size",
-            false
-        );
-    }
-
-    bool is_simple_const = match(PROTO_CONST);
-    std::unique_ptr<SimpleTypeDeclaration> simple_type = 
-        parseSimpleTypeDeclaration(is_simple_const);
-    
-    return std::make_unique<ArrayTypeDeclaration>(
-        is_const,
-        type_token,
-        size,
-        *simple_type
-    );
 }
 
 std::unique_ptr<VariableDeclaration>
@@ -1116,43 +1061,7 @@ Parser::parseBitwiseNotExpression()
         );
     }
 
-    return parseSubscriptExpression();
-}
-
-std::unique_ptr<Expression>
-Parser::parseSubscriptExpression()
-{
-    std::unique_ptr<Expression> left = parsePrimaryExpression();
-
-    // Notice the `if` statement and not `while` statement
-    // That's because we don't allow multi-dimensional arrays at the moment
-    if (match(PROTO_LEFT_BRACKET)) {
-        Token op_token = peekBack();
-        std::unique_ptr<Expression> right = parsePrimaryExpression();
-
-        try {
-            consume(PROTO_RIGHT_BRACKET);
-        } catch (std::invalid_argument const& e) {
-            throw ParserError(
-                peekBack(),
-                "missing right closing bracket in subscript expression",
-                "expected a closing bracket after the subscript",
-                false
-            );
-        }
-
-        std::unique_ptr<BinaryExpression> sub_expr = 
-            std::make_unique<BinaryExpression>(
-                op_token,
-                BinaryType::Subscript,
-                std::move(left),
-                std::move(right)
-            );
-        
-        left = std::move(sub_expr);
-    }
-
-    return left;
+    return parsePrimaryExpression();
 }
 
 std::unique_ptr<Expression>
@@ -1160,9 +1069,6 @@ Parser::parsePrimaryExpression()
 {
     if (check(PROTO_LEFT_PAREN)) {
         return parseGroupExpression();
-    }
-    else if (check(PROTO_LEFT_BRACKET)) {
-        return parseArrayExpression();
     }
     else if (check(PROTO_IDENTIFIER)) {
         if (checkNext(PROTO_LEFT_PAREN)) {
@@ -1246,40 +1152,6 @@ Parser::parseGroupExpression()
         token,
         std::move(expr)
     );
-}
-
-std::unique_ptr<ArrayExpression>
-Parser::parseArrayExpression()
-{
-    Token& array_token = consume(PROTO_LEFT_BRACKET);
-    std::unique_ptr<ArrayExpression> array_exp =
-        std::make_unique<ArrayExpression>(array_token);
-
-    do {
-        // Consume extra newlines before the next element
-        while (match(PROTO_NEWLINE));
-
-        if (check(PROTO_RIGHT_BRACKET))
-            break;
-
-        array_exp->addContent(parsePrimaryExpression());
-    } while (match(PROTO_COMMA));
-
-    // Allow newlines before closing bracket
-    while (match(PROTO_NEWLINE));
-
-    try {
-        consume(PROTO_RIGHT_BRACKET);
-    } catch (std::invalid_argument const& e) {
-        throw ParserError(
-            peekBack(),
-            "missing closing right bracket after array initializer",
-            "expected a closing right bracket after initializing an array",
-            false
-        );
-    }
-
-    return array_exp;
 }
 
 std::unique_ptr<VariableExpression>

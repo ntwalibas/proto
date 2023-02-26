@@ -33,7 +33,6 @@
 #include "ast/statements/continue.h"
 #include "ast/expressions/literal.h"
 #include "ast/expressions/group.h"
-#include "ast/expressions/array.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
 #include "ast/statements/break.h"
@@ -66,7 +65,6 @@ class Parser
         // Declarations
         std::unique_ptr<TypeDeclaration> parseTypeDeclaration();
         std::unique_ptr<SimpleTypeDeclaration> parseSimpleTypeDeclaration(bool is_const);
-        std::unique_ptr<ArrayTypeDeclaration> parseArrayTypeDeclaration(bool is_const);
         std::unique_ptr<VariableDeclaration> parseVariableDeclaration();
 
         // Statements
@@ -98,7 +96,6 @@ class Parser
         std::unique_ptr<Expression> parsePrimaryExpression();
         std::unique_ptr<CallExpression> parseCallExpression();
         std::unique_ptr<GroupExpression> parseGroupExpression();
-        std::unique_ptr<ArrayExpression> parseArrayExpression();
         std::unique_ptr<VariableExpression> parseVariableExpression();
         std::unique_ptr<LiteralExpression> parseLiteralExpression();
 

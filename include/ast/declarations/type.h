@@ -27,7 +27,7 @@
 enum class TypeCategory
 {
     Simple,
-    Array
+    // Array
 };
 
 
@@ -91,55 +91,6 @@ class SimpleTypeDeclaration : public TypeDeclaration
     protected:
         bool    is_const;   /* Whether this type declaration is qualified as const. */
         Token   token;      /* The token with type information. */
-};
-
-
-class ArrayTypeDeclaration : public TypeDeclaration
-{
-    public:
-        ArrayTypeDeclaration(bool is_const, Token& token, long size, SimpleTypeDeclaration& simple_type);
-        ArrayTypeDeclaration(ArrayTypeDeclaration const& type_decl) noexcept = default;
-        ArrayTypeDeclaration(ArrayTypeDeclaration&& type_decl) noexcept = default;
-        ArrayTypeDeclaration& operator=(ArrayTypeDeclaration const& type_decl) noexcept = default;
-        ArrayTypeDeclaration& operator=(ArrayTypeDeclaration&& type_decl) noexcept = default;
-        ~ArrayTypeDeclaration() noexcept = default;
-
-        /**
-         * Returns the type name.
-         */
-        std::string getTypeName();
-
-        /**
-         * Returns true is this type declaration is const-qualified.
-         */
-        bool isConst() const;
-
-        /**
-         * Returns the token associated with this type declaration.
-         */
-        Token& getToken();
-
-        /**
-         * Returns the size of this array type.
-         */
-        long getSize();
-
-        /**
-         * Returns the simple stored in the array.
-         */
-        SimpleTypeDeclaration& getSimpleType();
-
-        /**
-         * Compares the given type declaration is equal to the current type declaration.
-         */
-        bool operator==(ArrayTypeDeclaration& type_decl);
-        bool operator!=(ArrayTypeDeclaration& type_decl);
-
-    protected:
-        bool                    is_const;       /* Whether this type declaration is qualified as const. */
-        Token                   token;          /* The token with type information. */
-        long                    size;           /* Size of the array. */
-        SimpleTypeDeclaration   simple_type;    /* The simple type to store in the array. */
 };
 
 
