@@ -67,7 +67,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "int");
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
     // Float literals
@@ -220,5 +220,43 @@ TEST_F(InferenceTest, inferCallTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(Inference(expr, scope).inferCallType(), InferenceError);
+    }
+}
+
+TEST_F(InferenceTest, inferUnaryTypeTest) {
+    // Unary positive
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("+10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+
+    // Unary negative
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 }

@@ -26,6 +26,7 @@
 
 #include "ast/definitions/definition.h"
 #include "ast/declarations/variable.h"
+#include "ast/declarations/type.h"
 
 
 class Symtable
@@ -106,6 +107,22 @@ class BuiltinTypesSymtable
 
     private:
         const static std::array<std::string, 6> builtin_types;
+};
+
+
+// Builtin functions symtable
+// Given a builtin function mangled name, we need its return type
+// To avoid over-engineering, we encode the function parameters'
+// types in the function's mangled name
+class BuiltinFunctionsSymtable
+{
+    public:
+        BuiltinFunctionsSymtable();
+
+        std::unique_ptr<TypeDeclaration>& getReturnType(std::string& function_mangled_name);
+    
+    private:
+        std::map<std::string, std::unique_ptr<TypeDeclaration>> fun_return_types;
 };
 
 #endif

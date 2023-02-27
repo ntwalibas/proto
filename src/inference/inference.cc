@@ -30,10 +30,12 @@
 #include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "ast/expressions/call.h"
 #include "inference/inference.h"
+#include "symbols/symtable.h"
 #include "utils/inference.h"
 #include "symbols/scope.h"
 
@@ -86,7 +88,7 @@ Inference::inferLiteralType()
         case LiteralType::Integer:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
-                "int"
+                "uint"
             ));
             return lit_expr->getTypeDeclaration();
 
@@ -212,6 +214,36 @@ Inference::inferCallType()
     FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
     expr->setTypeDeclaration(
         copy(fun_def->getReturnType())
+    );
+
+    return expr->getTypeDeclaration();
+}
+
+
+// Unary operators
+std::unique_ptr<TypeDeclaration>&
+Inference::inferUnaryType()
+{
+    UnaryExpression* un_expr = static_cast<UnaryExpression*>(expr.get());
+    std::unique_ptr<TypeDeclaration>& expr_type_decl =
+        Inference(un_expr->getExpression(), scope).infer();
+
+    std::string op_name;
+    switch (un_expr->getUnaryType()) {
+        case UnaryType::Plus:
+            op_name = "__pos__(" + expr_type_decl->getTypeName() + ")";
+            break;
+        
+        case UnaryType::Minus:
+            op_name = "__neg__(" + expr_type_decl->getTypeName() + ")";
+            break;
+        
+        default:
+            throw std::invalid_argument("Unary operator return type inference not supported at the moment");
+    }
+
+    expr->setTypeDeclaration(
+        copy(BuiltinFunctionsSymtable().getReturnType(op_name))
     );
 
     return expr->getTypeDeclaration();

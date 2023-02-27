@@ -25,6 +25,7 @@
 
 #include "ast/definitions/definition.h"
 #include "symbols/symtable.h"
+#include "utils/inference.h"
 
 
 /**
@@ -190,3 +191,22 @@ BuiltinTypesSymtable::builtin_types{
     "float",
     "string"
 };
+
+
+// Builtin functions symtable
+// Given a builtin function mangled name, we need its return type
+// To avoid over-engineering, we encode the function parameters'
+// types in the function's mangled name
+BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
+{
+    fun_return_types["__pos__(int)"] = createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__pos__(uint)"] = createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__neg__(int)"] = createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__neg__(uint)"] = createSimpleTypeDeclaration(true, "int");
+}
+
+std::unique_ptr<TypeDeclaration>&
+BuiltinFunctionsSymtable::getReturnType(std::string& function_mangled_name)
+{
+    return fun_return_types[function_mangled_name];
+}

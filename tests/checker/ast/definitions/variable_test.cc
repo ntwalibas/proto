@@ -30,7 +30,7 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
     // Variable definition in due form
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("count: int = 0");
+            std::make_shared<std::string>("count: uint = 0");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();

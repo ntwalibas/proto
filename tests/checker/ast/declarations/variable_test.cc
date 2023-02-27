@@ -32,7 +32,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
 {
     // Correct variable definition
     {
-        std::string source = "count: int = 0";
+        std::string source = "count: uint = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();

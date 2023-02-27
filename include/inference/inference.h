@@ -49,6 +49,9 @@ class Inference
 
         // Function calls
         std::unique_ptr<TypeDeclaration>& inferCallType();
+
+        // Unary operators
+        std::unique_ptr<TypeDeclaration>& inferUnaryType();
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */
