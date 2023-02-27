@@ -64,6 +64,9 @@ Inference::infer()
         
         case ExpressionType::Group:
             return inferGroupType();
+        
+        case ExpressionType::Unary:
+            return inferUnaryType();
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");

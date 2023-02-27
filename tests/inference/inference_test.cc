@@ -224,7 +224,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
 }
 
 TEST_F(InferenceTest, inferUnaryTypeTest) {
-    // Unary positive
+    // Unary positive: unsigned int
     {
         std::shared_ptr<std::string> source =
         std::make_shared<std::string>("+10");
@@ -242,10 +242,46 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
-    // Unary negative
+    // Unary negative: unsigned int
     {
         std::shared_ptr<std::string> source =
         std::make_shared<std::string>("-10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Unary positive: signed int
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("+-10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Unary negative: unsigned int
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("--10");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
