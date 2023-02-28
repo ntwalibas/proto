@@ -200,19 +200,76 @@ BuiltinTypesSymtable::builtin_types{
 BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
 {
     // Unary operators
-    fun_return_types["__pos__(int)"] = createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__pos__(uint)"] = createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__pos__(float)"] = createSimpleTypeDeclaration(true, "float");
-    fun_return_types["__neg__(int)"] = createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__neg__(uint)"] = createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__neg__(float)"] = createSimpleTypeDeclaration(true, "float");
-    fun_return_types["__bnot__(int)"] = createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__bnot__(uint)"] = createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__not__(bool)"] = createSimpleTypeDeclaration(true, "bool");
+    // Plus
+    fun_return_types["__pos__(int)"]    =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__pos__(uint)"]   =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__pos__(float)"]  =
+        createSimpleTypeDeclaration(true, "float");
+    // Minus
+    fun_return_types["__neg__(int)"]    =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__neg__(uint)"]   =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__neg__(float)"]   =
+        createSimpleTypeDeclaration(true, "float");
+    // Bitwise not
+    fun_return_types["__bnot__(int)"]   =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__bnot__(uint)"]  =
+        createSimpleTypeDeclaration(true, "uint");
+    // Logical not
+    fun_return_types["__not__(bool)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+
+    // Binary operators
+    // Addition
+    fun_return_types["__add__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__add__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__add__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // Substraction
+    fun_return_types["__sub__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__sub__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__sub__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // Multiplication
+    fun_return_types["__mul__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__mul__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__mul__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // Division
+    fun_return_types["__div__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__div__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__div__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // Remainder
+    fun_return_types["__rem__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__rem__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__rem__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // Power
+    fun_return_types["__pow__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "float");
+    fun_return_types["__pow__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__pow__(float,float)"]    =
+        createSimpleTypeDeclaration(true, "float");
 }
 
 std::unique_ptr<TypeDeclaration>&
 BuiltinFunctionsSymtable::getReturnType(std::string& function_mangled_name)
 {
-    return fun_return_types[function_mangled_name];
+    return fun_return_types.at(function_mangled_name);
 }

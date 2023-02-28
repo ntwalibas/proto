@@ -36,7 +36,7 @@ enum TokenType {
     PROTO_RIGHT_BRACKET,      // ]
     PROTO_PLUS,               // +
     PROTO_DIV,                // /
-    PROTO_MOD,                // %
+    PROTO_REM,                // %
     PROTO_COMMA,              // ,
     PROTO_SEMICOLON,          // ;
     PROTO_COLON,              // :

@@ -52,6 +52,9 @@ class Inference
 
         // Unary operators
         std::unique_ptr<TypeDeclaration>& inferUnaryType();
+
+        // Binary operators
+        std::unique_ptr<TypeDeclaration>& inferBinaryType();
     
     private:
         std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */

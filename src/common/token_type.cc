@@ -42,7 +42,7 @@ tokenTypeToString(enum TokenType type)
         "RIGHT_BRACKET",        // ]
         "PLUS",                 // +
         "DIV",                  // /
-        "MOD",                  // %
+        "REM",                  // %
         "COMMA",                // ,
         "SEMICOLON",            // ;
         "COLON",                // :

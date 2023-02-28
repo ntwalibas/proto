@@ -30,6 +30,7 @@
 #include "ast/definitions/function.h"
 #include "ast/expressions/variable.h"
 #include "ast/expressions/literal.h"
+#include "ast/expressions/binary.h"
 #include "ast/expressions/unary.h"
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
@@ -230,29 +231,106 @@ Inference::inferUnaryType()
     UnaryExpression* un_expr = static_cast<UnaryExpression*>(expr.get());
     std::unique_ptr<TypeDeclaration>& expr_type_decl =
         Inference(un_expr->getExpression(), scope).infer();
+    
+    std::string expr_type_name =  expr_type_decl->getTypeName();
 
     std::string op_name;
     switch (un_expr->getUnaryType()) {
         case UnaryType::Plus:
-            op_name = "__pos__(" + expr_type_decl->getTypeName() + ")";
+            op_name = "__pos__(" + expr_type_name + ")";
             break;
         
         case UnaryType::Minus:
-            op_name = "__neg__(" + expr_type_decl->getTypeName() + ")";
+            op_name = "__neg__(" + expr_type_name + ")";
             break;
         
         case UnaryType::BitwiseNot:
-            op_name = "__bnot__(" + expr_type_decl->getTypeName() + ")";
+            op_name = "__bnot__(" + expr_type_name + ")";
             break;
         
         case UnaryType::LogicalNot:
-            op_name = "__not__(" + expr_type_decl->getTypeName() + ")";
+            op_name = "__not__(" + expr_type_name + ")";
             break;
     }
 
-    expr->setTypeDeclaration(
-        copy(BuiltinFunctionsSymtable().getReturnType(op_name))
-    );
+    try {
+        expr->setTypeDeclaration(
+            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+        );
+    } catch (std::out_of_range const& e) {
+        throw InferenceError(
+            un_expr->getToken(),
+            "invalid argument to [" + un_expr->getToken().getLexeme() + "] unary operator",
+            "the [" + un_expr->getToken().getLexeme() + "] operator does " +
+            "not accept an operand of type [" + expr_type_name + "].",
+            false
+        );
+    }
+
+    return expr->getTypeDeclaration();
+}
+
+
+// Binary operators
+std::unique_ptr<TypeDeclaration>&
+Inference::inferBinaryType()
+{
+    BinaryExpression* bin_expr = static_cast<BinaryExpression*>(expr.get());
+    std::unique_ptr<TypeDeclaration>& left_expr_type =
+        Inference(bin_expr->getLeft(), scope).infer();
+    std::unique_ptr<TypeDeclaration>& right_expr_type =
+        Inference(bin_expr->getRight(), scope).infer();
+    
+    std::string left_type_name = left_expr_type->getTypeName();
+    std::string right_type_name = right_expr_type->getTypeName();
+
+    std::string op_name;
+    switch (bin_expr->getBinaryType()) {
+        // Terms
+        case BinaryType::Plus:
+            op_name = "__add__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::Minus:
+            op_name = "__sub__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        
+        // Factors
+        case BinaryType::Mul:
+            op_name = "__mul__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::Div:
+            op_name = "__div__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::Rem:
+            op_name = "_rem__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::Pow:
+            op_name = "__pow__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        
+        default:
+            throw std::invalid_argument("Unexpected binary operator, canno infer.");
+    }
+
+    try {
+        expr->setTypeDeclaration(
+            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+        );
+    } catch (std::out_of_range const& e) {
+        throw InferenceError(
+            bin_expr->getToken(),
+            "invalid argument to [" + bin_expr->getToken().getLexeme() + "] binary operator",
+            "the [" + bin_expr->getToken().getLexeme() + "] operator " +
+            "does not accept operands of types [" +
+            left_type_name + "] and [" +
+            right_type_name + "].",
+            false
+        );
+    }
 
     return expr->getTypeDeclaration();
 }

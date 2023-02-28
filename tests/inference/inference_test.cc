@@ -385,4 +385,16 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
             static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "bool");
     }
+
+    // Wrong type applied to logical not
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("!0");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        EXPECT_THROW(Inference(expr, scope).inferUnaryType(), InferenceError);
+    }
 }

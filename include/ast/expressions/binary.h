@@ -31,7 +31,7 @@ enum class BinaryType
     Minus,
     Mul,
     Div,
-    Mod,
+    Rem,
     Pow,
 
     // Bit

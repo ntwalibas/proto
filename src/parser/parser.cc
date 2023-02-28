@@ -964,7 +964,7 @@ Parser::parseFactorExpression()
     while (
         match(PROTO_MUL)    ||
         match(PROTO_DIV)    ||
-        match(PROTO_MOD)    ||
+        match(PROTO_REM)    ||
         match(PROTO_POW)
     ) {
         Token op_token = peekBack();
@@ -989,10 +989,10 @@ Parser::parseFactorExpression()
                 );
                 break;
 
-            case PROTO_MOD:
+            case PROTO_REM:
                 fact_expr = std::make_unique<BinaryExpression>(
                     op_token,
-                    BinaryType::Mod,
+                    BinaryType::Rem,
                     std::move(left),
                     std::move(right)
                 );

@@ -98,7 +98,7 @@ Lexer::lex()
             return makeToken(PROTO_DIV);
 
         case '%':
-            return makeToken(PROTO_MOD);
+            return makeToken(PROTO_REM);
 
         case '"':
             return string();
