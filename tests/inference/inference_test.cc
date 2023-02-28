@@ -83,7 +83,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "float64");
+        EXPECT_EQ(type_decl.getTypeName(), "float");
     }
 
     // String literals
@@ -242,10 +242,10 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
-    // Unary negative: unsigned int
+    // Unary positive: signed int
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("-10");
+        std::make_shared<std::string>("+-10");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -260,10 +260,28 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
-    // Unary positive: signed int
+    // Unary positive: float
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("+-10");
+        std::make_shared<std::string>("+0.5");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
+    }
+
+    // Unary negative: unsigned int
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-10");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -294,6 +312,24 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Unary negative: float
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-0.5");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
     }
 
     // Bitwise not: unsigned int
