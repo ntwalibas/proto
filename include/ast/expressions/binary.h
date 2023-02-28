@@ -54,7 +54,7 @@ enum class BinaryType
     LessOrEqual,
 
     // Access
-    Subscript
+    // Subscript
 };
 
 
