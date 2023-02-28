@@ -353,7 +353,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
     // Bitwise not: signed int
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("~-10");
+        std::make_shared<std::string>("~(-10)");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -396,5 +396,243 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         EXPECT_THROW(Inference(expr, scope).inferUnaryType(), InferenceError);
+    }
+}
+
+TEST_F(InferenceTest, inferBinaryTypeTest) {
+    // Addition
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 + 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+
+    // Substraction
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 - 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Multiplication
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 * 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-1 * -2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1.0 * 2.0");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
+    }
+
+    // Division
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 / 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-1 / -2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1.0 / 2.0");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
+    }
+
+    // Remainder
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 % 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-1 % -2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1.0 % 2.0");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
+    }
+
+    // Power
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1 ** 2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("-1 ** -2");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
+    }
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("1.0 ** 2.0");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferBinaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "float");
     }
 }

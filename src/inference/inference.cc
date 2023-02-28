@@ -68,6 +68,9 @@ Inference::infer()
         
         case ExpressionType::Unary:
             return inferUnaryType();
+        
+        case ExpressionType::Binary:
+            return inferBinaryType();
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");
@@ -294,7 +297,7 @@ Inference::inferBinaryType()
         case BinaryType::Minus:
             op_name = "__sub__(" + left_type_name + "," + right_type_name + ")";
             break;
-        
+
         // Factors
         case BinaryType::Mul:
             op_name = "__mul__(" + left_type_name + "," + right_type_name + ")";
@@ -305,13 +308,13 @@ Inference::inferBinaryType()
             break;
 
         case BinaryType::Rem:
-            op_name = "_rem__(" + left_type_name + "," + right_type_name + ")";
+            op_name = "__rem__(" + left_type_name + "," + right_type_name + ")";
             break;
 
         case BinaryType::Pow:
             op_name = "__pow__(" + left_type_name + "," + right_type_name + ")";
             break;
-        
+
         default:
             throw std::invalid_argument("Unexpected binary operator, canno infer.");
     }
