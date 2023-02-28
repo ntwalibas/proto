@@ -278,7 +278,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
-    // Unary negative: unsigned int
+    // Unary negative: signed int
     {
         std::shared_ptr<std::string> source =
         std::make_shared<std::string>("--10");
@@ -294,5 +294,59 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Bitwise not: unsigned int
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("~10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+
+    // Bitwise not: signed int
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("~-10");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "int");
+    }
+
+    // Logical not: bool
+    {
+        std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("!True");
+
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferUnaryType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "bool");
     }
 }

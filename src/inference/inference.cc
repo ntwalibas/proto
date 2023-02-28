@@ -241,8 +241,13 @@ Inference::inferUnaryType()
             op_name = "__neg__(" + expr_type_decl->getTypeName() + ")";
             break;
         
-        default:
-            throw std::invalid_argument("Unary operator return type inference not supported at the moment");
+        case UnaryType::BitwiseNot:
+            op_name = "__bnot__(" + expr_type_decl->getTypeName() + ")";
+            break;
+        
+        case UnaryType::LogicalNot:
+            op_name = "__not__(" + expr_type_decl->getTypeName() + ")";
+            break;
     }
 
     expr->setTypeDeclaration(

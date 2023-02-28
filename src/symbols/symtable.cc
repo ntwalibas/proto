@@ -199,10 +199,14 @@ BuiltinTypesSymtable::builtin_types{
 // types in the function's mangled name
 BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
 {
+    // Unary operators
     fun_return_types["__pos__(int)"] = createSimpleTypeDeclaration(true, "int");
     fun_return_types["__pos__(uint)"] = createSimpleTypeDeclaration(true, "uint");
     fun_return_types["__neg__(int)"] = createSimpleTypeDeclaration(true, "int");
     fun_return_types["__neg__(uint)"] = createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__bnot__(int)"] = createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__bnot__(uint)"] = createSimpleTypeDeclaration(true, "uint");
+    fun_return_types["__not__(bool)"] = createSimpleTypeDeclaration(true, "bool");
 }
 
 std::unique_ptr<TypeDeclaration>&
