@@ -82,7 +82,6 @@ class Parser
         std::unique_ptr<Expression> parseAssignmentExpression();
         std::unique_ptr<Expression> parseLogicalOrExpression();
         std::unique_ptr<Expression> parseLogicalAndExpression();
-        std::unique_ptr<Expression> parseLogicalNotExpression();
         std::unique_ptr<Expression> parseComparisonExpression();
         std::unique_ptr<Expression> parseBitwiseOrExpression();
         std::unique_ptr<Expression> parseBitwiseXorExpression();
@@ -91,7 +90,7 @@ class Parser
         std::unique_ptr<Expression> parseTermExpression();
         std::unique_ptr<Expression> parseFactorExpression();
         std::unique_ptr<Expression> parseSignExpression();
-        std::unique_ptr<Expression> parseBitwiseNotExpression();
+        std::unique_ptr<Expression> parseNotExpression();
         std::unique_ptr<Expression> parseSubscriptExpression();
         std::unique_ptr<Expression> parsePrimaryExpression();
         std::unique_ptr<CallExpression> parseCallExpression();

@@ -430,23 +430,6 @@ TEST_F(ParserTest, parseLogicalAndExpressionTest)
     EXPECT_EQ(logicand_expr.getRight()->getType(), ExpressionType::Literal);
 }
 
-TEST_F(ParserTest, parseLogicalNotExpressionTest)
-{
-    std::string source = "!False";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseLogicalNotExpression();
-
-    // We have the correct type of expression
-    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& logicnot_expr = static_cast<UnaryExpression&>(*expr);
-
-    // We have the right data on the logical not expression
-    EXPECT_EQ(logicnot_expr.getToken().getLexeme(), "!");
-    EXPECT_EQ(logicnot_expr.getUnaryType(), UnaryType::LogicalNot);
-    EXPECT_EQ(logicnot_expr.getExpression()->getType(), ExpressionType::Literal);
-}
-
 TEST_F(ParserTest, parseComparisonExpressionTest)
 {
     std::string source = "counter <> 0";
@@ -590,21 +573,41 @@ TEST_F(ParserTest, parseSignExpressionTest)
     EXPECT_EQ(sign_expr.getExpression()->getType(), ExpressionType::Literal);
 }
 
-TEST_F(ParserTest, parseBitwiseNotExpressionTest)
+TEST_F(ParserTest, parseNotExpressionTest)
 {
-    std::string source = "~~1";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseBitwiseNotExpression();
+    // Bitwise not
+    {
+        std::string source = "~~1";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseNotExpression();
 
-    // We have the correct type of expression
-    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& bitnot_expr = static_cast<UnaryExpression&>(*expr);
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+        UnaryExpression& bitnot_expr = static_cast<UnaryExpression&>(*expr);
 
-    // We have the right data on the bitwise not expression
-    EXPECT_EQ(bitnot_expr.getToken().getLexeme(), "~");
-    EXPECT_EQ(bitnot_expr.getUnaryType(), UnaryType::BitwiseNot);
-    EXPECT_EQ(bitnot_expr.getExpression()->getType(), ExpressionType::Unary);
+        // We have the right data on the bitwise not expression
+        EXPECT_EQ(bitnot_expr.getToken().getLexeme(), "~");
+        EXPECT_EQ(bitnot_expr.getUnaryType(), UnaryType::BitwiseNot);
+        EXPECT_EQ(bitnot_expr.getExpression()->getType(), ExpressionType::Unary);
+    }
+
+    // Logical not
+    {
+        std::string source = "!False";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseNotExpression();
+
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+        UnaryExpression& logicnot_expr = static_cast<UnaryExpression&>(*expr);
+
+        // We have the right data on the logical not expression
+        EXPECT_EQ(logicnot_expr.getToken().getLexeme(), "!");
+        EXPECT_EQ(logicnot_expr.getUnaryType(), UnaryType::LogicalNot);
+        EXPECT_EQ(logicnot_expr.getExpression()->getType(), ExpressionType::Literal);
+    }
 }
 
 TEST_F(ParserTest, parsePrimaryExpressionTest)
