@@ -98,7 +98,7 @@ Inference::inferLiteralType()
         case LiteralType::Float:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 true,
-                "float64"
+                "float"
             ));
             return lit_expr->getTypeDeclaration();
 
