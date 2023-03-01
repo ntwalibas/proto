@@ -24,6 +24,7 @@
 #include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
+#include "ast/expressions/assignment.h"
 #include "ast/declarations/variable.h"
 #include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
@@ -385,5 +386,18 @@ Inference::inferBinaryType()
         );
     }
 
+    return expr->getTypeDeclaration();
+}
+
+
+// Assignment operator
+std::unique_ptr<TypeDeclaration>&
+Inference::inferAssignmentType()
+{
+    AssignmentExpression* assign_expr =
+        static_cast<AssignmentExpression*>(expr.get());
+    std::unique_ptr<Expression>& lval = assign_expr->getLvalue();
+
+    expr->setTypeDeclaration(copy(Inference(lval, scope).infer()));
     return expr->getTypeDeclaration();
 }

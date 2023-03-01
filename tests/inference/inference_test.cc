@@ -109,6 +109,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         std::string source = "count: uint = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
+        var_def.reset(nullptr);
         var_def = parser.parseDefinition();
         scope->addDefinition("count", var_def);
     }
@@ -998,5 +999,31 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "bool");
+    }
+}
+
+TEST_F(InferenceTest, inferAssignmentTypeTest) {
+    {
+        std::string source = "new_count: uint = 0";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        var_def.reset(nullptr);
+        var_def = parser.parseDefinition();
+        scope->addDefinition("new_count", var_def);
+    }
+
+    {
+        std::string source = "new_count = 1";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferAssignmentType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 }
