@@ -201,26 +201,26 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
 {
     // Unary operators
     // Plus
-    fun_return_types["__pos__(int)"]    =
+    fun_return_types["__pos__(int)"]            =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__pos__(uint)"]   =
+    fun_return_types["__pos__(uint)"]           =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__pos__(float)"]  =
+    fun_return_types["__pos__(float)"]          =
         createSimpleTypeDeclaration(true, "float");
     // Minus
-    fun_return_types["__neg__(int)"]    =
+    fun_return_types["__neg__(int)"]            =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__neg__(uint)"]   =
+    fun_return_types["__neg__(uint)"]           =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__neg__(float)"]   =
+    fun_return_types["__neg__(float)"]          =
         createSimpleTypeDeclaration(true, "float");
     // Bitwise not
-    fun_return_types["__bnot__(int)"]   =
+    fun_return_types["__bnot__(int)"]           =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__bnot__(uint)"]  =
+    fun_return_types["__bnot__(uint)"]          =
         createSimpleTypeDeclaration(true, "uint");
     // Logical not
-    fun_return_types["__not__(bool)"]   =
+    fun_return_types["__not__(bool)"]           =
         createSimpleTypeDeclaration(true, "bool");
 
     // Binary operators
@@ -266,6 +266,103 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
         createSimpleTypeDeclaration(true, "uint");
     fun_return_types["__pow__(float,float)"]    =
         createSimpleTypeDeclaration(true, "float");
+    // Bitwise and
+    fun_return_types["__band__(int,int)"]       =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__band__(uint,uint)"]     =
+        createSimpleTypeDeclaration(true, "uint");
+    // Bitwise or
+    fun_return_types["__bor__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__bor__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    // Bitwise xor
+    fun_return_types["__xor__(int,int)"]        =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__xor__(uint,uint)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    // Left shift
+    fun_return_types["__lshift__(int,uint)"]    =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__lshift__(uint,uint)"]   =
+        createSimpleTypeDeclaration(true, "uint");
+    // Right shift
+    fun_return_types["__rshift__(int,uint)"]    =
+        createSimpleTypeDeclaration(true, "int");
+    fun_return_types["__rshift__(uint,uint)"]   =
+        createSimpleTypeDeclaration(true, "uint");
+    // Logical and
+    fun_return_types["__and__(bool,bool)"]      =
+        createSimpleTypeDeclaration(true, "bool");
+    // Logical or
+    fun_return_types["__or__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    // Equal
+    fun_return_types["__eq__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__eq__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__eq__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__eq__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__eq__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+    // Not equal
+    fun_return_types["__ne__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ne__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ne__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ne__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ne__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+    // Greater
+    fun_return_types["__gt__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__gt__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__gt__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__gt__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__gt__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+    // Greater or equal
+    fun_return_types["__ge__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ge__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ge__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ge__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__ge__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+    // Less
+    fun_return_types["__lt__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__lt__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__lt__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__lt__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__lt__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
+    // Less or equal
+    fun_return_types["__le__(int,int)"]         =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__le__(uint,uint)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__le__(float,float)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__le__(bool,bool)"]       =
+        createSimpleTypeDeclaration(true, "bool");
+    fun_return_types["__le__(string,string)"]   =
+        createSimpleTypeDeclaration(true, "bool");
 }
 
 std::unique_ptr<TypeDeclaration>&

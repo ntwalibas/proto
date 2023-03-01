@@ -315,6 +315,56 @@ Inference::inferBinaryType()
             op_name = "__pow__(" + left_type_name + "," + right_type_name + ")";
             break;
 
+        // Bit
+        case BinaryType::BitwiseAnd:
+            op_name = "__band__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::BitwiseOr:
+            op_name = "__bor__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::BitwiseXor:
+            op_name = "__xor__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::LeftShift:
+            op_name = "__lshift__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::RightShift:
+            op_name = "__rshift__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        // Logical
+        case BinaryType::LogicalAnd:
+            op_name = "__and__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
+        case BinaryType::LogicalOr:
+            op_name = "__or__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        
+        // Comparison
+        case BinaryType::Equal:
+            op_name = "__eq__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        case BinaryType::NotEqual:
+            op_name = "__ne__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        case BinaryType::Greater:
+            op_name = "__gt__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        case BinaryType::GreaterOrEqual:
+            op_name = "__ge__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        case BinaryType::Less:
+            op_name = "__lt__(" + left_type_name + "," + right_type_name + ")";
+            break;
+        case BinaryType::LessOrEqual:
+            op_name = "__le__(" + left_type_name + "," + right_type_name + ")";
+            break;
+
         default:
             throw std::invalid_argument("Unexpected binary operator, canno infer.");
     }
