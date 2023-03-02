@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "ast/declarations/variable.h"
 #include "ast/declarations/type.h"
@@ -70,6 +71,11 @@ class FunctionDefinition : public Definition
          * Returns the body of the function.
          */
         std::unique_ptr<BlockStatement>& getBody();
+
+        /**
+         * Returns the mangled name of this function.
+         */
+        std::string getMangledName();
 
     protected:
         Token                                       token;          /* Token associated with this function. */

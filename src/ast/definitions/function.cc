@@ -18,6 +18,7 @@
 #include <utility>
 #include <cstddef>
 #include <memory>
+#include <string>
 
 #include "ast/declarations/variable.h"
 #include "ast/definitions/function.h"
@@ -99,4 +100,23 @@ std::unique_ptr<BlockStatement>&
 FunctionDefinition::getBody()
 {
     return body;
+}
+
+/**
+ * Returns the mangled name of this function.
+ */
+std::string
+FunctionDefinition::getMangledName()
+{
+    std::string name = token.getLexeme() + "(";
+
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) {
+        name += (*it)->getTypeDeclaration()->getTypeName();
+        if (next(it) != parameters.end())
+            name += ",";
+    }
+
+    name += ")";
+
+    return name;
 }

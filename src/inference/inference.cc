@@ -20,6 +20,7 @@
 #include <utility>
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "ast/declarations/declaration.h"
 #include "ast/definitions/definition.h"
@@ -195,18 +196,31 @@ std::unique_ptr<TypeDeclaration>&
 Inference::inferCallType()
 {
     CallExpression* call_expr = static_cast<CallExpression*>(expr.get());
+    std::vector<std::unique_ptr<Expression>>& args = call_expr->getArguments();
 
-    if (! scope->hasDefinition(call_expr->getToken().getLexeme(), true)) {
+    // Build the call corresponding function's mangled name
+    std::string fun_name = call_expr->getToken().getLexeme() + "(";
+    for (auto it = args.begin(); it != args.end(); ++it) {
+        std::unique_ptr<TypeDeclaration>& type_decl =
+            Inference(* it, scope).infer();
+        fun_name += type_decl->getTypeName();
+
+        if (next(it) != args.end())
+            fun_name += ",";
+    }
+    fun_name += ")";
+
+    if (! scope->hasDefinition(fun_name, true)) {
         throw InferenceError(
             call_expr->getToken(),
             "no such function",
-            "no function with name [" + call_expr->getToken().getLexeme() + "] was defined",
+            "no function with signature [" + fun_name + "] was defined",
             false
         );
     }
 
     std::unique_ptr<Definition>& def = scope->getDefinition(
-        call_expr->getToken().getLexeme(),
+        fun_name,
         true
     );
 

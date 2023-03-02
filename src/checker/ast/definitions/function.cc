@@ -44,12 +44,12 @@ void
 FunctionDefinitionChecker::check()
 {
     // Check for redefinition
-    if (scope->hasDefinition(function_def->getToken().getLexeme())) {
+    if (scope->hasDefinition(function_def->getMangledName())) {
         throw CheckerError(
             function_def->getToken(),
             "function redefinition",
-            "there already exists a definition (function or variable) "
-            "with the same name as this function in the current scope",
+            "there already exists a function with signature [" +
+            function_def->getMangledName() + "] in the current scope",
             false
         );
     }

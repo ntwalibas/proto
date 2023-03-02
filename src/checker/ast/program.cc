@@ -70,7 +70,7 @@ ProgramChecker::check()
 
                     // Add the function definition to the symbol table
                     program.getScope()->addDefinition(
-                        def->getToken().getLexeme(),
+                        fun_def->getMangledName(),
                         def
                     );
                 } catch (CheckerError const& e) {

@@ -190,7 +190,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         fun_def = parser.parseDefinition();
-        scope->addDefinition("sum", fun_def);
+        scope->addDefinition("sum(uint,uint)", fun_def);
     }
 
     // Function was found
