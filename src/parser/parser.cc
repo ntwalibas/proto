@@ -97,6 +97,18 @@ Parser::parseProgram()
     while (! atEnd()) {
         try {
             program.addDefinition(parseDefinition());
+            
+            // Require a newline after each definition
+            if (! match(PROTO_NEWLINE) && !atEnd()) {
+                throw ParserError(
+                    peekBack(),
+                    "missing newline",
+                    "expected a new line after definition",
+                    true
+                );
+            }
+
+            // Consume superfluous new lines if any
             while (match(PROTO_NEWLINE));
         } catch (ParserError const& e) {
             if (e.isFatal())
