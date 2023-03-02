@@ -109,6 +109,9 @@ class Lexer
         // Returns current char in the stream and advance to the next.
         char advance();
 
+        // Returns current char in stream and move back to the previous.
+        char recede();
+
         // Return true if current character matches given one,
         // Advance to the next character if match.
         bool match(char expected);

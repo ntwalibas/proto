@@ -94,8 +94,16 @@ Lexer::lex()
         case '*':
             return makeToken(match('*') ? PROTO_POW : PROTO_MUL);
 
-        case '/':
-            return makeToken(PROTO_DIV);
+        case '/': {
+            if (peek() == '/' || peek() == '*') {
+                recede();
+                skipWhitespace();
+                return lex();
+            }
+            else {
+                return makeToken(PROTO_DIV);
+            }
+        }
 
         case '%':
             return makeToken(PROTO_REM);
@@ -412,6 +420,15 @@ Lexer::advance()
     current++;
     column++;
     return * (current - 1);
+}
+
+// Returns current char in stream and move back to the previous.
+char
+Lexer::recede()
+{
+    current--;
+    column--;
+    return * (current + 1);
 }
 
 // Return true if current character matches given one,
