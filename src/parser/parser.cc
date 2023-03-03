@@ -971,7 +971,7 @@ Parser::parseTermExpression()
 std::unique_ptr<Expression>
 Parser::parseFactorExpression()
 {
-    std::unique_ptr<Expression> left = parseSignExpression();
+    std::unique_ptr<Expression> left = parseUnaryExpression();
 
     while (
         match(PROTO_MUL)    ||
@@ -980,7 +980,7 @@ Parser::parseFactorExpression()
         match(PROTO_POW)
     ) {
         Token op_token = peekBack();
-        std::unique_ptr<Expression> right = parseSignExpression();
+        std::unique_ptr<Expression> right = parseUnaryExpression();
         std::unique_ptr<Expression> fact_expr = nullptr;
         switch (op_token.type) {
             case PROTO_MUL:
@@ -1029,31 +1029,35 @@ Parser::parseFactorExpression()
 }
 
 std::unique_ptr<Expression>
-Parser::parseSignExpression()
+Parser::parseUnaryExpression()
 {
-    if (match(PROTO_PLUS) || match(PROTO_MINUS)) {
+    if (
+        match(PROTO_PLUS)           ||
+        match(PROTO_MINUS)          ||
+        match(PROTO_BITWISE_NOT)    ||
+        match(PROTO_LOGICAL_NOT)
+    ) {
         Token op_token = peekBack();
-        std::unique_ptr<Expression> rec_expr = parseSignExpression();
+        std::unique_ptr<Expression> rec_expr = parseUnaryExpression();
+        enum UnaryType un_type;
+        switch (op_token.type) {
+            case PROTO_PLUS:
+                un_type = UnaryType::Plus;
+                break;
+            case PROTO_MINUS:
+                un_type = UnaryType::Minus;
+                break;
+            case PROTO_BITWISE_NOT:
+                un_type = UnaryType::BitwiseNot;
+                break;
+            case PROTO_LOGICAL_NOT:
+                un_type = UnaryType::LogicalNot;
+                break;
+            default:;
+        }
         return std::make_unique<UnaryExpression>(
             op_token,
-            (op_token.type == PROTO_PLUS) ? UnaryType::Plus : UnaryType::Minus,
-            std::move(rec_expr)
-        );
-    }
-
-    return parseNotExpression();
-}
-
-std::unique_ptr<Expression>
-Parser::parseNotExpression()
-{
-    if (match(PROTO_BITWISE_NOT) || match(PROTO_LOGICAL_NOT)) {
-        Token op_token = peekBack();
-        std::unique_ptr<Expression> rec_expr = parseNotExpression();
-        return std::make_unique<UnaryExpression>(
-            op_token,
-            (op_token.type == PROTO_BITWISE_NOT) ? 
-                UnaryType::BitwiseNot : UnaryType::LogicalNot,
+            un_type,
             std::move(rec_expr)
         );
     }

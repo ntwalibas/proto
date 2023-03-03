@@ -556,31 +556,48 @@ TEST_F(ParserTest, parseFactorExpressionTest)
     EXPECT_EQ(fact_expr.getRight()->getType(), ExpressionType::Variable);
 }
 
-TEST_F(ParserTest, parseSignExpressionTest)
+TEST_F(ParserTest, parseUnaryExpressionTest)
 {
-    std::string source = "-10";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseSignExpression();
+    // Unary plus
+    {
+        std::string source = "+10";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseUnaryExpression();
 
-    // We have the correct type of expression
-    EXPECT_EQ(expr->getType(), ExpressionType::Unary);
-    UnaryExpression& sign_expr = static_cast<UnaryExpression&>(*expr);
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+        UnaryExpression& sign_expr = static_cast<UnaryExpression&>(*expr);
 
-    // We have the right data on the signed expression
-    EXPECT_EQ(sign_expr.getToken().getLexeme(), "-");
-    EXPECT_EQ(sign_expr.getUnaryType(), UnaryType::Minus);
-    EXPECT_EQ(sign_expr.getExpression()->getType(), ExpressionType::Literal);
-}
+        // We have the right data on the signed expression
+        EXPECT_EQ(sign_expr.getToken().getLexeme(), "+");
+        EXPECT_EQ(sign_expr.getUnaryType(), UnaryType::Plus);
+        EXPECT_EQ(sign_expr.getExpression()->getType(), ExpressionType::Literal);
+    }
 
-TEST_F(ParserTest, parseNotExpressionTest)
-{
+    // Unary minus
+    {
+        std::string source = "-10";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseUnaryExpression();
+
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Unary);
+        UnaryExpression& sign_expr = static_cast<UnaryExpression&>(*expr);
+
+        // We have the right data on the signed expression
+        EXPECT_EQ(sign_expr.getToken().getLexeme(), "-");
+        EXPECT_EQ(sign_expr.getUnaryType(), UnaryType::Minus);
+        EXPECT_EQ(sign_expr.getExpression()->getType(), ExpressionType::Literal);
+    }
+
     // Bitwise not
     {
         std::string source = "~~1";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseNotExpression();
+        std::unique_ptr<Expression> expr = parser.parseUnaryExpression();
 
         // We have the correct type of expression
         EXPECT_EQ(expr->getType(), ExpressionType::Unary);
@@ -597,7 +614,7 @@ TEST_F(ParserTest, parseNotExpressionTest)
         std::string source = "!False";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseNotExpression();
+        std::unique_ptr<Expression> expr = parser.parseUnaryExpression();
 
         // We have the correct type of expression
         EXPECT_EQ(expr->getType(), ExpressionType::Unary);
