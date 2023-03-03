@@ -381,19 +381,41 @@ TEST_F(ParserTest, parseExpressionTest)
 
 TEST_F(ParserTest, parseAssignmentExpressionTest)
 {
-    std::string source = "a = b = 0";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseAssignmentExpression();
+    // Simple assignment
+    {
+        std::string source = "a = b = 0";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseAssignmentExpression();
 
-    // We have the correct type of expression
-    EXPECT_EQ(expr->getType(), ExpressionType::Assignment);
-    AssignmentExpression& assign_expr = static_cast<AssignmentExpression&>(*expr);
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Assignment);
+        AssignmentExpression& assign_expr = static_cast<AssignmentExpression&>(*expr);
 
-    // We have the right data on the assignment expression
-    EXPECT_EQ(assign_expr.getToken().getLexeme(), "=");
-    EXPECT_EQ(assign_expr.getLvalue()->getType(), ExpressionType::Variable);
-    EXPECT_EQ(assign_expr.getRvalue()->getType(), ExpressionType::Assignment);
+        // We have the right data on the assignment expression
+        EXPECT_EQ(assign_expr.getToken().getLexeme(), "=");
+        EXPECT_EQ(assign_expr.getAssignmentType(), AssignmentType::Simple);
+        EXPECT_EQ(assign_expr.getLvalue()->getType(), ExpressionType::Variable);
+        EXPECT_EQ(assign_expr.getRvalue()->getType(), ExpressionType::Assignment);
+    }
+
+    // In-place addition
+    {
+        std::string source = "i += 1";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseAssignmentExpression();
+
+        // We have the correct type of expression
+        EXPECT_EQ(expr->getType(), ExpressionType::Assignment);
+        AssignmentExpression& assign_expr = static_cast<AssignmentExpression&>(*expr);
+
+        // We have the right data on the assignment expression
+        EXPECT_EQ(assign_expr.getToken().getLexeme(), "+=");
+        EXPECT_EQ(assign_expr.getAssignmentType(), AssignmentType::Iadd);
+        EXPECT_EQ(assign_expr.getLvalue()->getType(), ExpressionType::Variable);
+        EXPECT_EQ(assign_expr.getRvalue()->getType(), ExpressionType::Literal);
+    }
 }
 
 TEST_F(ParserTest, parseTernaryIfExpressionTest)

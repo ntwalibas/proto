@@ -24,11 +24,29 @@
 #include "expression.h"
 
 
+enum class AssignmentType
+{
+    Simple,
+    Iadd,
+    Isub,
+    Imul,
+    Idiv,
+    Irem,
+    Ipow,
+    Iand,
+    Ior,
+    Ixor,
+    Ilshift,
+    Irshift
+};
+
+
 class AssignmentExpression : public Expression
 {
     public:
         AssignmentExpression(
             Token& token,
+            enum AssignmentType type,
             std::unique_ptr<Expression>&& lvalue,
             std::unique_ptr<Expression>&& rvalue
         );
@@ -37,6 +55,11 @@ class AssignmentExpression : public Expression
          * Returns the token associated with this assignment expression.
          */
         Token& getToken();
+
+        /**
+         * Returns the type of assignment.
+         */
+        enum AssignmentType getAssignmentType();
 
         /**
          * Returns the expression on the left side of the assignment operator.
@@ -50,6 +73,7 @@ class AssignmentExpression : public Expression
 
     protected:
         Token                       token;  /* Token associated with this assignment expression. */
+        enum AssignmentType         type;   /* The type of assignment we have. */
         std::unique_ptr<Expression> lvalue; /* Expression on the left side of the assignment operator. */
         std::unique_ptr<Expression> rvalue; /* Expression on the right side of the assignment operator. */
 };

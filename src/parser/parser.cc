@@ -718,12 +718,66 @@ Parser::parseAssignmentExpression()
 {
     std::unique_ptr<Expression> lvalue = parseTernaryIfExpression();
 
-    if (match(PROTO_EQUAL)) {
+    if (
+        match(PROTO_EQUAL)      ||
+        match(PROTO_IADD)       ||
+        match(PROTO_ISUB)       ||
+        match(PROTO_IMUL)       ||
+        match(PROTO_IDIV)       ||
+        match(PROTO_IREM)       ||
+        match(PROTO_IPOW)       ||
+        match(PROTO_IAND)       ||
+        match(PROTO_IOR)        ||
+        match(PROTO_IXOR)       ||
+        match(PROTO_ILSHIFT)    ||
+        match(PROTO_IRSHIFT)
+    ) {
         Token op_token = peekBack();
         std::unique_ptr<Expression> rvalue = parseAssignmentExpression();
+        enum AssignmentType assign_type;
+        switch (op_token.type) {
+            case PROTO_EQUAL:
+                assign_type = AssignmentType::Simple;
+                break;
+            case PROTO_IADD:
+                assign_type = AssignmentType::Iadd;
+                break;
+            case PROTO_ISUB:
+                assign_type = AssignmentType::Isub;
+                break;
+            case PROTO_IMUL:
+                assign_type = AssignmentType::Imul;
+                break;
+            case PROTO_IDIV:
+                assign_type = AssignmentType::Idiv;
+                break;
+            case PROTO_IREM:
+                assign_type = AssignmentType::Irem;
+                break;
+            case PROTO_IPOW:
+                assign_type = AssignmentType::Ipow;
+                break;
+            case PROTO_IAND:
+                assign_type = AssignmentType::Iand;
+                break;
+            case PROTO_IOR:
+                assign_type = AssignmentType::Ior;
+                break;
+            case PROTO_IXOR:
+                assign_type = AssignmentType::Ixor;
+                break;
+            case PROTO_ILSHIFT:
+                assign_type = AssignmentType::Ilshift;
+                break;
+            case PROTO_IRSHIFT:
+                assign_type = AssignmentType::Irshift;
+                break;
+            default:;
+        }
         std::unique_ptr<Expression> assign_expr =
             std::make_unique<AssignmentExpression>(
                 op_token,
+                assign_type,
                 std::move(lvalue),
                 std::move(rvalue)
             );

@@ -25,10 +25,12 @@
 
 AssignmentExpression::AssignmentExpression(
     Token& token,
+    enum AssignmentType type,
     std::unique_ptr<Expression>&& lvalue,
     std::unique_ptr<Expression>&& rvalue
 ) : Expression(ExpressionType::Assignment),
     token(token),
+    type(type),
     lvalue(std::move(lvalue)),
     rvalue(std::move(rvalue))
 {}
@@ -41,6 +43,15 @@ Token&
 AssignmentExpression::getToken()
 {
     return token;
+}
+
+/**
+ * Returns the type of assignment.
+ */
+enum AssignmentType
+AssignmentExpression::getAssignmentType()
+{
+    return type;
 }
 
 
