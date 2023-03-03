@@ -45,6 +45,17 @@ enum TokenType {
 
     /* one or two character tokens */
     PROTO_EQUAL,              // =
+    PROTO_IADD,               // +=
+    PROTO_ISUB,               // -=
+    PROTO_IMUL,               // *=
+    PROTO_IDIV,               // /=
+    PROTO_IREM,               // %=
+    PROTO_IPOW,               // **=
+    PROTO_IAND,               // &=
+    PROTO_IOR,                // |=
+    PROTO_IXOR,               // ^=
+    PROTO_ILSHIFT,            // <<=
+    PROTO_IRSHIFT,            // >>=
     PROTO_EQUAL_EQUAL,        // ==
     PROTO_NOT_EQUAL,          // !=
     PROTO_GREATER,            // >

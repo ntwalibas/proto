@@ -154,3 +154,43 @@ TEST_F(LexerTest, lexDeclaration)
     EXPECT_EQ(tokens[15].type, PROTO_IDENTIFIER);
     EXPECT_EQ(tokens[15].getLexeme(), std::string("int"));
 }
+
+TEST_F(LexerTest, lexIANDtest)
+{
+    std::string source = "&=";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Token token = lexer.lex();
+    EXPECT_EQ(token.type, PROTO_IAND);
+}
+
+TEST_F(LexerTest, lexIRSHIFTTest)
+{
+    std::string source = ">>=";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Token token = lexer.lex();
+    EXPECT_EQ(token.type, PROTO_IRSHIFT);
+}
+
+TEST_F(LexerTest, lexIDIVTest)
+{
+    std::string source = "/=";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Token token = lexer.lex();
+    EXPECT_EQ(token.type, PROTO_IDIV);
+}
+
+TEST_F(LexerTest, lexIMULTest)
+{
+    std::string source = "*=";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Token token = lexer.lex();
+    EXPECT_EQ(token.type, PROTO_IMUL);
+}
+
+TEST_F(LexerTest, lexIPOWTest)
+{
+    std::string source = "**=";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Token token = lexer.lex();
+    EXPECT_EQ(token.type, PROTO_IPOW);
+}

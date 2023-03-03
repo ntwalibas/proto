@@ -82,17 +82,29 @@ Lexer::lex()
             return makeToken(PROTO_BITWISE_NOT);
 
         case '^':
+            if (match('=')) return makeToken(PROTO_IXOR);
             return makeToken(PROTO_BITWISE_XOR);
 
         case '+':
+            if (match('=')) return makeToken(PROTO_IADD);
             return makeToken(PROTO_PLUS);
 
-        case '-':
+        case '-': {
+            if (match('=')) return makeToken(PROTO_ISUB);
             if (match('>')) return makeToken(PROTO_RETURN_TYPE);
             return makeToken(PROTO_MINUS);
+        }
 
-        case '*':
-            return makeToken(match('*') ? PROTO_POW : PROTO_MUL);
+        case '*': {
+            if (match('=')) return makeToken(PROTO_IMUL);
+            if (match('*')) {
+                if (match('='))
+                    return makeToken(PROTO_IPOW);
+                else
+                    return makeToken(PROTO_POW);
+            }
+            return makeToken(PROTO_MUL);
+        }
 
         case '/': {
             if (peek() == '/' || peek() == '*') {
@@ -101,11 +113,15 @@ Lexer::lex()
                 return lex();
             }
             else {
-                return makeToken(PROTO_DIV);
+                if (match('='))
+                    return makeToken(PROTO_IDIV);
+                else
+                    return makeToken(PROTO_DIV);
             }
         }
 
         case '%':
+            if (match('=')) makeToken(PROTO_IREM);
             return makeToken(PROTO_REM);
 
         case '"':
@@ -127,21 +143,35 @@ Lexer::lex()
             if (match('=')) return makeToken(PROTO_EQUAL_EQUAL);
             return makeToken(PROTO_EQUAL);
 
-        case '<':
+        case '<': {
             if (match('=')) return makeToken(PROTO_LESS_EQUAL);
-            if (match('<')) return makeToken(PROTO_LEFT_SHIFT);
+            if (match('<')) {
+                if (match('='))
+                    return makeToken(PROTO_ILSHIFT);
+                else
+                    return makeToken(PROTO_LEFT_SHIFT);
+            }
             if (match('>')) return makeToken(PROTO_BRANCH);
             return makeToken(PROTO_LESS);
+        }
 
-        case '>':
+        case '>': {
             if (match('=')) return makeToken(PROTO_GREATER_EQUAL);
-            if (match('>')) return makeToken(PROTO_RIGHT_SHIFT);
+            if (match('>')) {
+                if (match('='))
+                    return makeToken(PROTO_IRSHIFT);
+                else
+                    return makeToken(PROTO_RIGHT_SHIFT);
+            }
             return makeToken(PROTO_GREATER);
+        }
 
         case '|':
+            if (match('=')) return makeToken(PROTO_IOR);
             return makeToken(match('|') ? PROTO_LOGICAL_OR : PROTO_BITWISE_OR);
 
         case '&':
+            if (match('=')) return makeToken(PROTO_IAND);
             return makeToken(match('&') ? PROTO_LOGICAL_AND : PROTO_BITWISE_AND);
 
         case '(':

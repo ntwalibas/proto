@@ -51,6 +51,17 @@ tokenTypeToString(enum TokenType type)
 
         /* one or two character tokens */
         "EQUAL",                // =
+        "IADD",                 // +=
+        "ISUB",                 // -=
+        "IMUL",                 // *=
+        "IDIV",                 // /=
+        "IREM",                 // %=
+        "IPOW",                 // **=
+        "IAND",                 // &=
+        "IOR",                  // |=
+        "IXOR",                 // ^=
+        "ILSHIFT",              // <<=
+        "IRSHIFT",              // >>=
         "EQUAL_EQUAL",          // ==
         "NOT_EQUAL",            // !=
         "GREATER",              // >
