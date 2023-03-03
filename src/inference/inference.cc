@@ -410,7 +410,7 @@ Inference::inferAssignmentType()
 {
     AssignmentExpression* assign_expr =
         static_cast<AssignmentExpression*>(expr.get());
-    std::unique_ptr<Expression>& lval = assign_expr->getLvalue();
+    std::unique_ptr<Expression>& lval = assign_expr->getRvalue();
 
     expr->setTypeDeclaration(copy(Inference(lval, scope).infer()));
     return expr->getTypeDeclaration();
