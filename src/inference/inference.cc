@@ -410,8 +410,72 @@ Inference::inferAssignmentType()
 {
     AssignmentExpression* assign_expr =
         static_cast<AssignmentExpression*>(expr.get());
-    std::unique_ptr<Expression>& lval = assign_expr->getRvalue();
+    std::unique_ptr<TypeDeclaration>& lval_type =
+        Inference(assign_expr->getLvalue(), scope).infer();
+    std::unique_ptr<TypeDeclaration>& rval_type =
+        Inference(assign_expr->getRvalue(), scope).infer();
+    
+    std::string lval_type_name = lval_type->getTypeName();
+    std::string rval_type_name = rval_type->getTypeName();
 
-    expr->setTypeDeclaration(copy(Inference(lval, scope).infer()));
+    if (assign_expr->getAssignmentType() == AssignmentType::Simple) {
+        expr->setTypeDeclaration(copy(rval_type));
+        return expr->getTypeDeclaration();
+    }
+
+    std::string op_name;
+    switch (assign_expr->getAssignmentType()) {
+        case AssignmentType::Iadd:
+            op_name = "__iadd__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Isub:
+            op_name = "__isub__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Imul:
+            op_name = "__imul__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Idiv:
+            op_name = "__idiv__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Irem:
+            op_name = "__irem__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Ipow:
+            op_name = "__ipow__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Iand:
+            op_name = "__iand__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Ior:
+            op_name = "__ior__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Ixor:
+            op_name = "__ixor__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Ilshift:
+            op_name = "__ilshift__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        case AssignmentType::Irshift:
+            op_name = "__irshift__(" + lval_type_name + "," + rval_type_name + ")";
+            break;
+        default:;
+    }
+
+    try {
+        expr->setTypeDeclaration(
+            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+        );
+    } catch (std::out_of_range const& e) {
+        throw InferenceError(
+            assign_expr->getToken(),
+            "invalid argument to [" + assign_expr->getToken().getLexeme() + "] operator",
+            "the [" + assign_expr->getToken().getLexeme() + "] operator " +
+            "does not accept operands of types [" +
+            lval_type_name + "] and [" +
+            rval_type_name + "].",
+            false
+        );
+    }
+
     return expr->getTypeDeclaration();
 }

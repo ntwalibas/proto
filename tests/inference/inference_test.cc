@@ -1012,6 +1012,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         scope->addDefinition("new_count", var_def);
     }
 
+    // Simple assignment
     {
         std::string source = "new_count = 1";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
@@ -1025,5 +1026,30 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
         EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+
+    // Correct in-place assignment
+    {
+        std::string source = "new_count += 1";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+
+        std::unique_ptr<TypeDeclaration>& expr_type =
+            Inference(expr, scope).inferAssignmentType();
+        
+        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+        SimpleTypeDeclaration& type_decl =
+            static_cast<SimpleTypeDeclaration&>(*expr_type);
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
+    }
+
+    // Incorrect in-place assignment
+    {
+        std::string source = "new_count += True";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+        EXPECT_THROW(Inference(expr, scope).inferAssignmentType(), InferenceError);
     }
 }
