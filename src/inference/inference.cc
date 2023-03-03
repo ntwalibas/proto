@@ -26,6 +26,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/expressions/assignment.h"
+#include "ast/expressions/ternaryif.h"
 #include "ast/declarations/variable.h"
 #include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
@@ -77,6 +78,9 @@ Inference::infer()
         
         case ExpressionType::Binary:
             return inferBinaryType();
+        
+        case ExpressionType::TernaryIf:
+            return inferTernaryIfType();
         
         case ExpressionType::Assignment:
             return inferAssignmentType();
@@ -419,6 +423,20 @@ Inference::inferBinaryType()
         );
     }
 
+    return expr->getTypeDeclaration();
+}
+
+
+// Ternary if
+std::unique_ptr<TypeDeclaration>&
+Inference::inferTernaryIfType()
+{
+    TernaryIfExpression* ternif_expr =
+        static_cast<TernaryIfExpression*>(expr.get());
+    std::unique_ptr<TypeDeclaration>& lval_type =
+        Inference(ternif_expr->getLvalue(), scope).infer();
+    
+    expr->setTypeDeclaration(copy(lval_type));
     return expr->getTypeDeclaration();
 }
 

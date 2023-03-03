@@ -59,7 +59,10 @@ class Inference
         // Binary operators
         std::unique_ptr<TypeDeclaration>& inferBinaryType();
 
-        // Assignment operator
+        // Ternary if
+        std::unique_ptr<TypeDeclaration>& inferTernaryIfType();
+
+        // Assignment operators
         std::unique_ptr<TypeDeclaration>& inferAssignmentType();
     
     private:

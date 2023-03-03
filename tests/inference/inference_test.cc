@@ -1019,6 +1019,23 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     }
 }
 
+TEST_F(InferenceTest, inferTernaryIfTypeTest) {
+    std::shared_ptr<std::string> source =
+        std::make_shared<std::string>("b == True ? 1:int <> -1");
+
+    Lexer lexer(source, source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseExpression();
+
+    std::unique_ptr<TypeDeclaration>& expr_type =
+        Inference(expr, scope).inferTernaryIfType();
+    
+    EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
+    SimpleTypeDeclaration& type_decl =
+        static_cast<SimpleTypeDeclaration&>(*expr_type);
+    EXPECT_EQ(type_decl.getTypeName(), "int");
+}
+
 TEST_F(InferenceTest, inferAssignmentTypeTest) {
     {
         std::string source = "new_count: uint = 0";
