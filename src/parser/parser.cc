@@ -718,7 +718,7 @@ Parser::parseAssignmentExpression()
 {
     std::unique_ptr<Expression> lvalue = parseTernaryIfExpression();
 
-    while (match(PROTO_EQUAL)) {
+    if (match(PROTO_EQUAL)) {
         Token op_token = peekBack();
         std::unique_ptr<Expression> rvalue = parseAssignmentExpression();
         std::unique_ptr<Expression> assign_expr =
