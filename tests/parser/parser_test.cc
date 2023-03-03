@@ -14,6 +14,7 @@
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
+#include "ast/expressions/cast.h"
 #include "ast/statements/break.h"
 #include "ast/statements/while.h"
 #include "ast/expressions/call.h"
@@ -625,6 +626,23 @@ TEST_F(ParserTest, parseUnaryExpressionTest)
         EXPECT_EQ(logicnot_expr.getUnaryType(), UnaryType::LogicalNot);
         EXPECT_EQ(logicnot_expr.getExpression()->getType(), ExpressionType::Literal);
     }
+}
+
+TEST_F(ParserTest, parseCastExpressionTest)
+{
+    std::string source = "2:int";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseCastExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::Cast);
+    CastExpression& cast_expr = static_cast<CastExpression&>(*expr);
+
+    // We have the right data on the cast expression
+    EXPECT_EQ(cast_expr.getToken().getLexeme(), ":");
+    EXPECT_EQ(cast_expr.getExpression()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(cast_expr.getTypeDeclaration()->getTypeName(), "int");
 }
 
 TEST_F(ParserTest, parsePrimaryExpressionTest)

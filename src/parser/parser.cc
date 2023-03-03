@@ -36,6 +36,7 @@
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "ast/statements/return.h"
+#include "ast/expressions/cast.h"
 #include "ast/statements/break.h"
 #include "ast/statements/while.h"
 #include "ast/expressions/call.h"
@@ -1062,7 +1063,27 @@ Parser::parseUnaryExpression()
         );
     }
 
-    return parsePrimaryExpression();
+    return parseCastExpression();
+}
+
+std::unique_ptr<Expression>
+Parser::parseCastExpression()
+{
+    std::unique_ptr<Expression> expr = parsePrimaryExpression();
+
+    while (match(PROTO_COLON)) {
+        Token op_token = peekBack();
+        std::unique_ptr<TypeDeclaration> dest_type = parseTypeDeclaration();
+        std::unique_ptr<Expression> cast_expr =
+            std::make_unique<CastExpression>(
+                op_token,
+                std::move(expr),
+                std::move(dest_type)
+            );
+        expr = std::move(cast_expr);
+    }
+
+    return expr;
 }
 
 std::unique_ptr<Expression>

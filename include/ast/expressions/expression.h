@@ -34,6 +34,9 @@ enum class ExpressionType {
     Group,
     Call,
 
+    // Cast
+    Cast,
+
     // Unary
     Unary,
 

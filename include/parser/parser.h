@@ -90,6 +90,7 @@ class Parser
         std::unique_ptr<Expression> parseTermExpression();
         std::unique_ptr<Expression> parseFactorExpression();
         std::unique_ptr<Expression> parseUnaryExpression();
+        std::unique_ptr<Expression> parseCastExpression();
         std::unique_ptr<Expression> parseSubscriptExpression();
         std::unique_ptr<Expression> parsePrimaryExpression();
         std::unique_ptr<CallExpression> parseCallExpression();
