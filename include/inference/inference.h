@@ -41,6 +41,9 @@ class Inference
         // Literals
         std::unique_ptr<TypeDeclaration>& inferLiteralType();
 
+        // Casts
+        std::unique_ptr<TypeDeclaration>& inferCastType();
+
         // Variables
         std::unique_ptr<TypeDeclaration>& inferVariableType();
 

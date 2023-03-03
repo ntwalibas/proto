@@ -37,6 +37,7 @@
 #include "ast/expressions/group.h"
 #include "ast/declarations/type.h"
 #include "ast/expressions/call.h"
+#include "ast/expressions/cast.h"
 #include "inference/inference.h"
 #include "symbols/symtable.h"
 #include "utils/inference.h"
@@ -61,6 +62,9 @@ Inference::infer()
     switch (expr->getType()) {
         case ExpressionType::Literal:
             return inferLiteralType();
+        
+        case ExpressionType::Cast:
+            return inferCastType();
 
         case ExpressionType::Variable:
             return inferVariableType();
@@ -73,6 +77,9 @@ Inference::infer()
         
         case ExpressionType::Binary:
             return inferBinaryType();
+        
+        case ExpressionType::Assignment:
+            return inferAssignmentType();
 
         default:
             throw std::invalid_argument("Given expression has type for which inference has not been implemented yet.");
@@ -115,6 +122,18 @@ Inference::inferLiteralType()
             ));
             return lit_expr->getTypeDeclaration();
     }
+}
+
+// Casts
+std::unique_ptr<TypeDeclaration>&
+Inference::inferCastType()
+{
+    CastExpression* cast_expr = static_cast<CastExpression*>(expr.get());
+
+    expr->setTypeDeclaration(
+        copy(cast_expr->getTypeDeclaration())
+    );
+    return expr->getTypeDeclaration();
 }
 
 
