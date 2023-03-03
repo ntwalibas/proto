@@ -46,6 +46,7 @@ tokenTypeToString(enum TokenType type)
         "COMMA",                // ,
         "SEMICOLON",            // ;
         "COLON",                // :
+        "QUESTION",             // ?
         "NEWLINE",              // \n
 
         /* one or two character tokens */
@@ -56,6 +57,7 @@ tokenTypeToString(enum TokenType type)
         "GREATER_EQUAL",        // >=
         "LESS",                 // <
         "LESS_EQUAL",           // <=
+        "LESS_BRANCH",          // <>
         "MINUS",                // -
         "RETURN_TYPE",          // ->
         "LOGICAL_OR",           // || (or)

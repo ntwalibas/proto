@@ -40,6 +40,7 @@ enum TokenType {
     PROTO_COMMA,              // ,
     PROTO_SEMICOLON,          // ;
     PROTO_COLON,              // :
+    PROTO_QUESTION,           // ?
     PROTO_NEWLINE,            // \n
 
     /* one or two character tokens */
@@ -50,6 +51,7 @@ enum TokenType {
     PROTO_GREATER_EQUAL,      // >=
     PROTO_LESS,               // <
     PROTO_LESS_EQUAL,         // <=
+    PROTO_BRANCH,             // <>
     PROTO_MINUS,              // -
     PROTO_RETURN_TYPE,        // ->
     PROTO_LOGICAL_OR,         // || (or)

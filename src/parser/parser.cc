@@ -24,6 +24,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/expressions/assignment.h"
+#include "ast/expressions/ternaryif.h"
 #include "ast/declarations/variable.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
@@ -715,7 +716,7 @@ Parser::parseExpression()
 std::unique_ptr<Expression>
 Parser::parseAssignmentExpression()
 {
-    std::unique_ptr<Expression> lvalue = parseLogicalOrExpression();
+    std::unique_ptr<Expression> lvalue = parseTernaryIfExpression();
 
     while (match(PROTO_EQUAL)) {
         Token op_token = peekBack();
@@ -731,6 +732,39 @@ Parser::parseAssignmentExpression()
     }
 
     return lvalue;
+}
+
+std::unique_ptr<Expression>
+Parser::parseTernaryIfExpression()
+{
+    std::unique_ptr<Expression> condition = parseLogicalOrExpression();
+
+    if (match(PROTO_QUESTION)) {
+        Token op_token = peekBack();
+        std::unique_ptr<Expression> lvalue = parseLogicalOrExpression();
+
+        if (!match(PROTO_BRANCH)) {
+            throw ParserError(
+                peekBack(),
+                "missing colon in ternary conditional",
+                "expected a colon to introduce the else branch of ternary if",
+                false
+            );
+        }
+
+        std::unique_ptr<Expression> rvalue = parseTernaryIfExpression();
+        std::unique_ptr<Expression> ternif_expr =
+            std::make_unique<TernaryIfExpression>(
+                op_token,
+                std::move(condition),
+                std::move(lvalue),
+                std::move(rvalue)
+            );
+
+        condition = std::move(ternif_expr);
+    }
+
+    return condition;
 }
 
 std::unique_ptr<Expression>

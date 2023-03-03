@@ -120,6 +120,9 @@ Lexer::lex()
         case ':':
             return makeToken(PROTO_COLON);
 
+        case '?':
+            return makeToken(PROTO_QUESTION);
+
         case '=':
             if (match('=')) return makeToken(PROTO_EQUAL_EQUAL);
             return makeToken(PROTO_EQUAL);
@@ -127,7 +130,7 @@ Lexer::lex()
         case '<':
             if (match('=')) return makeToken(PROTO_LESS_EQUAL);
             if (match('<')) return makeToken(PROTO_LEFT_SHIFT);
-            if (match('>')) return makeToken(PROTO_NOT_EQUAL);
+            if (match('>')) return makeToken(PROTO_BRANCH);
             return makeToken(PROTO_LESS);
 
         case '>':

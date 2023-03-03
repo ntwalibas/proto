@@ -43,6 +43,9 @@ enum class ExpressionType {
     // Binary
     Binary,
 
+    // Ternary
+    TernaryIf,
+
     // Assignment
     Assignment
 };

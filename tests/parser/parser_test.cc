@@ -5,6 +5,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/expressions/assignment.h"
+#include "ast/expressions/ternaryif.h"
 #include "ast/expressions/variable.h"
 #include "ast/definitions/variable.h"
 #include "ast/statements/continue.h"
@@ -395,6 +396,24 @@ TEST_F(ParserTest, parseAssignmentExpressionTest)
     EXPECT_EQ(assign_expr.getRvalue()->getType(), ExpressionType::Assignment);
 }
 
+TEST_F(ParserTest, parseTernaryIfExpressionTest)
+{
+    std::string source = "a == True ? 1 <> x";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    std::unique_ptr<Expression> expr = parser.parseTernaryIfExpression();
+
+    // We have the correct type of expression
+    EXPECT_EQ(expr->getType(), ExpressionType::TernaryIf);
+    TernaryIfExpression& ternif_expr = static_cast<TernaryIfExpression&>(*expr);
+
+    // We have the right data on the ternary conditional expression
+    EXPECT_EQ(ternif_expr.getToken().getLexeme(), "?");
+    EXPECT_EQ(ternif_expr.getCondition()->getType(), ExpressionType::Binary);
+    EXPECT_EQ(ternif_expr.getLvalue()->getType(), ExpressionType::Literal);
+    EXPECT_EQ(ternif_expr.getRvalue()->getType(), ExpressionType::Variable);
+}
+
 TEST_F(ParserTest, parseLogicalOrExpressionTest)
 {
     std::string source = "True || False";
@@ -433,7 +452,7 @@ TEST_F(ParserTest, parseLogicalAndExpressionTest)
 
 TEST_F(ParserTest, parseComparisonExpressionTest)
 {
-    std::string source = "counter <> 0";
+    std::string source = "counter != 0";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseComparisonExpression();
@@ -443,7 +462,7 @@ TEST_F(ParserTest, parseComparisonExpressionTest)
     BinaryExpression& comp_expr = static_cast<BinaryExpression&>(*expr);
 
     // We have the right data on the comparison expression
-    EXPECT_EQ(comp_expr.getToken().getLexeme(), "<>");
+    EXPECT_EQ(comp_expr.getToken().getLexeme(), "!=");
     EXPECT_EQ(comp_expr.getBinaryType(), BinaryType::NotEqual);
     EXPECT_EQ(comp_expr.getLeft()->getType(), ExpressionType::Variable);
     EXPECT_EQ(comp_expr.getRight()->getType(), ExpressionType::Literal);
