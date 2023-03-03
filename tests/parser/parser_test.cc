@@ -398,7 +398,7 @@ TEST_F(ParserTest, parseAssignmentExpressionTest)
 
 TEST_F(ParserTest, parseTernaryIfExpressionTest)
 {
-    std::string source = "a == True ? 1 <> x";
+    std::string source = "a == 1 ? \"one\" <> a == 2 ? \"two\" <> \"many\"";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseTernaryIfExpression();
@@ -411,7 +411,7 @@ TEST_F(ParserTest, parseTernaryIfExpressionTest)
     EXPECT_EQ(ternif_expr.getToken().getLexeme(), "?");
     EXPECT_EQ(ternif_expr.getCondition()->getType(), ExpressionType::Binary);
     EXPECT_EQ(ternif_expr.getLvalue()->getType(), ExpressionType::Literal);
-    EXPECT_EQ(ternif_expr.getRvalue()->getType(), ExpressionType::Variable);
+    EXPECT_EQ(ternif_expr.getRvalue()->getType(), ExpressionType::TernaryIf);
 }
 
 TEST_F(ParserTest, parseLogicalOrExpressionTest)
