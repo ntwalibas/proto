@@ -6,6 +6,7 @@
 #include <string>
 
 #include "ast/declarations/declaration.h"
+#include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/declarations/variable.h"
 #include "inference/inference_error.h"

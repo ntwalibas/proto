@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include "ast/definitions/definition.h"
 #include "common/token.h"
 #include "expression.h"
 
@@ -67,15 +68,31 @@ class AssignmentExpression : public Expression
         std::unique_ptr<Expression>& getLvalue();
 
         /**
+         * Sets the expression on the right side of the assignment expression.
+         */
+        void setRvalue(std::unique_ptr<Expression>&& rvalue_);
+
+        /**
          * Returns the expression on the right side of the assignment operator.
          */
         std::unique_ptr<Expression>& getRvalue();
+
+        /**
+         * Sets the variable definition introduced by this assignment, if any.
+         */
+        void setVariableDefinition(std::unique_ptr<Definition>&& var_def_);
+
+        /**
+         * Returns the variable definition introduced by this assignment, if any.
+         */
+        std::unique_ptr<Definition>& getVariableDefinition();
 
     protected:
         Token                       token;  /* Token associated with this assignment expression. */
         enum AssignmentType         type;   /* The type of assignment we have. */
         std::unique_ptr<Expression> lvalue; /* Expression on the left side of the assignment operator. */
         std::unique_ptr<Expression> rvalue; /* Expression on the right side of the assignment operator. */
+        std::unique_ptr<Definition> var_def;/* Variable definition introduced by this assignment, if any. */
 };
 
 #endif

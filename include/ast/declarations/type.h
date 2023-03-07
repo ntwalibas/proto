@@ -46,6 +46,11 @@ class TypeDeclaration : public Declaration
          */
         virtual std::string getTypeName() = 0;
 
+        /**
+         * Returns true if this type declaration is const.
+         */
+        virtual bool isConst() const = 0;
+
     protected:
         TypeDeclaration(
             enum TypeCategory category

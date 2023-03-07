@@ -17,7 +17,9 @@
 
 #include <utility>
 #include <memory>
+#include <cstddef>
 
+#include "ast/definitions/definition.h"
 #include "ast/expressions/expression.h"
 #include "ast/expressions/assignment.h"
 #include "common/token.h"
@@ -32,7 +34,8 @@ AssignmentExpression::AssignmentExpression(
     token(token),
     type(type),
     lvalue(std::move(lvalue)),
-    rvalue(std::move(rvalue))
+    rvalue(std::move(rvalue)),
+    var_def(nullptr)
 {}
 
 
@@ -66,10 +69,45 @@ AssignmentExpression::getLvalue()
 
 
 /**
+ * Sets the expression on the right side of the assignment expression.
+ */
+void
+AssignmentExpression::setRvalue(std::unique_ptr<Expression>&& rvalue_)
+{
+    // std::cout << "+++++++++++++++++++" << std::endl;
+    // std::cout << (lvalue.get() == nullptr) << std::endl;
+    // std::cout << "+++++++++++++++++++" << std::endl;
+    rvalue = std::move(rvalue_);
+    // std::cout << "+++++++++++++++++++" << std::endl;
+    // std::cout << (lvalue.get() != nullptr) << std::endl;
+    // std::cout << "+++++++++++++++++++" << std::endl;
+}
+
+
+/**
  * Returns the expression on the right side of the assignment operator.
  */
 std::unique_ptr<Expression>&
 AssignmentExpression::getRvalue()
 {
     return rvalue;
+}
+
+
+/**
+ * Sets the variable definition introduced by this assignment, if any.
+ */
+void
+AssignmentExpression::setVariableDefinition(std::unique_ptr<Definition>&& var_def_)
+{
+    var_def = std::move(var_def_);
+}
+
+/**
+ * Returns the variable definition introduced by this assignment, if any.
+ */
+std::unique_ptr<Definition>&
+AssignmentExpression::getVariableDefinition()
+{
+    return var_def;
 }
