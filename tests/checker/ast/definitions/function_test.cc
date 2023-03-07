@@ -70,4 +70,34 @@ TEST_F(FunctionCheckerTest, checkTest)
         FunctionDefinitionChecker checker(fun_def.get(), scope);
         EXPECT_THROW(checker.check(), CheckerError);
     }
+
+    // Header is valid, and body is valid
+    {
+        std::shared_ptr<std::string> source =
+            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{ a + b\n }");
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Definition> def = parser.parseDefinition();
+        std::unique_ptr<FunctionDefinition> fun_def(
+            static_cast<FunctionDefinition*>(def.release())
+        );
+
+        FunctionDefinitionChecker checker(fun_def.get(), scope);
+        EXPECT_NO_THROW(checker.check());
+    }
+
+    // Header is valid, and body is invalid
+    {
+        std::shared_ptr<std::string> source =
+            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{ inner: function()->void{}\n }");
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Definition> def = parser.parseDefinition();
+        std::unique_ptr<FunctionDefinition> fun_def(
+            static_cast<FunctionDefinition*>(def.release())
+        );
+
+        FunctionDefinitionChecker checker(fun_def.get(), scope);
+        EXPECT_THROW(checker.check(), CheckerError);
+    }
 }

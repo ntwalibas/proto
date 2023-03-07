@@ -20,6 +20,7 @@
 
 #include "checker/ast/declarations/variable.h"
 #include "checker/ast/definitions/function.h"
+#include "checker/ast/statements/statement.h"
 #include "checker/ast/declarations/type.h"
 #include "ast/definitions/function.h"
 #include "ast/declarations/type.h"
@@ -60,6 +61,7 @@ FunctionDefinitionChecker::check()
         checkHeader(fun_scope);
 
         // Check the body here
+        checkBody(fun_scope);
     } catch (CheckerError& e) {
         throw;
     }
@@ -79,12 +81,13 @@ FunctionDefinitionChecker::checkHeader(std::shared_ptr<Scope>& fun_scope)
         param_checker.check();
 
         // Add the variable declaration to the scope here
+        fun_scope->addVariableDeclaration(param->getToken().getLexeme(), param);
     }
 
     // Return type
     std::unique_ptr<TypeDeclaration>& ret_type =
         function_def->getReturnType();
-    
+
     TypeDeclarationChecker type_checker(ret_type);
     type_checker.check();
 }
@@ -93,5 +96,8 @@ FunctionDefinitionChecker::checkHeader(std::shared_ptr<Scope>& fun_scope)
 void
 FunctionDefinitionChecker::checkBody(std::shared_ptr<Scope>& fun_scope)
 {
-    // We will get back here once we start checking statements...
+    std::unique_ptr<BlockStatement>& body = function_def->getBody();
+    body->setScope(fun_scope);
+    Statement* stmt = static_cast<Statement*>(body.get());
+    StatementChecker(stmt, fun_scope).check();
 }

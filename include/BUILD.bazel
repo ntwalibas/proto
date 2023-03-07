@@ -10,6 +10,7 @@ cc_library(
         "checker/ast/*.h",
         "checker/ast/declarations/*.h",
         "checker/ast/definitions/*.h",
+        "checker/ast/statements/*.h",
         "checker/ast/expressions/*.h",
         "inference/*.h",
         "symbols/*.h",

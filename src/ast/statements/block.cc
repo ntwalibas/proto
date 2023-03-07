@@ -73,6 +73,7 @@ BlockStatement::setScope(std::shared_ptr<Scope>& scope_)
     scope = scope_;
 }
 
+
 /**
  * Returns the scope associated with this block. 
  */

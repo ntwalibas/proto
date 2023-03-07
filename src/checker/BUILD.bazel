@@ -5,6 +5,7 @@ cc_library(
         "ast/*.cc",
         "ast/declarations/*.cc",
         "ast/definitions/*.cc",
+        "ast/statements/*.cc",
         "ast/expressions/*.cc",
     ]),
     copts = ["-Iinclude"],
