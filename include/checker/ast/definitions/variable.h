@@ -41,8 +41,8 @@ class VariableDefinitionChecker
          *    this first step to succeed.
          *
          * 2. Check the body: this checks the initializer expression
-              of the variable, and compares its inferred type with the one
-              given from the first step.
+         *    of the variable, and compares its inferred type with the one
+         *    given from the first step.
          */
         void check();
 
