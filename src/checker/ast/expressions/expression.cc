@@ -21,6 +21,7 @@
 #include "checker/ast/expressions/expression.h"
 #include "checker/ast/declarations/type.h"
 #include "ast/expressions/expression.h"
+#include "ast/expressions/ternaryif.h"
 #include "checker/checker_error.h"
 #include "ast/declarations/type.h"
 #include "ast/expressions/cast.h"
@@ -50,23 +51,23 @@ ExpressionChecker::check()
         case ExpressionType::Cast:
             return checkCast();
 
-        // case ExpressionType::Variable:
-        //     return checkVariable();
+        case ExpressionType::Variable:
+            return checkVariable();
 
-        // case ExpressionType::Group:
-        //     return checkGroup();
+        case ExpressionType::Group:
+            return checkGroup();
 
-        // case ExpressionType::Call:
-        //     return checkCall();
+        case ExpressionType::Call:
+            return checkCall();
 
-        // case ExpressionType::Unary:
-        //     return checkUnary();
+        case ExpressionType::Unary:
+            return checkUnary();
 
-        // case ExpressionType::Binary:
-        //     return checkBinary();
+        case ExpressionType::Binary:
+            return checkBinary();
 
-        // case ExpressionType::TernaryIf:
-        //     return checkTernaryIf();
+        case ExpressionType::TernaryIf:
+            return checkTernaryIf();
 
         // case ExpressionType::Assignment:
         //     return checkAssignment();
@@ -110,5 +111,79 @@ ExpressionChecker::checkCast()
         );
     }
     
+    return Inference(expr, scope).infer();
+}
+
+// Variable
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkVariable()
+{
+    return Inference(expr, scope).infer();
+}
+
+// Group
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkGroup()
+{
+    return Inference(expr, scope).infer();
+}
+
+// Call
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkCall()
+{
+    return Inference(expr, scope).infer();
+}
+
+// Unary
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkUnary()
+{
+    return Inference(expr, scope).infer();
+}
+
+// Binary
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkBinary()
+{
+    return Inference(expr, scope).infer();
+}
+
+// TernaryIf
+std::unique_ptr<TypeDeclaration>&
+ExpressionChecker::checkTernaryIf()
+{
+    TernaryIfExpression* ternif_expr = static_cast<TernaryIfExpression*>(expr.get());
+
+    // Make sure the condition is of type bool
+    std::unique_ptr<Expression>& ternif_cond = ternif_expr->getCondition();
+    std::unique_ptr<TypeDeclaration>& cond_type_decl =
+        ExpressionChecker(ternif_cond, scope).check();
+    if (cond_type_decl->getTypeName() != "bool") {
+        throw CheckerError(
+            ternif_cond->getToken(),
+            "invalid condition to ternary if",
+            "the condition expression to ternary if must be of type bool",
+            false
+        );
+    }
+
+    // Make sure the alternative branches have the same type
+    std::unique_ptr<Expression>& lval = ternif_expr->getLvalue();
+    std::unique_ptr<Expression>& rval = ternif_expr->getRvalue();
+    std::unique_ptr<TypeDeclaration>& lval_type_decl =
+        ExpressionChecker(lval, scope).check();
+    std::unique_ptr<TypeDeclaration>& rval_type_decl =
+        ExpressionChecker(rval, scope).check();
+    if (! typeDeclarationEquals(lval_type_decl, rval_type_decl)) {
+        throw CheckerError(
+            ternif_expr->getToken(),
+            "ternary if branches type mismatch",
+            "the lvalue to ternary if has type [" + lval_type_decl->getTypeName() +
+            "] while the rvalue has type [" + rval_type_decl->getTypeName() + "]",
+            false
+        );
+    }
+
     return Inference(expr, scope).infer();
 }
