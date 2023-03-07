@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "ast/definitions/definition.h"
+#include "symbols/scope.h"
 #include "common/token.h"
 #include "statement.h"
 
@@ -47,10 +48,21 @@ class BlockStatement : public Statement
         std::vector<
             std::unique_ptr<Definition>>& getDefinitions();
 
+        /**
+         * Set the scope introduced by this block.
+         */
+        void setScope(std::shared_ptr<Scope>& scope_);
+
+        /**
+         * Returns the scope associated with this block. 
+         */
+        std::shared_ptr<Scope>& getScope();
+
     protected:
         Token                               token;          /* Token that indicates the start of this block. */
         std::vector<
             std::unique_ptr<Definition>>    definitions;    /* Definitions that appear in this block. */
+        std::shared_ptr<Scope>              scope;          /* Scope containing all definitions in this block. */
 };
 
 #endif

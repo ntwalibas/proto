@@ -16,18 +16,21 @@
  */
 
 #include <utility>
+#include <cstddef>
 #include <memory>
 #include <vector>
 
 #include "ast/definitions/definition.h"
 #include "ast/statements/block.h"
+#include "symbols/scope.h"
 #include "common/token.h"
 
 
 BlockStatement::BlockStatement(
     Token& token
 ) : Statement(StatementType::Block),
-    token(token)
+    token(token),
+    scope(nullptr)
 {}
 
 
@@ -58,4 +61,23 @@ std::vector<std::unique_ptr<Definition>>&
 BlockStatement::getDefinitions()
 {
     return definitions;
+}
+
+
+/**
+ * Set the scope introduced by this block.
+ */
+void
+BlockStatement::setScope(std::shared_ptr<Scope>& scope_)
+{
+    scope = scope_;
+}
+
+/**
+ * Returns the scope associated with this block. 
+ */
+std::shared_ptr<Scope>&
+BlockStatement::getScope()
+{
+    return scope;
 }
