@@ -73,6 +73,9 @@ Inference::infer()
         case ExpressionType::Group:
             return inferGroupType();
         
+        case ExpressionType::Call:
+            return inferCallType();
+        
         case ExpressionType::Unary:
             return inferUnaryType();
         
@@ -127,6 +130,7 @@ Inference::inferLiteralType()
             return lit_expr->getTypeDeclaration();
     }
 }
+
 
 // Casts
 std::unique_ptr<TypeDeclaration>&
