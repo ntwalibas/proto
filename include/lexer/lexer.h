@@ -19,7 +19,7 @@
 #ifndef PROTO_LEXER_H
 #define PROTO_LEXER_H
 
-#include <exception>
+#include <stdexcept>
 #include <cstdbool>
 #include <memory>
 #include <string>

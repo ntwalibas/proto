@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <exception>
+#include <stdexcept>
 #include <cstddef>
 #include <memory>
 

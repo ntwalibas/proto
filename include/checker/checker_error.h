@@ -19,7 +19,7 @@
 #ifndef PROTO_CHECKER_ERROR_H
 #define PROTO_CHECKER_ERROR_H
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 #include "common/token.h"

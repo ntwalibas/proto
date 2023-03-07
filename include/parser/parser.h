@@ -19,7 +19,7 @@
 #ifndef PROTO_PARSER_H
 #define PROTO_PARSER_H
 
-#include <exception>
+#include <stdexcept>
 #include <memory>
 #include <string>
 

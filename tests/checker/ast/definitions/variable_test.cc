@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <exception>
+#include <stdexcept>
 #include <cstddef>
 #include <utility>
 #include <memory>

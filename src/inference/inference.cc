@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-#include <exception>
+#include <stdexcept>
 #include <iterator>
 #include <utility>
 #include <memory>
