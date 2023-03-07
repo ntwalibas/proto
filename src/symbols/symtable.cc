@@ -364,46 +364,46 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
     fun_return_types["__le__(string,string)"]   =
         createSimpleTypeDeclaration(true, "bool");
     // In-place addition
-    fun_return_types["__iadd__(int,int)"]        =
+    fun_return_types["__iadd__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__iadd__(uint,uint)"]      =
+    fun_return_types["__iadd__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__iadd__(float,float)"]    =
+    fun_return_types["__iadd__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place substraction
-    fun_return_types["__isub__(int,int)"]        =
+    fun_return_types["__isub__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__isub__(uint,uint)"]      =
+    fun_return_types["__isub__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__isub__(float,float)"]    =
+    fun_return_types["__isub__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place multiplication
-    fun_return_types["__imul__(int,int)"]        =
+    fun_return_types["__imul__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__imul__(uint,uint)"]      =
+    fun_return_types["__imul__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__imul__(float,float)"]    =
+    fun_return_types["__imul__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place division
-    fun_return_types["__idiv__(int,int)"]        =
+    fun_return_types["__idiv__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__idiv__(uint,uint)"]      =
+    fun_return_types["__idiv__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__idiv__(float,float)"]    =
+    fun_return_types["__idiv__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place remainder
-    fun_return_types["__irem__(int,int)"]        =
+    fun_return_types["__irem__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__irem__(uint,uint)"]      =
+    fun_return_types["__irem__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__irem__(float,float)"]    =
+    fun_return_types["__irem__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place power
-    fun_return_types["__ipow__(int,int)"]        =
+    fun_return_types["__ipow__(int,int)"]       =
         createSimpleTypeDeclaration(true, "float");
-    fun_return_types["__ipow__(uint,uint)"]      =
+    fun_return_types["__ipow__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
-    fun_return_types["__ipow__(float,float)"]    =
+    fun_return_types["__ipow__(float,float)"]   =
         createSimpleTypeDeclaration(true, "float");
     // In-place bitwise and
     fun_return_types["__iand__(int,int)"]       =
@@ -416,25 +416,71 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
     fun_return_types["__ior__(uint,uint)"]      =
         createSimpleTypeDeclaration(true, "uint");
     // In-place bitwise xor
-    fun_return_types["__ixor__(int,int)"]        =
+    fun_return_types["__ixor__(int,int)"]       =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__ixor__(uint,uint)"]      =
+    fun_return_types["__ixor__(uint,uint)"]     =
         createSimpleTypeDeclaration(true, "uint");
     // In-place left shift
-    fun_return_types["__ilshift__(int,uint)"]    =
+    fun_return_types["__ilshift__(int,uint)"]   =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__ilshift__(uint,uint)"]   =
+    fun_return_types["__ilshift__(uint,uint)"]  =
         createSimpleTypeDeclaration(true, "uint");
     // In-place right shift
-    fun_return_types["__irshift__(int,uint)"]    =
+    fun_return_types["__irshift__(int,uint)"]   =
         createSimpleTypeDeclaration(true, "int");
-    fun_return_types["__irshift__(uint,uint)"]   =
+    fun_return_types["__irshift__(uint,uint)"]  =
         createSimpleTypeDeclaration(true, "uint");
 
+    // Cast operators
+    // unsigned int to signed int
+    fun_return_types["__cast@int__(uint)"]      =
+        createSimpleTypeDeclaration(true, "int");
+    // unsigned int to float
+    fun_return_types["__cast@float__(uint)"]    =
+        createSimpleTypeDeclaration(true, "float");
+    // unsigned int to string
+    fun_return_types["__cast@string__(uint)"]   =
+        createSimpleTypeDeclaration(true, "string");
+    // unsigned int to bool
+    fun_return_types["__cast@bool__(uint)"]     =
+        createSimpleTypeDeclaration(true, "bool");
+    // signed int to unsigned int
+    fun_return_types["__cast@uint__(int)"]      =
+        createSimpleTypeDeclaration(true, "uint");
+    // signed int to float
+    fun_return_types["__cast@float__(int)"]     =
+        createSimpleTypeDeclaration(true, "float");
+    // signed int to string
+    fun_return_types["__cast@string__(int)"]    =
+        createSimpleTypeDeclaration(true, "string");
+    // signed int to bool
+    fun_return_types["__cast@bool__(int)"]      =
+        createSimpleTypeDeclaration(true, "bool");
+    // float to unsigned int
+    fun_return_types["__cast@uint__(float)"]    =
+        createSimpleTypeDeclaration(true, "uint");
+    // float to signed int
+    fun_return_types["__cast@int__(float)"]     =
+        createSimpleTypeDeclaration(true, "int");
+    // float to string
+    fun_return_types["__cast@string__(float)"]  =
+        createSimpleTypeDeclaration(true, "string");
 }
 
 std::unique_ptr<TypeDeclaration>&
 BuiltinFunctionsSymtable::getReturnType(std::string& function_mangled_name)
 {
     return fun_return_types.at(function_mangled_name);
+}
+
+
+bool
+BuiltinFunctionsSymtable::hasFunctionDefinition(std::string const& function_mangled_name)
+{
+    try {
+        fun_return_types.at(function_mangled_name);
+        return true;
+    } catch (std::out_of_range const& e) {
+        return false;
+    }
 }

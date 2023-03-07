@@ -120,6 +120,8 @@ class BuiltinFunctionsSymtable
         BuiltinFunctionsSymtable();
 
         std::unique_ptr<TypeDeclaration>& getReturnType(std::string& function_mangled_name);
+
+        bool hasFunctionDefinition(std::string const& function_mangled_name);
     
     private:
         std::map<std::string, std::unique_ptr<TypeDeclaration>> fun_return_types;
