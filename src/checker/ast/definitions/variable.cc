@@ -107,7 +107,7 @@ std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
     try {
-        return Inference(variable_def->getInitializer(), scope).infer();
+        return Inference(variable_def->getInitializer().get(), scope).infer();
     } catch (InferenceError & e) {
         throw CheckerError(
             e.getToken(),

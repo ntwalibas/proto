@@ -47,7 +47,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferLiteralType();
+            Inference(expr.get(), scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -63,7 +63,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferLiteralType();
+            Inference(expr.get(), scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -79,7 +79,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferLiteralType();
+            Inference(expr.get(), scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -95,7 +95,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferLiteralType();
+            Inference(expr.get(), scope).inferLiteralType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -113,7 +113,7 @@ TEST_F(InferenceTest, inferCastTypeTest) {
     std::unique_ptr<Expression> expr = parser.parseExpression();
 
     std::unique_ptr<TypeDeclaration>& expr_type =
-        Inference(expr, scope).inferCastType();
+        Inference(expr.get(), scope).inferCastType();
     
     EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& type_decl =
@@ -149,7 +149,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferVariableType();
+            Inference(expr.get(), scope).inferVariableType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -164,7 +164,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(Inference(expr, scope).inferVariableType(), InferenceError);
+        EXPECT_THROW(Inference(expr.get(), scope).inferVariableType(), InferenceError);
     }
 
     // Variable declaration is in scope
@@ -175,7 +175,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferVariableType();
+            Inference(expr.get(), scope).inferVariableType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -193,7 +193,7 @@ TEST_F(InferenceTest, inferGroupTypeTest) {
     std::unique_ptr<Expression> expr = parser.parseExpression();
 
     std::unique_ptr<TypeDeclaration>& expr_type =
-        Inference(expr, scope).inferGroupType();
+        Inference(expr.get(), scope).inferGroupType();
     
     EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& type_decl =
@@ -221,7 +221,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferCallType();
+            Inference(expr.get(), scope).inferCallType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -238,7 +238,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(Inference(expr, scope).inferCallType(), InferenceError);
+        EXPECT_THROW(Inference(expr.get(), scope).inferCallType(), InferenceError);
     }
 }
 
@@ -253,7 +253,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -271,7 +271,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -289,7 +289,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -307,7 +307,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -325,7 +325,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -343,7 +343,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -361,7 +361,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -379,7 +379,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -397,7 +397,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferUnaryType();
+            Inference(expr.get(), scope).inferUnaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -414,7 +414,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(Inference(expr, scope).inferUnaryType(), InferenceError);
+        EXPECT_THROW(Inference(expr.get(), scope).inferUnaryType(), InferenceError);
     }
 }
 
@@ -429,7 +429,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -447,7 +447,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -465,7 +465,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -481,7 +481,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -497,7 +497,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -515,7 +515,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -531,7 +531,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -547,7 +547,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -565,7 +565,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -581,7 +581,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -597,7 +597,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -615,7 +615,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -631,7 +631,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -647,7 +647,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -665,7 +665,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -681,7 +681,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -697,7 +697,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -715,7 +715,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -731,7 +731,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -749,7 +749,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -765,7 +765,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -783,7 +783,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -799,7 +799,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -817,7 +817,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -833,7 +833,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -851,7 +851,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -867,7 +867,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -885,7 +885,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -903,7 +903,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -921,7 +921,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -939,7 +939,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -957,7 +957,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -975,7 +975,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -993,7 +993,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -1011,7 +1011,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferBinaryType();
+            Inference(expr.get(), scope).inferBinaryType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -1029,7 +1029,7 @@ TEST_F(InferenceTest, inferTernaryIfTypeTest) {
     std::unique_ptr<Expression> expr = parser.parseExpression();
 
     std::unique_ptr<TypeDeclaration>& expr_type =
-        Inference(expr, scope).inferTernaryIfType();
+        Inference(expr.get(), scope).inferTernaryIfType();
     
     EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& type_decl =
@@ -1055,7 +1055,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferAssignmentType();
+            Inference(expr.get(), scope).inferAssignmentType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -1071,7 +1071,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
         std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr, scope).inferAssignmentType();
+            Inference(expr.get(), scope).inferAssignmentType();
         
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
@@ -1085,6 +1085,6 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
-        EXPECT_THROW(Inference(expr, scope).inferAssignmentType(), InferenceError);
+        EXPECT_THROW(Inference(expr.get(), scope).inferAssignmentType(), InferenceError);
     }
 }

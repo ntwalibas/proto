@@ -29,7 +29,7 @@ class Inference
 {
     public:
         Inference(
-            std::unique_ptr<Expression>& expr,
+            Expression* expr,
             std::shared_ptr<Scope> const& scope
         );
 
@@ -66,8 +66,8 @@ class Inference
         std::unique_ptr<TypeDeclaration>& inferAssignmentType();
     
     private:
-        std::unique_ptr<Expression>&    expr;   /* Expression which type to infer. */
-        std::shared_ptr<Scope>          scope;  /* Scope within which this expression occurs. */
+        Expression*             expr;   /* Expression which type to infer. */
+        std::shared_ptr<Scope>  scope;  /* Scope within which this expression occurs. */
 };
 
 #endif

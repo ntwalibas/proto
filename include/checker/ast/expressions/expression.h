@@ -29,7 +29,7 @@ class ExpressionChecker
 {
     public:
         ExpressionChecker(
-            std::unique_ptr<Expression>& expr,
+            Expression* expr,
             std::shared_ptr<Scope> const& scope
         );
         
@@ -66,7 +66,7 @@ class ExpressionChecker
         std::unique_ptr<TypeDeclaration>& checkAssignment();
 
     private:
-        std::unique_ptr<Expression>& expr;
+        Expression* expr;
         std::shared_ptr<Scope> const& scope;
 };
 

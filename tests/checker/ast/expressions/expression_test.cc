@@ -32,7 +32,7 @@ TEST_F(ExpressionCheckerTest, checkCastTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& type_decl =
-            ExpressionChecker(expr, scope).checkCast();
+            ExpressionChecker(expr.get(), scope).checkCast();
 
         EXPECT_EQ(type_decl->getTypeName(), "int");
     }
@@ -44,7 +44,7 @@ TEST_F(ExpressionCheckerTest, checkCastTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).checkCast(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).checkCast(), CheckerError);
     }
 }
 
@@ -57,7 +57,7 @@ TEST_F(ExpressionCheckerTest, checkTernaryIfTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& type_decl =
-            ExpressionChecker(expr, scope).checkTernaryIf();
+            ExpressionChecker(expr.get(), scope).checkTernaryIf();
 
         EXPECT_EQ(type_decl->getTypeName(), "bool");
     }
@@ -69,7 +69,7 @@ TEST_F(ExpressionCheckerTest, checkTernaryIfTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).checkTernaryIf(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).checkTernaryIf(), CheckerError);
     }
 
     // Invalid ternary if: mismatched lvalue and rvalue
@@ -79,7 +79,7 @@ TEST_F(ExpressionCheckerTest, checkTernaryIfTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).checkTernaryIf(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).checkTernaryIf(), CheckerError);
     }
 }
 
@@ -101,7 +101,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
-            ExpressionChecker(expr, scope).check();
+            ExpressionChecker(expr.get(), scope).check();
 
         EXPECT_EQ(expr_type_decl->getTypeName(), "uint");
     }
@@ -113,7 +113,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
-            ExpressionChecker(expr, scope).check();
+            ExpressionChecker(expr.get(), scope).check();
 
         EXPECT_EQ(expr_type_decl->getTypeName(), "int");
     }
@@ -125,7 +125,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
-            ExpressionChecker(expr, scope).check();
+            ExpressionChecker(expr.get(), scope).check();
 
         EXPECT_EQ(expr_type_decl->getTypeName(), "uint");
     }
@@ -137,7 +137,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).check(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).check(), CheckerError);
     }
 
     // Invalid simple assignment: incompatible types
@@ -147,7 +147,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).check(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).check(), CheckerError);
     }
 
     // Invalid in-place assignment: non-existent variable on the LHS
@@ -157,7 +157,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).check(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).check(), CheckerError);
     }
 
     // Invalid in-place assignment: non-existent variable on the RHS
@@ -167,7 +167,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).check(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).check(), CheckerError);
     }
 
     // Invalid in-place assignment: incompatible types
@@ -177,6 +177,6 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
 
-        EXPECT_THROW(ExpressionChecker(expr, scope).check(), CheckerError);
+        EXPECT_THROW(ExpressionChecker(expr.get(), scope).check(), CheckerError);
     }
 }

@@ -46,7 +46,7 @@
 
 
 Inference::Inference(
-    std::unique_ptr<Expression>& expr,
+    Expression* expr,
     std::shared_ptr<Scope> const& scope
 ) : expr(expr),
     scope(scope)
@@ -98,7 +98,7 @@ Inference::infer()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferLiteralType()
 {
-    LiteralExpression* lit_expr = static_cast<LiteralExpression*>(expr.get());
+    LiteralExpression* lit_expr = static_cast<LiteralExpression*>(expr);
 
     switch (lit_expr->getLiteralType()) {
         case LiteralType::Boolean:
@@ -136,7 +136,7 @@ Inference::inferLiteralType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferCastType()
 {
-    CastExpression* cast_expr = static_cast<CastExpression*>(expr.get());
+    CastExpression* cast_expr = static_cast<CastExpression*>(expr);
 
     expr->setTypeDeclaration(
         copy(cast_expr->getTypeDeclaration())
@@ -149,7 +149,7 @@ Inference::inferCastType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferVariableType()
 {
-    VariableExpression* var_expr = static_cast<VariableExpression*>(expr.get());
+    VariableExpression* var_expr = static_cast<VariableExpression*>(expr);
 
     bool decl_found = scope->hasVariableDeclaration(var_expr->getToken().getLexeme(), true);
     bool def_found = scope->hasDefinition(var_expr->getToken().getLexeme(), true);
@@ -205,11 +205,11 @@ Inference::inferVariableType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferGroupType()
 {
-    GroupExpression* gr_expr = static_cast<GroupExpression*>(expr.get());
+    GroupExpression* gr_expr = static_cast<GroupExpression*>(expr);
     std::unique_ptr<Expression>& grouped_expr = gr_expr->getExpression();
 
     std::unique_ptr<TypeDeclaration>& grouped_type_decl =
-        Inference(grouped_expr, scope).infer();
+        Inference(grouped_expr.get(), scope).infer();
 
     expr->setTypeDeclaration(
         copy(grouped_type_decl)
@@ -222,14 +222,14 @@ Inference::inferGroupType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferCallType()
 {
-    CallExpression* call_expr = static_cast<CallExpression*>(expr.get());
+    CallExpression* call_expr = static_cast<CallExpression*>(expr);
     std::vector<std::unique_ptr<Expression>>& args = call_expr->getArguments();
 
     // Build the call corresponding function's mangled name
     std::string fun_name = call_expr->getToken().getLexeme() + "(";
     for (auto it = args.begin(); it != args.end(); ++it) {
         std::unique_ptr<TypeDeclaration>& type_decl =
-            Inference(* it, scope).infer();
+            Inference(it->get(), scope).infer();
         fun_name += type_decl->getTypeName();
 
         if (next(it) != args.end())
@@ -273,9 +273,9 @@ Inference::inferCallType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferUnaryType()
 {
-    UnaryExpression* un_expr = static_cast<UnaryExpression*>(expr.get());
+    UnaryExpression* un_expr = static_cast<UnaryExpression*>(expr);
     std::unique_ptr<TypeDeclaration>& expr_type_decl =
-        Inference(un_expr->getExpression(), scope).infer();
+        Inference(un_expr->getExpression().get(), scope).infer();
     
     std::string expr_type_name =  expr_type_decl->getTypeName();
 
@@ -320,11 +320,11 @@ Inference::inferUnaryType()
 std::unique_ptr<TypeDeclaration>&
 Inference::inferBinaryType()
 {
-    BinaryExpression* bin_expr = static_cast<BinaryExpression*>(expr.get());
+    BinaryExpression* bin_expr = static_cast<BinaryExpression*>(expr);
     std::unique_ptr<TypeDeclaration>& left_expr_type =
-        Inference(bin_expr->getLeft(), scope).infer();
+        Inference(bin_expr->getLeft().get(), scope).infer();
     std::unique_ptr<TypeDeclaration>& right_expr_type =
-        Inference(bin_expr->getRight(), scope).infer();
+        Inference(bin_expr->getRight().get(), scope).infer();
     
     std::string left_type_name = left_expr_type->getTypeName();
     std::string right_type_name = right_expr_type->getTypeName();
@@ -436,9 +436,9 @@ std::unique_ptr<TypeDeclaration>&
 Inference::inferTernaryIfType()
 {
     TernaryIfExpression* ternif_expr =
-        static_cast<TernaryIfExpression*>(expr.get());
+        static_cast<TernaryIfExpression*>(expr);
     std::unique_ptr<TypeDeclaration>& lval_type =
-        Inference(ternif_expr->getLvalue(), scope).infer();
+        Inference(ternif_expr->getLvalue().get(), scope).infer();
     
     expr->setTypeDeclaration(copy(lval_type));
     return expr->getTypeDeclaration();
@@ -450,11 +450,11 @@ std::unique_ptr<TypeDeclaration>&
 Inference::inferAssignmentType()
 {
     AssignmentExpression* assign_expr =
-        static_cast<AssignmentExpression*>(expr.get());
+        static_cast<AssignmentExpression*>(expr);
     std::unique_ptr<TypeDeclaration>& lval_type =
-        Inference(assign_expr->getLvalue(), scope).infer();
+        Inference(assign_expr->getLvalue().get(), scope).infer();
     std::unique_ptr<TypeDeclaration>& rval_type =
-        Inference(assign_expr->getRvalue(), scope).infer();
+        Inference(assign_expr->getRvalue().get(), scope).infer();
     
     std::string lval_type_name = lval_type->getTypeName();
     std::string rval_type_name = rval_type->getTypeName();
