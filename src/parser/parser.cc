@@ -797,11 +797,11 @@ Parser::parseTernaryIfExpression()
         Token op_token = peekBack();
         std::unique_ptr<Expression> lvalue = parseLogicalOrExpression();
 
-        if (!match(PROTO_BRANCH)) {
+        if (!match(PROTO_BRANCH) && !match(PROTO_ELSE)) {
             throw ParserError(
                 peekBack(),
-                "missing colon in ternary conditional",
-                "expected a colon to introduce the else branch of ternary if",
+                "missing [<>] or [else] in ternary conditional",
+                "expected [<>] or [else] to introduce the else branch of ternary if",
                 false
             );
         }
