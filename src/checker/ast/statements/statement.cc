@@ -31,6 +31,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/statements/statement.h"
 #include "checker/checker_error.h"
+#include "ast/statements/while.h"
 #include "ast/statements/block.h"
 #include "ast/statements/for.h"
 #include "ast/statements/if.h"
@@ -65,9 +66,9 @@ StatementChecker::check()
             checkFor();
             break;
         
-        // case StatementType::While:
-        //     checkWhile();
-        //     break;
+        case StatementType::While:
+            checkWhile();
+            break;
         
         // case StatementType::Break:
         //     checkBreak();
@@ -275,4 +276,27 @@ StatementChecker::checkExpression()
 {
     Expression* expr_stmt = static_cast<Expression*>(stmt);
     ExpressionChecker(expr_stmt, scope).check();
+}
+
+
+// While
+void
+StatementChecker::checkWhile()
+{
+    WhileStatement* while_stmt = static_cast<WhileStatement*>(stmt);
+    std::unique_ptr<Expression>& while_cond = while_stmt->getCondition();
+    std::unique_ptr<TypeDeclaration>& while_cond_type_decl =
+        ExpressionChecker(while_cond.get(), scope).check();
+    if (while_cond_type_decl->getTypeName() != "bool") {
+        throw CheckerError(
+            while_cond->getToken(),
+            "invalid condition for while statement",
+            "the condition for an while statement must be a boolean",
+            true
+        );
+    }
+    std::unique_ptr<BlockStatement>& while_body = while_stmt->getBody();
+    std::shared_ptr<Scope> while_scope = std::make_shared<Scope>(scope);
+    while_body->setScope(while_scope);
+    StatementChecker(static_cast<Statement*>(while_body.get()), while_scope);
 }

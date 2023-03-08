@@ -140,3 +140,26 @@ TEST_F(StatementCheckerTest, checkForTest)
         EXPECT_THROW(StatementChecker(stmt.get(), scope).checkFor(), CheckerError);
     }
 }
+
+TEST_F(StatementCheckerTest, checkWhileTest)
+{
+    // Valid while loop
+    {
+        std::string source = "while (True) {}";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkWhile());
+    }
+
+    // Invalid while loop
+    {
+        std::string source = "while (1) {}";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkWhile(), CheckerError);
+    }
+}
