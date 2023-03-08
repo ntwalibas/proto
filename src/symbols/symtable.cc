@@ -202,269 +202,269 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
     // Unary operators
     // Plus
     fun_return_types["__pos__(int)"]            =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__pos__(uint)"]           =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__pos__(float)"]          =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Minus
     fun_return_types["__neg__(int)"]            =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__neg__(uint)"]           =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__neg__(float)"]          =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Bitwise not
     fun_return_types["__bnot__(int)"]           =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__bnot__(uint)"]          =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Logical not
     fun_return_types["__not__(bool)"]           =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
 
     // Binary operators
     // Addition
     fun_return_types["__add__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__add__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__add__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Substraction
     fun_return_types["__sub__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__sub__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__sub__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Multiplication
     fun_return_types["__mul__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__mul__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__mul__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Division
     fun_return_types["__div__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__div__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__div__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Remainder
     fun_return_types["__rem__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__rem__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__rem__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Power
     fun_return_types["__pow__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     fun_return_types["__pow__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__pow__(float,float)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // Bitwise and
     fun_return_types["__band__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__band__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Bitwise or
     fun_return_types["__bor__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__bor__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Bitwise xor
     fun_return_types["__xor__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__xor__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Left shift
     fun_return_types["__lshift__(int,uint)"]    =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__lshift__(uint,uint)"]   =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Right shift
     fun_return_types["__rshift__(int,uint)"]    =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__rshift__(uint,uint)"]   =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // Logical and
     fun_return_types["__and__(bool,bool)"]      =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Logical or
     fun_return_types["__or__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Equal
     fun_return_types["__eq__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__eq__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__eq__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__eq__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__eq__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Not equal
     fun_return_types["__ne__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ne__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ne__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ne__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ne__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Greater
     fun_return_types["__gt__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__gt__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__gt__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__gt__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__gt__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Greater or equal
     fun_return_types["__ge__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ge__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ge__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ge__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__ge__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Less
     fun_return_types["__lt__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__lt__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__lt__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__lt__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__lt__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // Less or equal
     fun_return_types["__le__(int,int)"]         =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__le__(uint,uint)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__le__(float,float)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__le__(bool,bool)"]       =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     fun_return_types["__le__(string,string)"]   =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // In-place addition
     fun_return_types["__iadd__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__iadd__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__iadd__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place substraction
     fun_return_types["__isub__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__isub__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__isub__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place multiplication
     fun_return_types["__imul__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__imul__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__imul__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place division
     fun_return_types["__idiv__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__idiv__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__idiv__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place remainder
     fun_return_types["__irem__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__irem__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__irem__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place power
     fun_return_types["__ipow__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     fun_return_types["__ipow__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__ipow__(float,float)"]   =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // In-place bitwise and
     fun_return_types["__iand__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__iand__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // In-place bitwise or
     fun_return_types["__ior__(int,int)"]        =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__ior__(uint,uint)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // In-place bitwise xor
     fun_return_types["__ixor__(int,int)"]       =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__ixor__(uint,uint)"]     =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // In-place left shift
     fun_return_types["__ilshift__(int,uint)"]   =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__ilshift__(uint,uint)"]  =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // In-place right shift
     fun_return_types["__irshift__(int,uint)"]   =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     fun_return_types["__irshift__(uint,uint)"]  =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
 
     // Cast operators
     // unsigned int to signed int
     fun_return_types["__cast@int__(uint)"]      =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     // unsigned int to float
     fun_return_types["__cast@float__(uint)"]    =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // unsigned int to string
     fun_return_types["__cast@string__(uint)"]   =
-        createSimpleTypeDeclaration(true, "string");
+        createSimpleTypeDeclaration(false,"string");
     // unsigned int to bool
     fun_return_types["__cast@bool__(uint)"]     =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // signed int to unsigned int
     fun_return_types["__cast@uint__(int)"]      =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // signed int to float
     fun_return_types["__cast@float__(int)"]     =
-        createSimpleTypeDeclaration(true, "float");
+        createSimpleTypeDeclaration(false,"float");
     // signed int to string
     fun_return_types["__cast@string__(int)"]    =
-        createSimpleTypeDeclaration(true, "string");
+        createSimpleTypeDeclaration(false,"string");
     // signed int to bool
     fun_return_types["__cast@bool__(int)"]      =
-        createSimpleTypeDeclaration(true, "bool");
+        createSimpleTypeDeclaration(false,"bool");
     // float to unsigned int
     fun_return_types["__cast@uint__(float)"]    =
-        createSimpleTypeDeclaration(true, "uint");
+        createSimpleTypeDeclaration(false,"uint");
     // float to signed int
     fun_return_types["__cast@int__(float)"]     =
-        createSimpleTypeDeclaration(true, "int");
+        createSimpleTypeDeclaration(false,"int");
     // float to string
     fun_return_types["__cast@string__(float)"]  =
-        createSimpleTypeDeclaration(true, "string");
+        createSimpleTypeDeclaration(false,"string");
 }
 
 std::unique_ptr<TypeDeclaration>&

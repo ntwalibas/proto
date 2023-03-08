@@ -103,28 +103,28 @@ Inference::inferLiteralType()
     switch (lit_expr->getLiteralType()) {
         case LiteralType::Boolean:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
-                true,
+                false,
                 "bool"
             ));
             return lit_expr->getTypeDeclaration();
 
         case LiteralType::Integer:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
-                true,
+                false,
                 "uint"
             ));
             return lit_expr->getTypeDeclaration();
 
         case LiteralType::Float:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
-                true,
+                false,
                 "float"
             ));
             return lit_expr->getTypeDeclaration();
 
         case LiteralType::String:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
-                true,
+                false,
                 "string"
             ));
             return lit_expr->getTypeDeclaration();
