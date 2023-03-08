@@ -6,6 +6,7 @@ cc_binary(
         "//src/utils:utils",
         "//src/lexer:lexer",
         "//src/parser:parser",
+        "//src/checker:checker",
     ],
     copts = ["-Iinclude"],
 )

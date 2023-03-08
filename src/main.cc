@@ -19,6 +19,7 @@
 #include <iostream>
 #include <string>
 
+#include "checker/checker.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
 #include "ast/program.h"
@@ -65,8 +66,9 @@ compile(std::string const& source_path)
 
     /* 4. Parse tokens */
     Parser parser(lexer);
+    Program program;
     try {
-        Program program = parser.parse();
+        program = parser.parse();
         if (parser.errors.size() > 0) {
             for (auto& e : parser.errors) {
                 printError(
@@ -76,9 +78,6 @@ compile(std::string const& source_path)
                     e.getToken().source_path
                 );
             }
-        }
-        else {
-            std::cout << "The program has " << program.getDefinitions().size() << " definitions." << std::endl;
         }
     } catch (ParserError& e) {
         for (auto& e : parser.errors) {
@@ -102,7 +101,44 @@ compile(std::string const& source_path)
 
         return 1;
     }
-    
+
+    /* 5. Check the proram for errors */
+    Checker checker(program);
+    try {
+        checker.check();
+        if (checker.errors.size() > 0) {
+            for (auto& e : checker.errors) {
+                printError(
+                    e.getToken(),
+                    e.getPrimaryMessage(),
+                    e.getSecondaryMessage(),
+                    e.getToken().source_path
+                );
+            }
+        }
+        else {
+            std::cout << "Program checks out!" << std::endl;
+        }
+    } catch (CheckerError& e) {
+        for (auto& e : checker.errors) {
+            printError(
+                e.getToken(),
+                e.getPrimaryMessage(),
+                e.getSecondaryMessage(),
+                e.getToken().source_path
+            );
+        }
+        
+        if (! checker.errors.size())
+            printError(
+                e.getToken(),
+                e.getPrimaryMessage(),
+                e.getSecondaryMessage(),
+                e.getToken().source_path
+            );
+
+        return 1;
+    }
 
     return 0;
 }
