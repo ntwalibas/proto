@@ -31,6 +31,7 @@
 #include "ast/definitions/definition.h"
 #include "ast/statements/statement.h"
 #include "ast/statements/continue.h"
+#include "ast/statements/return.h"
 #include "checker/checker_error.h"
 #include "ast/statements/while.h"
 #include "ast/statements/block.h"
@@ -42,10 +43,9 @@
 
 
 StatementChecker::StatementChecker(
-    Statement* stmt,
-    std::shared_ptr<Scope> const& scope
-) : stmt(stmt),
-    scope(scope)
+    std::unique_ptr<TypeDeclaration> const& ret_type_decl
+) : inside_loop(false),
+    ret_type_decl(ret_type_decl)
 {}
 
 
@@ -53,40 +53,58 @@ StatementChecker::StatementChecker(
  * Checks that any given statement obeys the language semantics
  */
 void
-StatementChecker::check()
+StatementChecker::check(
+    Statement* stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
     switch (stmt->getType()) {
-        case StatementType::Block:
-            checkBlock();
+        case StatementType::Block: {
+            BlockStatement* block_stmt = static_cast<BlockStatement*>(stmt);
+            checkBlock(block_stmt, scope);
             break;
+        }
         
-        case StatementType::If:
-            checkIf();
+        case StatementType::If: {
+            IfStatement * if_stmt = static_cast<IfStatement*>(stmt);
+            checkIf(if_stmt, scope);
             break;
+        }
         
-        case StatementType::For:
-            checkFor();
+        case StatementType::For: {
+            ForStatement* for_stmt = static_cast<ForStatement*>(stmt);
+            checkFor(for_stmt, scope);
             break;
+        }
         
-        case StatementType::While:
-            checkWhile();
+        case StatementType::While: {
+            WhileStatement* while_stmt = static_cast<WhileStatement*>(stmt);
+            checkWhile(while_stmt, scope);
             break;
+        }
         
-        case StatementType::Break:
-            checkBreak();
+        case StatementType::Break: {
+            BreakStatement* break_stmt = static_cast<BreakStatement*>(stmt);
+            checkBreak(break_stmt, scope);
             break;
+        }
         
-        case StatementType::Continue:
-            checkContinue();
+        case StatementType::Continue: {
+            ContinueStatement* continue_stmt = static_cast<ContinueStatement*>(stmt);
+            checkContinue(continue_stmt, scope);
             break;
+        }
         
         // case StatementType::Return:
-        //     checkReturn();
+        //     ReturnStatement* return_stmt = static_cast<ReturnStatement*>(stmt);
+        //     checkReturn(return_stmt, scope);
         //     break;
         
-        case StatementType::Expression:
-            checkExpression();
+        case StatementType::Expression: {
+            Expression* expression_stmt = static_cast<Expression*>(stmt);
+            checkExpression(expression_stmt, scope);
             break;
+        }
         
         default:
             throw std::invalid_argument("Given statement cannot be currently checked.");
@@ -96,9 +114,11 @@ StatementChecker::check()
 
 // Block
 void
-StatementChecker::checkBlock()
+StatementChecker::checkBlock(
+    BlockStatement* block_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    BlockStatement* block_stmt = static_cast<BlockStatement*>(stmt);
     std::vector<std::unique_ptr<Definition>>& definitions =
         block_stmt->getDefinitions();
 
@@ -114,7 +134,10 @@ StatementChecker::checkBlock()
         }
         else if (definition->getType() == DefinitionType::Statement) {
             Statement* stmt_def = static_cast<Statement*>(definition.get());
-            StatementChecker(stmt_def, scope).check();
+            check(
+                stmt_def,
+                scope
+            );
         }
         else {
             throw CheckerError(
@@ -131,10 +154,11 @@ StatementChecker::checkBlock()
 
 // If
 void
-StatementChecker::checkIf()
+StatementChecker::checkIf(
+    IfStatement* if_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    IfStatement * if_stmt = static_cast<IfStatement*>(stmt);
-
     // Validate the if branch
     std::unique_ptr<Expression>& if_cond = if_stmt->getCondition();
     std::unique_ptr<TypeDeclaration>& if_cond_type_decl =
@@ -150,7 +174,10 @@ StatementChecker::checkIf()
     std::unique_ptr<BlockStatement>& if_body = if_stmt->getBody();
     std::shared_ptr<Scope> if_scope = std::make_shared<Scope>(scope);
     if_body->setScope(if_scope);
-    StatementChecker(static_cast<Statement*>(if_body.get()), if_scope);
+    check(
+        static_cast<Statement*>(if_body.get()),
+        if_scope
+    );
 
     // Validate the elif branches, if any
     std::vector<std::unique_ptr<ElifBranch>>& elif_branches =
@@ -170,7 +197,10 @@ StatementChecker::checkIf()
         std::unique_ptr<BlockStatement>& branch_body = branch->getBody();
         std::shared_ptr<Scope> branch_scope = std::make_shared<Scope>(scope);
         branch_body->setScope(branch_scope);
-        StatementChecker(static_cast<Statement*>(branch_body.get()), branch_scope);
+        check(
+            static_cast<Statement*>(branch_body.get()),
+            branch_scope
+        );
     }
 
     // Validate the else branch, if any
@@ -179,16 +209,21 @@ StatementChecker::checkIf()
         std::unique_ptr<BlockStatement>& else_branch_body = else_branch->getBody();
         std::shared_ptr<Scope> else_branch_scope = std::make_shared<Scope>(scope);
         else_branch_body->setScope(else_branch_scope);
-        StatementChecker(static_cast<Statement*>(else_branch_body.get()), else_branch_scope);
+        check(
+            static_cast<Statement*>(else_branch_body.get()),
+            else_branch_scope
+        );
     }
 }
 
 
 // For
 void 
-StatementChecker::checkFor()
+StatementChecker::checkFor(
+    ForStatement* for_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    ForStatement* for_stmt = static_cast<ForStatement*>(stmt);
     std::shared_ptr<Scope> for_scope = std::make_shared<Scope>(scope);
 
     // Validate the initialization clause
@@ -270,7 +305,10 @@ StatementChecker::checkFor()
     for_body->setScope(for_scope);
     bool upper_loop_found = inside_loop;
     inside_loop = true;
-    StatementChecker(static_cast<Statement*>(for_body.get()), for_scope);
+    check(
+        static_cast<Statement*>(for_body.get()),
+        for_scope
+    );
     if(upper_loop_found == false)
         inside_loop = false;
 }
@@ -278,9 +316,11 @@ StatementChecker::checkFor()
 
 // While
 void
-StatementChecker::checkWhile()
+StatementChecker::checkWhile(
+    WhileStatement* while_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    WhileStatement* while_stmt = static_cast<WhileStatement*>(stmt);
     std::unique_ptr<Expression>& while_cond = while_stmt->getCondition();
     std::unique_ptr<TypeDeclaration>& while_cond_type_decl =
         ExpressionChecker(while_cond.get(), scope).check();
@@ -298,7 +338,10 @@ StatementChecker::checkWhile()
 
     bool upper_loop_found = inside_loop;
     inside_loop = true;
-    StatementChecker(static_cast<Statement*>(while_body.get()), while_scope);
+    check(
+        static_cast<Statement*>(while_body.get()),
+        while_scope
+    );
     if(upper_loop_found == false)
         inside_loop = false;
 }
@@ -306,9 +349,11 @@ StatementChecker::checkWhile()
 
 // Break
 void
-StatementChecker::checkBreak()
+StatementChecker::checkBreak(
+    BreakStatement* break_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    BreakStatement* break_stmt = static_cast<BreakStatement*>(stmt);
     if (!inside_loop) {
         throw CheckerError(
             break_stmt->getToken(),
@@ -322,9 +367,11 @@ StatementChecker::checkBreak()
 
 // Continue
 void
-StatementChecker::checkContinue()
+StatementChecker::checkContinue(
+    ContinueStatement* continue_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    ContinueStatement* continue_stmt = static_cast<ContinueStatement*>(stmt);
     if (!inside_loop) {
         throw CheckerError(
             continue_stmt->getToken(),
@@ -338,8 +385,10 @@ StatementChecker::checkContinue()
 
 // Expression
 void
-StatementChecker::checkExpression()
+StatementChecker::checkExpression(
+    Expression* expression_stmt,
+    std::shared_ptr<Scope> const& scope
+)
 {
-    Expression* expr_stmt = static_cast<Expression*>(stmt);
-    ExpressionChecker(expr_stmt, scope).check();
+    ExpressionChecker(expression_stmt, scope).check();
 }

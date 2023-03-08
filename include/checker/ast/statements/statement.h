@@ -20,8 +20,17 @@
 
 #include <memory>
 
+#include "checker/ast/expressions/expression.h"
 #include "ast/statements/statement.h"
+#include "ast/statements/statement.h"
+#include "ast/statements/continue.h"
+#include "ast/statements/return.h"
+#include "ast/declarations/type.h"
+#include "ast/statements/while.h"
 #include "ast/statements/block.h"
+#include "ast/statements/break.h"
+#include "ast/statements/for.h"
+#include "ast/statements/if.h"
 #include "symbols/scope.h"
 
 
@@ -29,43 +38,68 @@ class StatementChecker
 {
     public:
         StatementChecker(
-            Statement* stmt,
-            std::shared_ptr<Scope> const& scope
+            std::unique_ptr<TypeDeclaration> const& ret_type_decl
         );
         
         /**
          * Checks that any given statement obeys the language semantics
          */
-        void check();
+        void check(
+            Statement* stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // Block
-        void checkBlock();
+        void checkBlock(
+            BlockStatement* block_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // If
-        void checkIf();
+        void checkIf(
+            IfStatement* if_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // For
-        void checkFor();
+        void checkFor(
+            ForStatement* for_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // While
-        void checkWhile();
+        void checkWhile(
+            WhileStatement* while_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // Break
-        void checkBreak();
+        void checkBreak(
+            BreakStatement* break_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // Contiue
-        void checkContinue();
+        void checkContinue(
+            ContinueStatement* continue_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // Return
-        void checkReturn();
+        void checkReturn(
+            ReturnStatement* return_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
         // Expression
-        void checkExpression();
+        void checkExpression(
+            Expression* expression_stmt,
+            std::shared_ptr<Scope> const& scope
+        );
 
     private:
-        bool inside_loop;
-        Statement* stmt;
-        std::shared_ptr<Scope> const& scope;
+        bool                                inside_loop;            /* Flag that indicates if we are inside a loop. */
+        std::unique_ptr<TypeDeclaration>    const& ret_type_decl;   /* Function return type for checking return statements. */
 };
 
 #endif

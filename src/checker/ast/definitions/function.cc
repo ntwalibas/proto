@@ -99,5 +99,5 @@ FunctionDefinitionChecker::checkBody(std::shared_ptr<Scope>& fun_scope)
     std::unique_ptr<BlockStatement>& body = function_def->getBody();
     body->setScope(fun_scope);
     Statement* stmt = static_cast<Statement*>(body.get());
-    StatementChecker(stmt, fun_scope).check();
+    StatementChecker(function_def->getReturnType()).check(stmt, fun_scope);
 }

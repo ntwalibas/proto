@@ -20,6 +20,7 @@ class StatementCheckerTest: public ::testing::Test
 
         std::string source_path = "main.pro";
         std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
+        std::unique_ptr<TypeDeclaration> ret_type_decl = nullptr;
 };
 
 TEST_F(StatementCheckerTest, checkBlockTest)
@@ -31,7 +32,10 @@ TEST_F(StatementCheckerTest, checkBlockTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkBlock());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid block statement
@@ -41,7 +45,10 @@ TEST_F(StatementCheckerTest, checkBlockTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkBlock(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
 
@@ -54,7 +61,10 @@ TEST_F(StatementCheckerTest, checkIfTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkIf());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid condition in if statement
@@ -64,7 +74,10 @@ TEST_F(StatementCheckerTest, checkIfTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkIf(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 
     // Invalid condition in elif branch
@@ -74,7 +87,10 @@ TEST_F(StatementCheckerTest, checkIfTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkIf(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
 
@@ -87,7 +103,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkFor());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Valid for loop only with initial clause
@@ -97,7 +116,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkFor());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Valid for loop with initial clause and termination clause
@@ -107,7 +129,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkFor());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Valid for loop with initial clause, termination clause and increment clause
@@ -117,7 +142,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkFor());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid init clause
@@ -127,7 +155,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkFor(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 
     // Invalid term clause
@@ -137,7 +168,10 @@ TEST_F(StatementCheckerTest, checkForTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkFor(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
 
@@ -150,7 +184,10 @@ TEST_F(StatementCheckerTest, checkWhileTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkWhile());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid while loop
@@ -160,7 +197,10 @@ TEST_F(StatementCheckerTest, checkWhileTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkWhile(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
 
@@ -173,7 +213,10 @@ TEST_F(StatementCheckerTest, checkBreakTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkBreak());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid continue
@@ -183,7 +226,10 @@ TEST_F(StatementCheckerTest, checkBreakTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkBreak(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
 
@@ -196,7 +242,10 @@ TEST_F(StatementCheckerTest, checkContinueTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkContinue());
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
     }
 
     // Invalid continue
@@ -206,6 +255,9 @@ TEST_F(StatementCheckerTest, checkContinueTest)
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
         
-        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkContinue(), CheckerError);
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
     }
 }
