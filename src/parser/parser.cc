@@ -699,10 +699,16 @@ std::unique_ptr<ReturnStatement>
 Parser::parseReturnStatement()
 {
     Token ret_token = consume(PROTO_RETURN);
-    return std::make_unique<ReturnStatement>(
-        ret_token,
-        parseExpression()
-    );
+    if (check(PROTO_NEWLINE))
+        return std::make_unique<ReturnStatement>(
+            ret_token,
+            nullptr
+        );
+    else
+        return std::make_unique<ReturnStatement>(
+            ret_token,
+            parseExpression()
+        );
 }
 
 

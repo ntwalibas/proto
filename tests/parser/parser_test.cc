@@ -340,12 +340,25 @@ TEST_F(ParserTest, parseBreakStatementTest)
 
 TEST_F(ParserTest, parseReturnStatementTest)
 {
-    std::string source = "return a + b";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<ReturnStatement> ret_stmt = parser.parseReturnStatement();
-    EXPECT_EQ(ret_stmt->getToken().getLexeme(), "return");
-    EXPECT_EQ(ret_stmt->getExpression()->getType(), ExpressionType::Binary);
+    // Expression is returned
+    {
+        std::string source = "return a + b";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<ReturnStatement> ret_stmt = parser.parseReturnStatement();
+        EXPECT_EQ(ret_stmt->getToken().getLexeme(), "return");
+        EXPECT_EQ(ret_stmt->getExpression()->getType(), ExpressionType::Binary);
+    }
+
+    // No expression is returned
+    {
+        std::string source = "return\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<ReturnStatement> ret_stmt = parser.parseReturnStatement();
+        EXPECT_EQ(ret_stmt->getToken().getLexeme(), "return");
+        EXPECT_EQ(ret_stmt->getExpression(), nullptr);
+    }
 }
 
 
