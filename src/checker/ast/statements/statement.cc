@@ -16,15 +16,19 @@
  */
 
 #include <stdexcept>
+#include <cstddef>
+#include <utility>
 #include <memory>
 #include <vector>
 #include <string>
 
+#include "checker/ast/expressions/expression.h"
 #include "checker/ast/definitions/variable.h"
 #include "checker/ast/statements/statement.h"
 #include "ast/definitions/definition.h"
 #include "checker/checker_error.h"
 #include "ast/statements/block.h"
+#include "ast/statements/if.h"
 #include "symbols/symtable.h"
 #include "symbols/scope.h"
 
@@ -48,9 +52,9 @@ StatementChecker::check()
             checkBlock();
             break;
         
-        // case StatementType::If:
-        //     checkIf();
-        //     break;
+        case StatementType::If:
+            checkIf();
+            break;
         
         // case StatementType::For:
         //     checkFor();
@@ -81,6 +85,7 @@ StatementChecker::check()
     }
 }
 
+
 // Block
 void
 StatementChecker::checkBlock()
@@ -93,11 +98,11 @@ StatementChecker::checkBlock()
         if (definition->getType() == DefinitionType::Variable) {
             VariableDefinition* var_def =
                 static_cast<VariableDefinition*>(definition.get());
-            VariableDefinitionChecker(var_def, block_stmt->getScope()).check();
+            VariableDefinitionChecker(var_def, scope).check();
         }
         else if (definition->getType() == DefinitionType::Statement) {
             Statement* stmt_def = static_cast<Statement*>(definition.get());
-            StatementChecker(stmt_def, block_stmt->getScope());
+            StatementChecker(stmt_def, scope);
         }
         else {
             throw CheckerError(
@@ -108,5 +113,60 @@ StatementChecker::checkBlock()
                 true
             );
         }
+    }
+}
+
+
+// If
+void
+StatementChecker::checkIf()
+{
+    IfStatement * if_stmt = static_cast<IfStatement*>(stmt);
+
+    // Validate the if branch
+    std::unique_ptr<Expression>& if_cond = if_stmt->getCondition();
+    std::unique_ptr<TypeDeclaration>& if_cond_type_decl =
+        ExpressionChecker(if_cond.get(), scope).check();
+    if (if_cond_type_decl->getTypeName() != "bool") {
+        throw CheckerError(
+            if_cond->getToken(),
+            "invalid condition for if statement",
+            "the condition for an if statement must be a boolean",
+            true
+        );
+    }
+    std::unique_ptr<BlockStatement>& if_body = if_stmt->getBody();
+    std::shared_ptr<Scope> if_scope = std::make_shared<Scope>(scope);
+    if_body->setScope(if_scope);
+    StatementChecker(static_cast<Statement*>(if_body.get()), if_scope);
+
+    // Validate the elif branches, if any
+    std::vector<std::unique_ptr<ElifBranch>>& elif_branches =
+        if_stmt->getElifBranches();
+    for (auto& branch : elif_branches) {
+        std::unique_ptr<Expression>& branch_cond = branch->getCondition();
+        std::unique_ptr<TypeDeclaration>& branch_cond_type_decl =
+            ExpressionChecker(branch_cond.get(), scope).check();
+        if (branch_cond_type_decl->getTypeName() != "bool") {
+            throw CheckerError(
+                branch_cond->getToken(),
+                "invalid condition for elif branch",
+                "the condition for an elif branch must be a boolean",
+                true
+            );
+        }
+        std::unique_ptr<BlockStatement>& branch_body = branch->getBody();
+        std::shared_ptr<Scope> branch_scope = std::make_shared<Scope>(scope);
+        branch_body->setScope(branch_scope);
+        StatementChecker(static_cast<Statement*>(branch_body.get()), branch_scope);
+    }
+
+    // Validate the else branch, if any
+    std::unique_ptr<ElseBranch>& else_branch = if_stmt->getElseBranch();
+    if (else_branch != nullptr) {
+        std::unique_ptr<BlockStatement>& else_branch_body = else_branch->getBody();
+        std::shared_ptr<Scope> else_branch_scope = std::make_shared<Scope>(scope);
+        else_branch_body->setScope(else_branch_scope);
+        StatementChecker(static_cast<Statement*>(else_branch_body.get()), else_branch_scope);
     }
 }

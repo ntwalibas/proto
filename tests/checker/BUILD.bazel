@@ -5,6 +5,7 @@ cc_test(
     "*.cc",
     "ast/declarations/*.cc",
     "ast/definitions/*.cc",
+    "ast/statements/*.cc",
     "ast/expressions/*.cc",
   ]),
   deps = [
