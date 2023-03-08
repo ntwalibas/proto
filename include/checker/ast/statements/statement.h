@@ -38,7 +38,7 @@ class StatementChecker
 {
     public:
         StatementChecker(
-            std::unique_ptr<TypeDeclaration> const& ret_type_decl
+            std::unique_ptr<TypeDeclaration>& ret_type_decl
         );
         
         /**
@@ -98,8 +98,8 @@ class StatementChecker
         );
 
     private:
-        bool                                inside_loop;            /* Flag that indicates if we are inside a loop. */
-        std::unique_ptr<TypeDeclaration>    const& ret_type_decl;   /* Function return type for checking return statements. */
+        bool                                inside_loop;    /* Flag that indicates if we are inside a loop. */
+        std::unique_ptr<TypeDeclaration>&   ret_type_decl;  /* Function return type for checking return statements. */
 };
 
 #endif

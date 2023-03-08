@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <utility>
 #include <memory>
 
 #include "checker/ast/statements/statement.h"
 #include "ast/definitions/definition.h"
 #include "checker/checker_error.h"
+#include "utils/inference.h"
 #include "symbols/scope.h"
 #include "parser/parser.h"
 #include "lexer/lexer.h"
@@ -259,5 +261,59 @@ TEST_F(StatementCheckerTest, checkContinueTest)
             static_cast<Statement*>(stmt.get()),
             scope
         ), CheckerError);
+    }
+}
+
+TEST_F(StatementCheckerTest, checkReturnTest)
+{
+    // Valid return statement with nothing to return
+    {
+        std::string source = "return\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+
+        ret_type_decl = createSimpleTypeDeclaration(false, "void");
+        
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
+
+        delete ret_type_decl.release();
+    }
+
+    // Valid return statement with int to return
+    {
+        std::string source = "return 0:int\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+
+        ret_type_decl = createSimpleTypeDeclaration(false, "int");
+        
+        EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ));
+
+        delete ret_type_decl.release();
+    }
+
+    // Invalid return that returns nothing while the function returns int
+    {
+        std::string source = "return\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+
+        ret_type_decl = createSimpleTypeDeclaration(false, "int");
+        
+        EXPECT_THROW(StatementChecker(ret_type_decl).check(
+            static_cast<Statement*>(stmt.get()),
+            scope
+        ), CheckerError);
+
+        delete ret_type_decl.release();
     }
 }

@@ -33,6 +33,7 @@
 #include "ast/statements/continue.h"
 #include "ast/statements/return.h"
 #include "checker/checker_error.h"
+#include "ast/declarations/type.h"
 #include "ast/statements/while.h"
 #include "ast/statements/block.h"
 #include "ast/statements/break.h"
@@ -43,7 +44,7 @@
 
 
 StatementChecker::StatementChecker(
-    std::unique_ptr<TypeDeclaration> const& ret_type_decl
+    std::unique_ptr<TypeDeclaration>& ret_type_decl
 ) : inside_loop(false),
     ret_type_decl(ret_type_decl)
 {}
@@ -95,10 +96,11 @@ StatementChecker::check(
             break;
         }
         
-        // case StatementType::Return:
-        //     ReturnStatement* return_stmt = static_cast<ReturnStatement*>(stmt);
-        //     checkReturn(return_stmt, scope);
-        //     break;
+        case StatementType::Return: {
+            ReturnStatement* return_stmt = static_cast<ReturnStatement*>(stmt);
+            checkReturn(return_stmt, scope);
+            break;
+        }
         
         case StatementType::Expression: {
             Expression* expression_stmt = static_cast<Expression*>(stmt);
@@ -377,6 +379,47 @@ StatementChecker::checkContinue(
             continue_stmt->getToken(),
             "unexpected continue statement",
             "a continue statement can only occur within a loop body",
+            false
+        );
+    }
+}
+
+
+ // Return
+void 
+StatementChecker::checkReturn(
+    ReturnStatement* return_stmt,
+    std::shared_ptr<Scope> const& scope
+) {
+    std::unique_ptr<Expression>& ret_expr = return_stmt->getExpression();
+
+    // If the return statement has no expression to return,
+    // then the function's return type must be void
+    if (ret_expr == nullptr) {
+        if (ret_type_decl->getTypeName() != "void") {
+            throw CheckerError(
+                return_stmt->getToken(),
+                "missing expression to return",
+                "return statement must specify the expression of type [" +
+                ret_type_decl->getTypeName() + "] which the function returns",
+                false
+            );
+        }
+
+        return;
+    }
+
+    // If the return statement has an expression to return,
+    // its type must match that of the function where this return is found
+    std::unique_ptr<TypeDeclaration>& ret_type =
+        ExpressionChecker(ret_expr.get(), scope).check();
+    
+    if (! typeDeclarationEquals(ret_type, ret_type_decl)) {
+        throw CheckerError(
+            return_stmt->getToken(),
+            "return expressions of incorrect type",
+            "expression returned has type [" + ret_type->getTypeName() +
+            "] while function has return type [" + ret_type_decl->getTypeName() + "]",
             false
         );
     }
