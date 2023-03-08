@@ -163,3 +163,49 @@ TEST_F(StatementCheckerTest, checkWhileTest)
         EXPECT_THROW(StatementChecker(stmt.get(), scope).checkWhile(), CheckerError);
     }
 }
+
+TEST_F(StatementCheckerTest, checkBreakTest)
+{
+    // Valid break statement
+    {
+        std::string source = "while (True) { break \n}";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkBreak());
+    }
+
+    // Invalid continue
+    {
+        std::string source = "break\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkBreak(), CheckerError);
+    }
+}
+
+TEST_F(StatementCheckerTest, checkContinueTest)
+{
+    // Valid continue statement
+    {
+        std::string source = "while (True) { continue \n}";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_NO_THROW(StatementChecker(stmt.get(), scope).checkContinue());
+    }
+
+    // Invalid continue
+    {
+        std::string source = "continue\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Statement> stmt = parser.parseStatement();
+        
+        EXPECT_THROW(StatementChecker(stmt.get(), scope).checkContinue(), CheckerError);
+    }
+}

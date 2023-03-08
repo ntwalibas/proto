@@ -30,9 +30,11 @@
 #include "ast/expressions/expression.h"
 #include "ast/definitions/definition.h"
 #include "ast/statements/statement.h"
+#include "ast/statements/continue.h"
 #include "checker/checker_error.h"
 #include "ast/statements/while.h"
 #include "ast/statements/block.h"
+#include "ast/statements/break.h"
 #include "ast/statements/for.h"
 #include "ast/statements/if.h"
 #include "symbols/symtable.h"
@@ -70,13 +72,13 @@ StatementChecker::check()
             checkWhile();
             break;
         
-        // case StatementType::Break:
-        //     checkBreak();
-        //     break;
+        case StatementType::Break:
+            checkBreak();
+            break;
         
-        // case StatementType::Continue:
-        //     checkContinue();
-        //     break;
+        case StatementType::Continue:
+            checkContinue();
+            break;
         
         // case StatementType::Return:
         //     checkReturn();
@@ -266,16 +268,11 @@ StatementChecker::checkFor()
     // Last, validate the body
     std::unique_ptr<BlockStatement>& for_body = for_stmt->getBody();
     for_body->setScope(for_scope);
+    bool upper_loop_found = inside_loop;
+    inside_loop = true;
     StatementChecker(static_cast<Statement*>(for_body.get()), for_scope);
-}
-
-
-// Expression
-void
-StatementChecker::checkExpression()
-{
-    Expression* expr_stmt = static_cast<Expression*>(stmt);
-    ExpressionChecker(expr_stmt, scope).check();
+    if(upper_loop_found == false)
+        inside_loop = false;
 }
 
 
@@ -298,5 +295,51 @@ StatementChecker::checkWhile()
     std::unique_ptr<BlockStatement>& while_body = while_stmt->getBody();
     std::shared_ptr<Scope> while_scope = std::make_shared<Scope>(scope);
     while_body->setScope(while_scope);
+
+    bool upper_loop_found = inside_loop;
+    inside_loop = true;
     StatementChecker(static_cast<Statement*>(while_body.get()), while_scope);
+    if(upper_loop_found == false)
+        inside_loop = false;
+}
+
+
+// Break
+void
+StatementChecker::checkBreak()
+{
+    BreakStatement* break_stmt = static_cast<BreakStatement*>(stmt);
+    if (!inside_loop) {
+        throw CheckerError(
+            break_stmt->getToken(),
+            "unexpected break statement",
+            "a break statement can only occur within a loop body",
+            false
+        );
+    }
+}
+
+
+// Continue
+void
+StatementChecker::checkContinue()
+{
+    ContinueStatement* continue_stmt = static_cast<ContinueStatement*>(stmt);
+    if (!inside_loop) {
+        throw CheckerError(
+            continue_stmt->getToken(),
+            "unexpected continue statement",
+            "a continue statement can only occur within a loop body",
+            false
+        );
+    }
+}
+
+
+// Expression
+void
+StatementChecker::checkExpression()
+{
+    Expression* expr_stmt = static_cast<Expression*>(stmt);
+    ExpressionChecker(expr_stmt, scope).check();
 }
