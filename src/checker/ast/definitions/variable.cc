@@ -19,6 +19,7 @@
 
 #include "checker/ast/definitions/variable.h"
 #include "checker/ast/declarations/type.h"
+#include "ast/expressions/expression.h"
 #include "inference/inference_error.h"
 #include "ast/definitions/variable.h"
 #include "ast/declarations/type.h"
@@ -106,8 +107,22 @@ VariableDefinitionChecker::checkHeader()
 std::unique_ptr<TypeDeclaration>&
 VariableDefinitionChecker::checkBody()
 {
+    std::unique_ptr<Expression>& var_init = variable_def->getInitializer();
+
+    // Global variables can only be initialized by compile time constants
+    if (! scope->hasParent()) {
+        if (var_init->getType() != ExpressionType::Literal) {
+            throw CheckerError(
+                variable_def->getToken(),
+                "global variable initializer must be a literal",
+                "a global variable initializer cannot involve possible computations",
+                false
+            );
+        }
+    }
+
     try {
-        return Inference(variable_def->getInitializer().get(), scope).infer();
+        return Inference(var_init.get(), scope).infer();
     } catch (InferenceError & e) {
         throw CheckerError(
             e.getToken(),

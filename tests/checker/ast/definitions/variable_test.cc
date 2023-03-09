@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
 #include <cstddef>
-#include <utility>
 #include <memory>
 #include <string>
 
@@ -34,13 +33,10 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def.get(), scope);
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_NO_THROW(checker.check());
-        def = std::move(var_def);
         scope->addDefinition("count", def);
     }
 
@@ -51,11 +47,9 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def.get(), scope);
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_THROW(checker.check(), CheckerError);
     }
 
@@ -66,11 +60,9 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def.get(), scope);
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_THROW(checker.check(), CheckerError);
     }
 
@@ -89,11 +81,22 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         Lexer defLexer(defSource, source_path);
         Parser defParser(defLexer);
         std::unique_ptr<Definition> def = defParser.parseDefinition();
-        std::unique_ptr<VariableDefinition> var_def(
-            static_cast<VariableDefinition*>(def.release())
-        );
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
 
-        VariableDefinitionChecker checker(var_def.get(), scope);
+        VariableDefinitionChecker checker(var_def, scope);
+        EXPECT_THROW(checker.check(), CheckerError);
+    }
+
+    // Global variable definition initialized by computation
+    {
+        std::shared_ptr<std::string> source =
+            std::make_shared<std::string>("count: uint = 1 + 2");
+        Lexer lexer(source, source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Definition> def = parser.parseDefinition();
+        VariableDefinition* var_def = static_cast<VariableDefinition*>(def.get());
+
+        VariableDefinitionChecker checker(var_def, scope);
         EXPECT_THROW(checker.check(), CheckerError);
     }
 }

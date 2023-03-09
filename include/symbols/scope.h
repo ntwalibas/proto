@@ -56,6 +56,11 @@ class Scope
         bool hasDefinition(std::string const& def_name, bool deep = false);
         bool hasVariableDeclaration(std::string const& decl_name, bool deep = false);
 
+        /**
+         * Returns true if this scope has a parent.
+         */
+        bool hasParent();
+
     private:
         std::shared_ptr<Scope>  parent;     /* The scope parent to this one. */
         Symtable                symtable;   /* Symtable for definitions found in this scope. */

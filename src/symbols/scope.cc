@@ -112,3 +112,13 @@ Scope::hasVariableDeclaration(std::string const& decl_name, bool deep)
     else
         return res;
 }
+
+
+/**
+ * Returns true if this scope has a parent.
+ */
+bool
+Scope::hasParent()
+{
+    return !parent;
+}
