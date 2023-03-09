@@ -22,6 +22,7 @@
 #include "checker/ast/definitions/function.h"
 #include "checker/ast/statements/statement.h"
 #include "checker/ast/declarations/type.h"
+#include "ast/definitions/definition.h"
 #include "ast/definitions/function.h"
 #include "ast/declarations/type.h"
 #include "checker/checker_error.h"
@@ -42,7 +43,7 @@ FunctionDefinitionChecker::FunctionDefinitionChecker(
  * 2. The function body has valid statements.
  */
 void
-FunctionDefinitionChecker::check()
+FunctionDefinitionChecker::check(std::unique_ptr<Definition>& definition)
 {
     // Check for redefinition
     if (scope->hasDefinition(function_def->getMangledName())) {
@@ -59,6 +60,12 @@ FunctionDefinitionChecker::check()
     try {
         std::shared_ptr<Scope> fun_scope = std::make_shared<Scope>(scope);
         checkHeader(fun_scope);
+
+        // If the header checks out, we add the function to the program scope
+        scope->addDefinition(
+            function_def->getMangledName(),
+            definition
+        );
 
         // Check the body here
         checkBody(fun_scope);

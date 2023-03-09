@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include "ast/definitions/definition.h"
 #include "ast/definitions/function.h"
 #include "symbols/scope.h"
 
@@ -37,7 +38,7 @@ class FunctionDefinitionChecker
          * 1. All parameters are valid variable declarations, and the return type is correct.
          * 2. The function body has valid statements.
          */
-        void check();
+        void check(std::unique_ptr<Definition>& definition);
 
     private:
         FunctionDefinition* function_def;

@@ -29,75 +29,65 @@ TEST_F(FunctionCheckerTest, checkTest)
     // All parameters and return types are valid
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{}");
+            std::make_shared<std::string>("sum1: function(a: uint, b:uint) -> uint{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<FunctionDefinition> fun_def(
-            static_cast<FunctionDefinition*>(def.release())
-        );
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
 
-        FunctionDefinitionChecker checker(fun_def.get(), scope);
-        EXPECT_NO_THROW(checker.check());
+        FunctionDefinitionChecker checker(fun_def, scope);
+        EXPECT_NO_THROW(checker.check(def));
     }
 
     // We have an invalid type in the parameters
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint32, b:uint) -> uint{}");
+            std::make_shared<std::string>("sum2: function(a: uint32, b:uint) -> uint{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<FunctionDefinition> fun_def(
-            static_cast<FunctionDefinition*>(def.release())
-        );
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.release());
 
-        FunctionDefinitionChecker checker(fun_def.get(), scope);
-        EXPECT_THROW(checker.check(), CheckerError);
+        FunctionDefinitionChecker checker(fun_def, scope);
+        EXPECT_THROW(checker.check(def), CheckerError);
     }
 
     // We have an invalid return type
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> int32{}");
+            std::make_shared<std::string>("sum3: function(a: uint, b:uint) -> int32{}");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<FunctionDefinition> fun_def(
-            static_cast<FunctionDefinition*>(def.release())
-        );
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
 
-        FunctionDefinitionChecker checker(fun_def.get(), scope);
-        EXPECT_THROW(checker.check(), CheckerError);
+        FunctionDefinitionChecker checker(fun_def, scope);
+        EXPECT_THROW(checker.check(def), CheckerError);
     }
 
     // Header is valid, and body is valid
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{ a + b\n }");
+            std::make_shared<std::string>("sum4: function(a: uint, b:uint) -> uint{ a + b\n }");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<FunctionDefinition> fun_def(
-            static_cast<FunctionDefinition*>(def.release())
-        );
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
 
-        FunctionDefinitionChecker checker(fun_def.get(), scope);
-        EXPECT_NO_THROW(checker.check());
+        FunctionDefinitionChecker checker(fun_def, scope);
+        EXPECT_NO_THROW(checker.check(def));
     }
 
     // Header is valid, and body is invalid
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("sum: function(a: uint, b:uint) -> uint{ inner: function()->void{}\n }");
+            std::make_shared<std::string>("sum5: function(a: uint, b:uint) -> uint{ inner: function()->void{}\n }");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();
-        std::unique_ptr<FunctionDefinition> fun_def(
-            static_cast<FunctionDefinition*>(def.release())
-        );
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
 
-        FunctionDefinitionChecker checker(fun_def.get(), scope);
-        EXPECT_THROW(checker.check(), CheckerError);
+        FunctionDefinitionChecker checker(fun_def, scope);
+        EXPECT_THROW(checker.check(def), CheckerError);
     }
 }

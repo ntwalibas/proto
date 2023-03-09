@@ -1,3 +1,9 @@
+/* Fibonacci numbers
+ *
+ * This is a sample file that finds F(n), that is the nth number
+ * in the Fibonacci sequence.
+ */
+
 // Fibonacci numbers using iteration
 iterative_fibonacci : function(n: const uint) -> uint {
     t1: uint = 0
