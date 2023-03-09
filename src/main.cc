@@ -72,20 +72,18 @@ compile(std::string const& source_path)
         if (parser.errors.size() > 0) {
             for (auto& e : parser.errors) {
                 printError(
-                    e.getToken(),
-                    e.getPrimaryMessage(),
-                    e.getSecondaryMessage(),
-                    e.getToken().source_path
+                    e.getToken(), e.getPrimaryMessage(),
+                    e.getSecondaryMessage(), e.getToken().source_path
                 );
             }
+
+            return 1;
         }
     } catch (ParserError& e) {
         for (auto& e : parser.errors) {
             printError(
-                e.getToken(),
-                e.getPrimaryMessage(),
-                e.getSecondaryMessage(),
-                e.getToken().source_path
+                e.getToken(), e.getPrimaryMessage(),
+                e.getSecondaryMessage(), e.getToken().source_path
             );
         }
 
@@ -93,10 +91,8 @@ compile(std::string const& source_path)
         // we only show them if there are no non-fatal errors
         if (! parser.errors.size())
             printError(
-                e.getToken(),
-                e.getPrimaryMessage(),
-                e.getSecondaryMessage(),
-                e.getToken().source_path
+                e.getToken(), e.getPrimaryMessage(),
+                e.getSecondaryMessage(), e.getToken().source_path
             );
 
         return 1;
@@ -109,10 +105,8 @@ compile(std::string const& source_path)
         if (checker.errors.size() > 0) {
             for (auto& e : checker.errors) {
                 printError(
-                    e.getToken(),
-                    e.getPrimaryMessage(),
-                    e.getSecondaryMessage(),
-                    e.getToken().source_path
+                    e.getToken(), e.getPrimaryMessage(),
+                    e.getSecondaryMessage(), e.getToken().source_path
                 );
             }
         }
@@ -122,19 +116,15 @@ compile(std::string const& source_path)
     } catch (CheckerError& e) {
         for (auto& e : checker.errors) {
             printError(
-                e.getToken(),
-                e.getPrimaryMessage(),
-                e.getSecondaryMessage(),
-                e.getToken().source_path
+                e.getToken(), e.getPrimaryMessage(),
+                e.getSecondaryMessage(), e.getToken().source_path
             );
         }
         
         if (! checker.errors.size())
             printError(
-                e.getToken(),
-                e.getPrimaryMessage(),
-                e.getSecondaryMessage(),
-                e.getToken().source_path
+                e.getToken(), e.getPrimaryMessage(),
+                e.getSecondaryMessage(), e.getToken().source_path
             );
 
         return 1;
