@@ -10,12 +10,10 @@ iterative_fibonacci : function(n: const uint) -> uint {
     t2: uint = 1
     result: uint = t1 + t2
 
-    i: uint = 2
-    while (i < n) {
+    for (i: uint = 2; i < n; i += 1) {
         t1 = t2
         t2 = result
         result = t1 + t2
-        i += 1
     }
 
     return result
