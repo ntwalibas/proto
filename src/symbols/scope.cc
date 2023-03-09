@@ -120,5 +120,5 @@ Scope::hasVariableDeclaration(std::string const& decl_name, bool deep)
 bool
 Scope::hasParent()
 {
-    return !parent;
+    return parent != nullptr;
 }

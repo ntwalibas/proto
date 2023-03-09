@@ -21,7 +21,8 @@ class StatementCheckerTest: public ::testing::Test
         }
 
         std::string source_path = "main.pro";
-        std::shared_ptr<Scope> scope = std::make_shared<Scope>(nullptr);
+        std::shared_ptr<Scope> parent_scope = std::make_shared<Scope>(nullptr);
+        std::shared_ptr<Scope> scope = std::make_shared<Scope>(parent_scope);
         std::unique_ptr<TypeDeclaration> ret_type_decl = nullptr;
 };
 
