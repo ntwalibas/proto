@@ -417,7 +417,7 @@ StatementChecker::checkReturn(
     if (! typeDeclarationEquals(ret_type, ret_type_decl)) {
         throw CheckerError(
             return_stmt->getToken(),
-            "return expressions of incorrect type",
+            "returned expression of incorrect type",
             "expression returned has type [" + ret_type->getTypeName() +
             "] while function has return type [" + ret_type_decl->getTypeName() + "]",
             false

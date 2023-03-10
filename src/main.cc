@@ -109,6 +109,8 @@ compile(std::string const& source_path)
                     e.getSecondaryMessage(), e.getToken().source_path
                 );
             }
+
+            return 1;
         }
         else {
             std::cout << "Program checks out!" << std::endl;
