@@ -38,7 +38,7 @@ printError(
         fprintf(
             stderr,
             ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-            ANSI_BRIGHT_BOLD_WHITE "[%s]: %s.\n" ANSI_COLOR_RESET,
+            "[%s]: " ANSI_BRIGHT_BOLD_WHITE "%s.\n" ANSI_COLOR_RESET,
             source_path.c_str(),
             primary_message.c_str()
         );
@@ -49,7 +49,7 @@ printError(
     fprintf(
         stderr,
         ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-        ANSI_BRIGHT_BOLD_WHITE "[%s:%zu:%zu]: %s:\n" ANSI_COLOR_RESET,
+        "[%s:%zu:%zu]: " ANSI_BRIGHT_BOLD_WHITE "%s:\n" ANSI_COLOR_RESET,
         source_path.c_str(),
         token.line,
         token.column,
