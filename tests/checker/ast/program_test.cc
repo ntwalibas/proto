@@ -48,7 +48,7 @@ TEST_F(ProgramCheckerTest, checkTest)
             try {
                 checker.check();
             } catch (CheckerError const& e) {
-                EXPECT_STREQ(e.getSecondaryMessage(), "type [type] does not exist");
+                EXPECT_STREQ(e.getSecondaryMessage(), "type `type` does not exist");
                 
                 throw;
             }

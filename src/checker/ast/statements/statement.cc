@@ -400,8 +400,8 @@ StatementChecker::checkReturn(
             throw CheckerError(
                 return_stmt->getToken(),
                 "missing expression to return",
-                "return statement must specify the expression of type [" +
-                ret_type_decl->getTypeName() + "] which the function returns",
+                "return statement must specify the expression of type `" +
+                ret_type_decl->getTypeName() + "` which the function returns",
                 false
             );
         }
@@ -418,8 +418,8 @@ StatementChecker::checkReturn(
         throw CheckerError(
             return_stmt->getToken(),
             "returned expression of incorrect type",
-            "expression returned has type [" + ret_type->getTypeName() +
-            "] while function has return type [" + ret_type_decl->getTypeName() + "]",
+            "expression returned has type `" + ret_type->getTypeName() +
+            "` while function has return type `" + ret_type_decl->getTypeName() + "`",
             false
         );
     }

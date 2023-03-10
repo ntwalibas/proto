@@ -50,8 +50,8 @@ FunctionDefinitionChecker::check(std::unique_ptr<Definition>& definition)
         throw CheckerError(
             function_def->getToken(),
             "function redefinition",
-            "there already exists a function with signature [" +
-            function_def->getMangledName() + "] in the current scope",
+            "there already exists a function with signature `" +
+            function_def->getMangledName() + "` in the current scope",
             false
         );
     }

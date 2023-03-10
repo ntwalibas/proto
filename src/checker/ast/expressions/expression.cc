@@ -121,8 +121,8 @@ ExpressionChecker::checkCast()
         throw CheckerError(
             cast_expr->getToken(),
             "invalid cast",
-            "expression of type [" + source_type_name + "] "
-            "cannot be cast to the type [" + dest_type_name +"]",
+            "expression of type `" + source_type_name + "` "
+            "cannot be cast to the type `" + dest_type_name +"`",
             false
         );
     }
@@ -249,8 +249,8 @@ ExpressionChecker::checkTernaryIf()
         throw CheckerError(
             ternif_expr->getToken(),
             "ternary if branches type mismatch",
-            "the lvalue to ternary if has type [" + lval_type_decl->getTypeName() +
-            "] while the rvalue has type [" + rval_type_decl->getTypeName() + "]",
+            "the lvalue to ternary if has type `" + lval_type_decl->getTypeName() +
+            "` while the rvalue has type `" + rval_type_decl->getTypeName() + "`",
             false
         );
     }
@@ -333,8 +333,8 @@ ExpressionChecker::checkAssignment()
             throw CheckerError(
                 var_expr->getToken(),
                 "variable used before definition or declaration",
-                "expected a variable definition or a function parameter named [" +
-                var_expr->getToken().getLexeme() + "]",
+                "expected a variable definition or a function parameter named `" +
+                var_expr->getToken().getLexeme() + "`",
                 false
             );
         }
@@ -354,8 +354,8 @@ ExpressionChecker::checkAssignment()
                     throw CheckerError(
                         assign_expr->getToken(),
                         "assignment expressions type mismatch",
-                        "the lvalue to the assignment has type [" + lval_type_decl->getTypeName() +
-                        "] while the rvalue has type [" + rval_type_decl->getTypeName() + "]",
+                        "the lvalue to the assignment has type `" + lval_type_decl->getTypeName() +
+                        "` while the rvalue has type `" + rval_type_decl->getTypeName() + "`",
                         false
                     );
                 }

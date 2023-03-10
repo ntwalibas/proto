@@ -56,8 +56,8 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
                 checker.check();
             } catch (CheckerError const& e) {
                 EXPECT_STREQ(e.getPrimaryMessage(), "mismatched types");
-                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("[uint]"));
-                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("[bool]"));
+                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("`uint`"));
+                EXPECT_THAT(e.getSecondaryMessage(), ::testing::HasSubstr("`bool`"));
                 
                 throw;
             }

@@ -53,7 +53,7 @@ checkSimpleType(SimpleTypeDeclaration& simple_type_decl)
         throw CheckerError(
             decl_token,
             "unknown type",
-            "type [" + decl_lexeme + "] does not exist",
+            "type `" + decl_lexeme + "` does not exist",
             true
         );
 }

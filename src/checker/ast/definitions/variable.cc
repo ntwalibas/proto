@@ -80,8 +80,8 @@ VariableDefinitionChecker::check()
             throw CheckerError(
                 variable_def->getToken(),
                 "mismatched types",
-                "the variable definition is declared with type [" + var_type->getTypeName() +
-                "] but the initializer expression has type [" + init_type->getTypeName() + "]",
+                "the variable definition is declared with type `" + var_type->getTypeName() +
+                "` but the initializer expression has type `" + init_type->getTypeName() + "`",
                 true
             );
         }

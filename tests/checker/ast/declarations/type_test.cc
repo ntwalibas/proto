@@ -34,7 +34,7 @@ TEST_F(TypeDeclarationCheckerTest, checkTest)
             try {
                 checker.check();
             } catch (CheckerError& e) {
-                EXPECT_STREQ(e.getSecondaryMessage(), "type [int32] does not exist");
+                EXPECT_STREQ(e.getSecondaryMessage(), "type `int32` does not exist");
                 throw;
             }
         }, CheckerError);

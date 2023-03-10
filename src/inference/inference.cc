@@ -157,8 +157,8 @@ Inference::inferVariableType()
         throw InferenceError(
             var_expr->getToken(),
             "variable used before definition or declaration",
-            "expected a variable definition or a function parameter named [" +
-            var_expr->getToken().getLexeme() + "]",
+            "expected a variable definition or a function parameter named `" +
+            var_expr->getToken().getLexeme() + "`",
             false
         );
     }
@@ -185,8 +185,8 @@ Inference::inferVariableType()
             throw InferenceError(
                 var_expr->getToken(),
                 "variable used before definition",
-                "no variable defined named [" + var_expr->getToken().getLexeme() +
-                "] was defined or declared",
+                "no variable defined named `" + var_expr->getToken().getLexeme() +
+                "` was defined or declared",
                 false
             );
         }
@@ -241,7 +241,7 @@ Inference::inferCallType()
         throw InferenceError(
             call_expr->getToken(),
             "no such function",
-            "no function with signature [" + fun_name + "] was defined",
+            "no function with signature `" + fun_name + "` was defined",
             false
         );
     }
@@ -255,7 +255,7 @@ Inference::inferCallType()
         throw InferenceError(
             call_expr->getToken(),
             "function called but not defined",
-            "no function with name [" + call_expr->getToken().getLexeme() + "] was defined",
+            "no function with name `" + call_expr->getToken().getLexeme() + "` was defined",
             false
         );
     }
@@ -305,9 +305,9 @@ Inference::inferUnaryType()
     } catch (std::out_of_range const& e) {
         throw InferenceError(
             un_expr->getToken(),
-            "invalid argument to [" + un_expr->getToken().getLexeme() + "] unary operator",
-            "the [" + un_expr->getToken().getLexeme() + "] operator does " +
-            "not accept an operand of type [" + expr_type_name + "].",
+            "invalid argument to `" + un_expr->getToken().getLexeme() + "` unary operator",
+            "the `" + un_expr->getToken().getLexeme() + "` operator does " +
+            "not accept an operand of type `" + expr_type_name + "`.",
             false
         );
     }
@@ -418,11 +418,11 @@ Inference::inferBinaryType()
     } catch (std::out_of_range const& e) {
         throw InferenceError(
             bin_expr->getToken(),
-            "invalid argument to [" + bin_expr->getToken().getLexeme() + "] binary operator",
-            "the [" + bin_expr->getToken().getLexeme() + "] operator " +
-            "does not accept operands of types [" +
-            left_type_name + "] and [" +
-            right_type_name + "].",
+            "invalid argument to `" + bin_expr->getToken().getLexeme() + "` binary operator",
+            "the `" + bin_expr->getToken().getLexeme() + "` operator " +
+            "does not accept operands of types `" +
+            left_type_name + "` and `" +
+            right_type_name + "`.",
             false
         );
     }
@@ -509,11 +509,11 @@ Inference::inferAssignmentType()
     } catch (std::out_of_range const& e) {
         throw InferenceError(
             assign_expr->getToken(),
-            "invalid argument to [" + assign_expr->getToken().getLexeme() + "] operator",
-            "the [" + assign_expr->getToken().getLexeme() + "] operator " +
-            "does not accept operands of types [" +
-            lval_type_name + "] and [" +
-            rval_type_name + "].",
+            "invalid argument to `" + assign_expr->getToken().getLexeme() + "` operator",
+            "the `" + assign_expr->getToken().getLexeme() + "` operator " +
+            "does not accept operands of types `" +
+            lval_type_name + "` and `" +
+            rval_type_name + "`.",
             false
         );
     }
