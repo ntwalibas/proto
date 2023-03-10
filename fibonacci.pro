@@ -3,7 +3,7 @@
  * This function calculates F(n), that is the nth number
  * in the Fibonacci sequence.
  */
-fibonacci : function(n: const uint) -> int {
+fibonacci : function(n: const uint) -> uint {
     t1:     uint = 0
     t2:     uint = 1
     result: uint = t1 + t2
