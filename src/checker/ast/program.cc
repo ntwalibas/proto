@@ -67,12 +67,6 @@ ProgramChecker::check()
                 FunctionDefinitionChecker checker(fun_def, program.getScope());
                 try {
                     checker.check(def);
-
-                    // // Add the function definition to the symbol table
-                    // program.getScope()->addDefinition(
-                    //     fun_def->getMangledName(),
-                    //     def
-                    // );
                 } catch (CheckerError const& e) {
                     if (! e.isFatal())
                         errors.push_back(e);
