@@ -31,7 +31,10 @@ enum class DefinitionType {
 class Definition
 {
     public:
-        Definition(enum DefinitionType type) : type(type) {}
+        Definition(enum DefinitionType type)
+          : type(type),
+            is_used(false)
+        {}
         virtual ~Definition(){};
 
         /**
