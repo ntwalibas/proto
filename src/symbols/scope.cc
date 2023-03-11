@@ -97,7 +97,7 @@ bool
 Scope::hasDefinition(std::string const& def_name, bool deep)
 {
     bool res = symtable.hasDefinition(def_name);
-    if (!res && parent)
+    if (!res && deep && parent)
         return parent->hasDefinition(def_name, deep);
     else
         return res;
