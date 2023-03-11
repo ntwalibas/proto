@@ -43,12 +43,29 @@ class Definition
         }
 
         /**
+         * Set whether this definition was used.
+         */
+        void isUsed(bool is_used_)
+        {
+            is_used = is_used_;
+        }
+
+        /**
+         * Returns true if this definition was used.
+         */
+        bool isUsed()
+        {
+            return is_used;
+        }
+
+        /**
          * Returns the token associated with this definition.
          */
         virtual Token& getToken() = 0;
 
     protected:
-        enum DefinitionType type;     /* The type of definition of the derived class. */
+        enum DefinitionType type;       /* The type of definition of the derived class. */
+        bool                is_used;    /* Whether this definition was used anywhere. */
 };
 
 #endif

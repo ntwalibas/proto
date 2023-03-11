@@ -64,7 +64,10 @@ std::unique_ptr<Definition>&
 Scope::getDefinition(std::string const& def_name, bool deep)
 {
     try {
-        return symtable.getDefinition(def_name);
+        std::unique_ptr<Definition>& def =
+            symtable.getDefinition(def_name);
+        def->isUsed(true);
+        return def;
     } catch (std::out_of_range const& e) {
         if (deep && parent)
             return parent->getDefinition(def_name, deep);
