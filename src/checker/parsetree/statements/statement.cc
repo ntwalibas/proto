@@ -22,8 +22,6 @@
 #include <vector>
 #include <string>
 
-#include <iostream>
-
 #include "checker/parsetree/expressions/expression.h"
 #include "checker/parsetree/definitions/variable.h"
 #include "checker/parsetree/statements/statement.h"
