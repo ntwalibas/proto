@@ -24,9 +24,9 @@
 #include <array>
 #include <map>
 
-#include "ast/definitions/definition.h"
-#include "ast/declarations/variable.h"
-#include "ast/declarations/type.h"
+#include "parsetree/definitions/definition.h"
+#include "parsetree/declarations/variable.h"
+#include "parsetree/declarations/type.h"
 
 
 class Symtable

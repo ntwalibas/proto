@@ -21,7 +21,7 @@
 #include <memory>
 #include <string>
 
-#include "ast/declarations/type.h"
+#include "parsetree/declarations/type.h"
 
 
 /**

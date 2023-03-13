@@ -6,7 +6,7 @@ cc_test(
     "@com_google_googletest//:gtest_main",
     "//include:include",
     "//src/common:common",
-    "//src/ast:ast",
+    "//src/parsetree:ast",
     "//src/utils:utils",
     "//src/lexer:lexer",
     "//src/parser:parser",

@@ -23,7 +23,7 @@
 #include <array>
 #include <map>
 
-#include "ast/definitions/definition.h"
+#include "parsetree/definitions/definition.h"
 #include "symbols/symtable.h"
 #include "utils/inference.h"
 

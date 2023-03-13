@@ -20,8 +20,8 @@
 
 #include <memory>
 
-#include "ast/expressions/expression.h"
-#include "ast/declarations/type.h"
+#include "parsetree/expressions/expression.h"
+#include "parsetree/declarations/type.h"
 #include "symbols/scope.h"
 
 

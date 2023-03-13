@@ -19,7 +19,7 @@
 #include <memory>
 #include <string>
 
-#include "ast/declarations/type.h"
+#include "parsetree/declarations/type.h"
 #include "common/token_type.h"
 #include "utils/inference.h"
 #include "common/token.h"

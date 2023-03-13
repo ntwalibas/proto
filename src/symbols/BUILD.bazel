@@ -4,7 +4,7 @@ cc_library(
     copts = ["-Iinclude"],
     deps = [
         "//include:include",
-        # "//src/ast:ast",
+        # "//src/parsetree:ast",
     ],
     visibility = ["//visibility:public"],
 )

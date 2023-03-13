@@ -22,7 +22,7 @@
 #include "checker/checker.h"
 #include "parser/parser.h"
 #include "utils/parser.h"
-#include "ast/program.h"
+#include "parsetree/program.h"
 #include "ansi_colors.h"
 #include "lexer/lexer.h"
 #include "utils/lexer.h"

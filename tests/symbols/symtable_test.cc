@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "ast/definitions/definition.h"
+#include "parsetree/definitions/definition.h"
 #include "symbols/symtable.h"
 #include "parser/parser.h"
 #include "lexer/lexer.h"

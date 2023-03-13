@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <memory>
 
-#include "ast/definitions/definition.h"
+#include "parsetree/definitions/definition.h"
 #include "symbols/scope.h"
 #include "parser/parser.h"
 #include "lexer/lexer.h"

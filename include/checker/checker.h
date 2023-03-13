@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "checker_error.h"
-#include "ast/program.h"
+#include "parsetree/program.h"
 
 
 class Checker

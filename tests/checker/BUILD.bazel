@@ -3,10 +3,10 @@ cc_test(
   size = "small",
   srcs = glob([
     "*.cc",
-    "ast/declarations/*.cc",
-    "ast/definitions/*.cc",
-    "ast/statements/*.cc",
-    "ast/expressions/*.cc",
+    "parsetree/declarations/*.cc",
+    "parsetree/definitions/*.cc",
+    "parsetree/statements/*.cc",
+    "parsetree/expressions/*.cc",
   ]),
   deps = [
     "@com_google_googletest//:gtest_main",

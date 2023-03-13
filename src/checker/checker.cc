@@ -16,7 +16,7 @@
  */
 
 #include "checker/checker_error.h"
-#include "checker/ast/program.h"
+#include "checker/parsetree/program.h"
 #include "checker/checker.h"
 
 

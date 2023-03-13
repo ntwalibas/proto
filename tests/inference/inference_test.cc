@@ -5,12 +5,12 @@
 #include <memory>
 #include <string>
 
-#include "ast/declarations/declaration.h"
-#include "ast/definitions/definition.h"
-#include "ast/expressions/expression.h"
-#include "ast/declarations/variable.h"
+#include "parsetree/declarations/declaration.h"
+#include "parsetree/definitions/definition.h"
+#include "parsetree/expressions/expression.h"
+#include "parsetree/declarations/variable.h"
 #include "inference/inference_error.h"
-#include "ast/expressions/literal.h"
+#include "parsetree/expressions/literal.h"
 #include "inference/inference.h"
 #include "symbols/scope.h"
 #include "parser/parser.h"
