@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "common/token.h"
 #include "expression.h"
@@ -45,9 +46,20 @@ class CallExpression : public Expression
          */
         std::vector<std::unique_ptr<Expression>>& getArguments();
 
+        /**
+         * Set the name of the function that corresponds to this call.
+         */
+        void setFunctionName(std::string const& fun_name_);
+
+        /**
+         * Returns the name of the function that corresponds to this call.
+         */
+        std::string& getFunctionName();
+
     protected:
         Token                                       token;      /* Token associated with this array. */
         std::vector<std::unique_ptr<Expression>>    arguments;  /* Function call arguments. */
+        std::string                                 fun_name;   /* Name of the function that corresponds to this call. */
 };
 
 #endif

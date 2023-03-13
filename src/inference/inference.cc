@@ -137,10 +137,18 @@ std::unique_ptr<TypeDeclaration>&
 Inference::inferCastType()
 {
     CastExpression* cast_expr = static_cast<CastExpression*>(expr);
+    std::unique_ptr<Expression>& src_expr = cast_expr->getExpression();
 
     expr->setTypeDeclaration(
         copy(cast_expr->getTypeDeclaration())
     );
+
+    // Set the function name on the cast expression so we don't have to recompute this
+    std::string op_name = "__cast@" +
+        cast_expr->getTypeDeclaration()->getTypeName() +
+        "__(" + (Inference(src_expr.get(), scope).infer())->getTypeName() + ")";
+    cast_expr->setFunctionName(op_name);
+
     return expr->getTypeDeclaration();
 }
 
@@ -265,6 +273,9 @@ Inference::inferCallType()
         copy(fun_def->getReturnType())
     );
 
+    // Set the function name on the call expression so we don't have to recompute this
+    call_expr->setFunctionName(fun_name);
+
     return expr->getTypeDeclaration();
 }
 
@@ -311,6 +322,9 @@ Inference::inferUnaryType()
             false
         );
     }
+
+    // Set the function name on the unary expression so we don't have to recompute this
+    un_expr->setFunctionName(op_name);
 
     return expr->getTypeDeclaration();
 }
@@ -427,6 +441,9 @@ Inference::inferBinaryType()
         );
     }
 
+    // Set the function name on the binary expression so we don't have to recompute this
+    bin_expr->setFunctionName(op_name);
+
     return expr->getTypeDeclaration();
 }
 
@@ -517,6 +534,9 @@ Inference::inferAssignmentType()
             false
         );
     }
+
+    // Set the function name on the assignment expression so we don't have to recompute this
+    assign_expr->setFunctionName(op_name);
 
     return expr->getTypeDeclaration();
 }

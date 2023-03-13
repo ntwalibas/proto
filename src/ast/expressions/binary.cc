@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <memory>
+#include <string>
 
 #include "ast/expressions/expression.h"
 #include "ast/expressions/binary.h"
@@ -65,6 +66,7 @@ BinaryExpression::getLeft()
     return left;
 }
 
+
 /**
  * Returns the expression on the right side of the binary operator.
  */
@@ -72,4 +74,24 @@ std::unique_ptr<Expression>&
 BinaryExpression::getRight()
 {
     return right;
+}
+
+
+/**
+ * Set the name of the function that corresponds to this binary.
+ */
+void
+BinaryExpression::setFunctionName(std::string const& fun_name_)
+{
+    fun_name = fun_name_;
+}
+
+
+/**
+ * Returns the name of the function that corresponds to this binary.
+ */
+std::string&
+BinaryExpression::getFunctionName()
+{
+    return fun_name;
 }

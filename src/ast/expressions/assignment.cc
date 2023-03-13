@@ -74,13 +74,7 @@ AssignmentExpression::getLvalue()
 void
 AssignmentExpression::setRvalue(std::unique_ptr<Expression>&& rvalue_)
 {
-    // std::cout << "+++++++++++++++++++" << std::endl;
-    // std::cout << (lvalue.get() == nullptr) << std::endl;
-    // std::cout << "+++++++++++++++++++" << std::endl;
     rvalue = std::move(rvalue_);
-    // std::cout << "+++++++++++++++++++" << std::endl;
-    // std::cout << (lvalue.get() != nullptr) << std::endl;
-    // std::cout << "+++++++++++++++++++" << std::endl;
 }
 
 
@@ -110,4 +104,22 @@ std::unique_ptr<Definition>&
 AssignmentExpression::getVariableDefinition()
 {
     return var_def;
+}
+
+/**
+ * Set the name of the function that corresponds to this call.
+ */
+void
+AssignmentExpression::setFunctionName(std::string const& fun_name_)
+{
+    fun_name = fun_name_;
+}
+
+/**
+ * Returns the name of the function that corresponds to this call.
+ */
+std::string&
+AssignmentExpression::getFunctionName()
+{
+    return fun_name;
 }

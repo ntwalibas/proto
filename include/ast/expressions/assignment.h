@@ -87,12 +87,23 @@ class AssignmentExpression : public Expression
          */
         std::unique_ptr<Definition>& getVariableDefinition();
 
+        /**
+         * Set the name of the function introduced by in-place assignments.
+         */
+        void setFunctionName(std::string const& fun_name_);
+
+        /**
+         * Returns the name of the function introduced by in-place assignments.
+         */
+        std::string& getFunctionName();
+
     protected:
         Token                       token;  /* Token associated with this assignment expression. */
         enum AssignmentType         type;   /* The type of assignment we have. */
         std::unique_ptr<Expression> lvalue; /* Expression on the left side of the assignment operator. */
         std::unique_ptr<Expression> rvalue; /* Expression on the right side of the assignment operator. */
         std::unique_ptr<Definition> var_def;/* Variable definition introduced by this assignment, if any. */
+        std::string                 fun_name;/* Name of function introduced by in-place assignments. */
 };
 
 #endif

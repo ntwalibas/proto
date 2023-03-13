@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <memory>
+#include <string>
 
 #include "ast/expressions/expression.h"
 #include "ast/expressions/unary.h"
@@ -61,4 +62,24 @@ std::unique_ptr<Expression>&
 UnaryExpression::getExpression()
 {
     return expression;
+}
+
+
+/**
+ * Set the name of the function that corresponds to this unary.
+ */
+void
+UnaryExpression::setFunctionName(std::string const& fun_name_)
+{
+    fun_name = fun_name_;
+}
+
+
+/**
+ * Returns the name of the function that corresponds to this unary.
+ */
+std::string&
+UnaryExpression::getFunctionName()
+{
+    return fun_name;
 }

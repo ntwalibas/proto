@@ -19,6 +19,7 @@
 #define PROTO_AST_BINARY_EXPRESSION_H
 
 #include <memory>
+#include <string>
 
 #include "common/token.h"
 #include "expression.h"
@@ -88,11 +89,22 @@ class BinaryExpression : public Expression
          */
         std::unique_ptr<Expression>& getRight();
 
+        /**
+         * Set the name of the function that corresponds to this binary.
+         */
+        void setFunctionName(std::string const& fun_name_);
+
+        /**
+         * Returns the name of the function that corresponds to this binary.
+         */
+        std::string& getFunctionName();
+
     protected:
         Token                       token;  /* Token associated with this binary expression. */
         enum BinaryType             type;   /* Type of this binary expression. */
         std::unique_ptr<Expression> left;   /* Expression on the left side of the binary operator. */
         std::unique_ptr<Expression> right;  /* Expression on the right side of the binary operator. */
+        std::string                 fun_name;/* Name of the function to call for the given binary. */
 };
 
 #endif

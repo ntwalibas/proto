@@ -18,6 +18,7 @@
 #include <utility>
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "ast/expressions/expression.h"
 #include "ast/expressions/call.h"
@@ -56,4 +57,22 @@ std::vector<std::unique_ptr<Expression>>&
 CallExpression::getArguments()
 {
     return arguments;
+}
+
+/**
+ * Set the name of the function that corresponds to this call.
+ */
+void
+CallExpression::setFunctionName(std::string const& fun_name_)
+{
+    fun_name = fun_name_;
+}
+
+/**
+ * Returns the name of the function that corresponds to this call.
+ */
+std::string&
+CallExpression::getFunctionName()
+{
+    return fun_name;
 }

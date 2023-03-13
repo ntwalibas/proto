@@ -19,6 +19,7 @@
 #define PROTO_AST_UNARY_EXPRESSION_H
 
 #include <memory>
+#include <string>
 
 #include "common/token.h"
 #include "expression.h"
@@ -57,10 +58,21 @@ class UnaryExpression : public Expression
          */
         std::unique_ptr<Expression>& getExpression();
 
+        /**
+         * Set the name of the function that corresponds to this unary.
+         */
+        void setFunctionName(std::string const& fun_name_);
+
+        /**
+         * Returns the name of the function that corresponds to this unary.
+         */
+        std::string& getFunctionName();
+
     protected:
         Token                       token;      /* Token associated with this unary expression. */
         enum UnaryType              type;       /* Type of this unary expression. */
         std::unique_ptr<Expression> expression; /* Expression the unary operator is applied to. */
+        std::string                 fun_name;   /* Name of the function to call for the given unary. */
 };
 
 #endif

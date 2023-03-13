@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <memory>
+#include <string>
 
 #include "ast/expressions/expression.h"
 #include "ast/declarations/type.h"
@@ -62,4 +63,24 @@ std::unique_ptr<TypeDeclaration>&
 CastExpression::getTypeDeclaration()
 {
     return dest_type;
+}
+
+
+/**
+ * Set the name of the function that corresponds to this cast.
+ */
+void
+CastExpression::setFunctionName(std::string const& fun_name_)
+{
+    fun_name = fun_name_;
+}
+
+
+/**
+ * Returns the name of the function that corresponds to this cast.
+ */
+std::string&
+CastExpression::getFunctionName()
+{
+    return fun_name;
 }

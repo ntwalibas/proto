@@ -19,6 +19,7 @@
 #define PROTO_AST_CAST_EXPRESSION_H
 
 #include <memory>
+#include <string>
 
 #include "ast/declarations/type.h"
 #include "common/token.h"
@@ -49,11 +50,22 @@ class CastExpression : public Expression
          */
         std::unique_ptr<TypeDeclaration>& getTypeDeclaration();
 
+        /**
+         * Set the name of the function that corresponds to this cast.
+         */
+        void setFunctionName(std::string const& fun_name_);
+
+        /**
+         * Returns the name of the function that corresponds to this cast.
+         */
+        std::string& getFunctionName();
+
     protected:
         Token                       token;      /* Token associated with this cast expression. */
         std::unique_ptr<Expression> expression; /* Expression the cast operator is applied to. */
         std::unique_ptr<TypeDeclaration>
                                     dest_type;  /* Type the expression is to be cast to. */
+        std::string                 fun_name;   /* Name of the function that corresponds to this cast. */
 };
 
 #endif
