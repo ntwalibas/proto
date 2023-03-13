@@ -6,7 +6,7 @@ cc_library(
         "//include:include",
         "//src/utils:utils",
         "//src/common:common",
-        "//src/parsetree:ast",
+        "//src/parsetree:parsetree",
     ],
     visibility = ["//visibility:public"],
 )

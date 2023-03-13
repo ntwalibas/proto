@@ -7,7 +7,7 @@ cc_test(
     "//include:include",
     "//src/common:common",
     "//src/utils:utils",
-    "//src/parsetree:ast",
+    "//src/parsetree:parsetree",
   ],
   copts = ["-Iinclude"],
 )

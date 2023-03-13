@@ -12,7 +12,7 @@ cc_library(
     deps = [
         "//include:include",
         "//src/common:common",
-        "//src/parsetree:ast",
+        "//src/parsetree:parsetree",
         "//src/inference:inference",
         "//src/symbols:symbols",
     ],

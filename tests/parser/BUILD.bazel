@@ -8,7 +8,7 @@ cc_test(
     "//src/common:common",
     "//src/lexer:lexer",
     "//src/parser:parser",
-    "//src/parsetree:ast",
+    "//src/parsetree:parsetree",
   ],
   copts = ["-Iinclude"],
 )
