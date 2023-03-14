@@ -4,14 +4,14 @@
  * in the Fibonacci sequence.
  */
 fib : function(n: const uint) -> uint {
-    t1:     uint = 0
-    t2:     uint = 1
-    result: uint = t1 + t2
+    t1:     uint = 1
+    t2:     uint = 0
+    result: uint = 0
 
-    for (i: uint = 2; i < n; i += 1) {
-        t1 = t2
-        t2 = result
-        result = t1 + t2
+    for (i: uint = 0; i < n; i += 1) {
+        t2       = result
+        result   = t1
+        t1       = t1 + t2
     }
 
     return result
