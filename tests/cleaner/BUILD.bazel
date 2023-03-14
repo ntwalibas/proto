@@ -1,0 +1,21 @@
+cc_test(
+  name = "cleaner_test",
+  size = "small",
+  srcs = glob([
+    "*.cc",
+    "parsetree/declarations/*.cc",
+    "parsetree/definitions/*.cc",
+    "parsetree/statements/*.cc",
+    "parsetree/expressions/*.cc",
+  ]),
+  deps = [
+    "@com_google_googletest//:gtest_main",
+    "//include:include",
+    "//src/common:common",
+    "//src/lexer:lexer",
+    "//src/parser:parser",
+    "//src/checker:checker",
+    "//src/cleaner:cleaner",
+  ],
+  copts = ["-Iinclude"],
+)
