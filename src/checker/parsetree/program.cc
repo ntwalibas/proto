@@ -15,14 +15,19 @@
  *  limitations under the License.
  */
 
+#include <cstdbool>
+#include <memory>
+#include <string>
+
 #include "checker/parsetree/definitions/function.h"
 #include "checker/parsetree/definitions/variable.h"
 #include "parsetree/definitions/function.h"
 #include "parsetree/definitions/variable.h"
 #include "parsetree/statements/statement.h"
-#include "checker/checker_error.h"
 #include "checker/parsetree/program.h"
+#include "checker/checker_error.h"
 #include "parsetree/program.h"
+#include "symbols/scope.h"
 
 
 ProgramChecker::ProgramChecker(
@@ -39,6 +44,22 @@ ProgramChecker::check()
 {
     for (auto& def: program.getDefinitions()) {
         switch(def->getType()) {
+            case DefinitionType::Function: {
+                FunctionDefinition* fun_def =
+                    static_cast<FunctionDefinition*>(def.get());
+                FunctionDefinitionChecker checker(fun_def, program.getScope());
+                try {
+                    checker.check(def);
+                } catch (CheckerError const& e) {
+                    if (! e.isFatal())
+                        errors.push_back(e);
+                    else
+                        throw;
+                }
+
+                break;
+            }
+
             case DefinitionType::Variable: {
                 VariableDefinition* var_def =
                     static_cast<VariableDefinition*>(def.get());
@@ -51,22 +72,6 @@ ProgramChecker::check()
                         def->getToken().getLexeme(),
                         def
                     );
-                } catch (CheckerError const& e) {
-                    if (! e.isFatal())
-                        errors.push_back(e);
-                    else
-                        throw;
-                }
-
-                break;
-            }
-
-            case DefinitionType::Function: {
-                FunctionDefinition* fun_def =
-                    static_cast<FunctionDefinition*>(def.get());
-                FunctionDefinitionChecker checker(fun_def, program.getScope());
-                try {
-                    checker.check(def);
                 } catch (CheckerError const& e) {
                     if (! e.isFatal())
                         errors.push_back(e);
@@ -90,5 +95,31 @@ ProgramChecker::check()
                 );
             }
         }
+    }
+
+    // Make sure we have a main function and it is valid
+    if (program.getScope()->hasDefinition("main()")) {
+        std::unique_ptr<Definition>& def =
+            program.getScope()->getDefinition("main()");
+        FunctionDefinition* main_fun =
+            static_cast<FunctionDefinition*>(def.get());
+        
+        if (main_fun->getReturnType()->getTypeName() != "uint") {
+            throw CheckerError(
+                program.getDefinitions()[0]->getToken(),
+                "invalid main function",
+                "the main function must have return type `uint`",
+                true
+            );
+        }
+    }
+    else {
+        throw CheckerError(
+            program.getDefinitions()[0]->getToken(),
+            "missing entry point",
+            std::string("the program is missing a main function with signature ") +
+            "`main()->uint` to serve as entry point",
+            true
+        );
     }
 }

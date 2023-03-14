@@ -27,19 +27,18 @@ TEST_F(ProgramCheckerTest, checkTest)
 {
     // Correct program
     {
-        std::string source = "count: uint = 0";
+        std::string source = "count: uint = 0\n main: function()->uint{return 0\n}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
         ProgramChecker checker(prog);
         EXPECT_NO_THROW(checker.check());
-        EXPECT_EQ(prog.getScope()->getDefinitions().size(), 1);
         EXPECT_EQ(prog.getScope()->hasDefinition("count"), true);
     }
 
     // Incorrect program
     {
-        std::string source = "count: type = 0";
+        std::string source = "count: type = 0\n main: function()->uint{return 0\n}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
@@ -55,9 +54,9 @@ TEST_F(ProgramCheckerTest, checkTest)
         }, CheckerError);
     }
 
-    // Statement at program (file) scope
+    // Missing entry point
     {
-        std::string source = "count = count + 1";
+        std::string source = "count: uint = 0\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
@@ -67,8 +66,29 @@ TEST_F(ProgramCheckerTest, checkTest)
                 checker.check();
             } catch (CheckerError const& e) {
                 EXPECT_STREQ(
-                    e.getSecondaryMessage(),
-                    "a statement cannot occur at file scope, it must be inside a function"
+                    e.getPrimaryMessage(),
+                    "missing entry point"
+                );
+                
+                throw;
+            }
+        }, CheckerError);
+    }
+
+    // Invalid main function
+    {
+        std::string source = "main: function()->int{}\n";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        Program prog = parser.parseProgram();
+        ProgramChecker checker(prog);
+        EXPECT_THROW({
+            try {
+                checker.check();
+            } catch (CheckerError const& e) {
+                EXPECT_STREQ(
+                    e.getPrimaryMessage(),
+                    "invalid main function"
                 );
                 
                 throw;

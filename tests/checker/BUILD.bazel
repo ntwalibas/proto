@@ -3,6 +3,7 @@ cc_test(
   size = "small",
   srcs = glob([
     "*.cc",
+    "parsetree/*.cc",
     "parsetree/declarations/*.cc",
     "parsetree/definitions/*.cc",
     "parsetree/statements/*.cc",
