@@ -44,7 +44,7 @@ TEST_F(VariableDefinitionCheckerTest, checkTest)
     
     // Type mismatch between variable type and initializer
     {
-        std::string source = "count: uint = True";
+        std::string source = "count: uint = true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Definition> def = parser.parseDefinition();

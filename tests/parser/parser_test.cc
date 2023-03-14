@@ -201,7 +201,7 @@ TEST_F(ParserTest, parseIfStatementTest)
     EXPECT_EQ(if_stmt->getBody()->getDefinitions().size(), 1);
 
     // We add an elif branch
-    std::string elifSource = "if(True){} elif(False){}";
+    std::string elifSource = "if(true){} elif(false){}";
     Lexer elifLexer(std::make_shared<std::string>(elifSource), source_path);
     Parser elifParser(elifLexer);
     std::unique_ptr<IfStatement> elif_stmt = elifParser.parseIfStatement();
@@ -212,7 +212,7 @@ TEST_F(ParserTest, parseIfStatementTest)
     EXPECT_EQ(elif_branch->getBody()->getDefinitions().size(), 0);
 
     // We add the else branch
-    std::string elseSource = "if(True){} elif(False){} else{print()}";
+    std::string elseSource = "if(true){} elif(false){} else{print()}";
     Lexer elseLexer(std::make_shared<std::string>(elseSource), source_path);
     Parser elseParser(elseLexer);
     std::unique_ptr<IfStatement> else_stmt = elseParser.parseIfStatement();
@@ -285,7 +285,7 @@ TEST_F(ParserTest, parseForStatementTest)
 
 TEST_F(ParserTest, parseWhileStatementTest)
 {
-    std::string source = "while(True){makeItHappen()}";
+    std::string source = "while(true){makeItHappen()}";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<WhileStatement> wh_stmt = parser.parseWhileStatement();
@@ -294,7 +294,7 @@ TEST_F(ParserTest, parseWhileStatementTest)
     EXPECT_EQ(wh_stmt->getBody()->getDefinitions().size(), 1);
 
     // We miss the opening parenthesis
-    std::string noLeftParenSource = "while True){makeItHappen()}";
+    std::string noLeftParenSource = "while true){makeItHappen()}";
     Lexer noLeftParenLexer(std::make_shared<std::string>(noLeftParenSource), source_path);
     Parser noLeftParenParser(noLeftParenLexer);
     EXPECT_THROW({
@@ -307,7 +307,7 @@ TEST_F(ParserTest, parseWhileStatementTest)
     }, ParserError);
 
     // We miss the closing parenthesis
-    std::string noRightParenSource = "while(True{makeItHappen()}";
+    std::string noRightParenSource = "while(true{makeItHappen()}";
     Lexer noRightParenLexer(std::make_shared<std::string>(noRightParenSource), source_path);
     Parser noRightParenParser(noRightParenLexer);
     EXPECT_THROW({
@@ -451,7 +451,7 @@ TEST_F(ParserTest, parseTernaryIfExpressionTest)
 
 TEST_F(ParserTest, parseLogicalOrExpressionTest)
 {
-    std::string source = "True || False";
+    std::string source = "true || false";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseLogicalOrExpression();
@@ -469,7 +469,7 @@ TEST_F(ParserTest, parseLogicalOrExpressionTest)
 
 TEST_F(ParserTest, parseLogicalAndExpressionTest)
 {
-    std::string source = "True && False";
+    std::string source = "true && false";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseLogicalAndExpression();
@@ -666,7 +666,7 @@ TEST_F(ParserTest, parseUnaryExpressionTest)
 
     // Logical not
     {
-        std::string source = "!False";
+        std::string source = "!false";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseUnaryExpression();
@@ -746,11 +746,11 @@ TEST_F(ParserTest, parseVariableExpressionTest)
 TEST_F(ParserTest, parseLiteralExpressionTest)
 {
     // Boolean literal
-    std::string booleanSource = "False";
+    std::string booleanSource = "false";
     Lexer booleanLexer(std::make_shared<std::string>(booleanSource), source_path);
     Parser booleanParser(booleanLexer);
     std::unique_ptr<LiteralExpression> boolean_lit = booleanParser.parseLiteralExpression();
-    EXPECT_EQ(boolean_lit->getToken().getLexeme(), "False");
+    EXPECT_EQ(boolean_lit->getToken().getLexeme(), "false");
     EXPECT_EQ(boolean_lit->getLiteralType(), LiteralType::Boolean);
 
     // Integer literal

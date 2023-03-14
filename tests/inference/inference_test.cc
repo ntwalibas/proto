@@ -41,7 +41,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
 
     // Booleans literals
     {
-        std::string source = "True";
+        std::string source = "true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
@@ -186,7 +186,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
 
 TEST_F(InferenceTest, inferGroupTypeTest) {
     std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("(True)");
+        std::make_shared<std::string>("(true)");
 
     Lexer lexer(source, source_path);
     Parser parser(lexer);
@@ -390,7 +390,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
     // Logical not: bool
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("!True");
+        std::make_shared<std::string>("!true");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -878,7 +878,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Logical and
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("True && False");
+        std::make_shared<std::string>("true && false");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -896,7 +896,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Logical Or
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("True || False");
+        std::make_shared<std::string>("true || false");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -914,7 +914,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Equal
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("True == True");
+        std::make_shared<std::string>("true == true");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -1022,7 +1022,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
 
 TEST_F(InferenceTest, inferTernaryIfTypeTest) {
     std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("b == True ? 1:int <> -1");
+        std::make_shared<std::string>("b == true ? 1:int <> -1");
 
     Lexer lexer(source, source_path);
     Parser parser(lexer);
@@ -1081,7 +1081,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
 
     // Incorrect in-place assignment
     {
-        std::string source = "new_count += True";
+        std::string source = "new_count += true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();

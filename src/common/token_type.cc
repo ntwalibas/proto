@@ -85,8 +85,8 @@ tokenTypeToString(enum TokenType type)
         "STRING",               // string
 
         /* keywords */
-        "TRUE",                 // boolean True
-        "FALSE",                // boolean False
+        "TRUE",                 // boolean true
+        "FALSE",                // boolean false
         "FUNCTION",             // function
         "CONST",                // const
         "IF",                   // if

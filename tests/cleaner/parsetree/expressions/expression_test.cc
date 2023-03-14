@@ -36,7 +36,7 @@ class ExpressionCleanerTest: public ::testing::Test
 TEST_F(ExpressionCleanerTest, cleanLiteralTest) {
     // Boolean
     {
-        std::string source = "True";
+        std::string source = "true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();

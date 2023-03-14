@@ -52,7 +52,7 @@ TEST_F(ExpressionCheckerTest, checkTernaryIfTest)
 {
     // Valid ternary if
     {
-        std::string source = "1 > 0 ? True <> False";
+        std::string source = "1 > 0 ? true <> false";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
@@ -64,7 +64,7 @@ TEST_F(ExpressionCheckerTest, checkTernaryIfTest)
 
     // Invalid ternary if: condition is not boolean
     {
-        std::string source = "1 ? True <> False";
+        std::string source = "1 ? true <> false";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
@@ -142,7 +142,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
 
     // Invalid simple assignment: incompatible types
     {
-        std::string source = "count = True";
+        std::string source = "count = true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
@@ -172,7 +172,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
 
     // Invalid in-place assignment: incompatible types
     {
-        std::string source = "count += True";
+        std::string source = "count += true";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();

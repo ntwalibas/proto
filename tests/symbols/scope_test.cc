@@ -17,7 +17,7 @@ class ScopeTest: public ::testing::Test
             child_scope = std::make_shared<Scope>(parent_scope);
 
             {
-                std::string source = "count: bool = True";
+                std::string source = "count: bool = true";
                 std::string source_path = "main.pro";
                 Lexer lexer(std::make_shared<std::string>(source), source_path);
                 Parser parser(lexer);

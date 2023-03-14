@@ -123,7 +123,7 @@ ExpressionCleaner::cleanLiteral(
     switch (lit_expr->getLiteralType()) {
         case LiteralType::Boolean: {
             return std::make_unique<CleanBoolExpression>(
-                lit_expr->getToken().getLexeme() == "True" ? true : false
+                lit_expr->getToken().getLexeme() == "true" ? true : false
             );
         }
 

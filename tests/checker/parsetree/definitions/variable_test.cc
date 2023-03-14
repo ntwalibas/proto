@@ -77,7 +77,7 @@ TEST_F(VariableCheckerTest, inferVariableTypeTest) {
         scope->addVariableDeclaration("other", decl);
 
         std::shared_ptr<std::string> defSource =
-            std::make_shared<std::string>("other: bool = True");
+            std::make_shared<std::string>("other: bool = true");
         Lexer defLexer(defSource, source_path);
         Parser defParser(defLexer);
         std::unique_ptr<Definition> def = defParser.parseDefinition();

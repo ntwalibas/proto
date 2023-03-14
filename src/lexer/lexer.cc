@@ -44,8 +44,8 @@ Lexer::Lexer(
     column(1),
     num_tokens(0)
 {
-    keywords["True"]        = PROTO_TRUE;
-    keywords["False"]       = PROTO_FALSE;
+    keywords["true"]        = PROTO_TRUE;
+    keywords["false"]       = PROTO_FALSE;
     keywords["function"]    = PROTO_FUNCTION;
     keywords["const"]       = PROTO_CONST;
     keywords["if"]          = PROTO_IF;

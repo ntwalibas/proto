@@ -79,8 +79,8 @@ enum TokenType {
     PROTO_STRING,             // string
 
     /* keywords */
-    PROTO_TRUE,               // boolean True
-    PROTO_FALSE,              // boolean False
+    PROTO_TRUE,               // boolean true
+    PROTO_FALSE,              // boolean false
     PROTO_FUNCTION,           // function
     PROTO_CONST,              // const
     PROTO_IF,                 // if

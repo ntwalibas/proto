@@ -59,7 +59,7 @@ TEST_F(StatementCheckerTest, checkIfTest)
 {
     // Valid if statement
     {
-        std::string source = "if (True && True) {counter = 0\n} elif (True && False) {conter = 1\n} elif (False && False) {counter = 2\n}\n";
+        std::string source = "if (true && true) {counter = 0\n} elif (true && false) {conter = 1\n} elif (false && false) {counter = 2\n}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -85,7 +85,7 @@ TEST_F(StatementCheckerTest, checkIfTest)
 
     // Invalid condition in elif branch
     {
-        std::string source = "if (True) {} elif (1) {counter = 1\n}\n}";
+        std::string source = "if (true) {} elif (1) {counter = 1\n}\n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -182,7 +182,7 @@ TEST_F(StatementCheckerTest, checkWhileTest)
 {
     // Valid while loop
     {
-        std::string source = "while (True) {}";
+        std::string source = "while (true) {}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -211,7 +211,7 @@ TEST_F(StatementCheckerTest, checkBreakTest)
 {
     // Valid break statement
     {
-        std::string source = "while (True) { break \n}";
+        std::string source = "while (true) { break \n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -240,7 +240,7 @@ TEST_F(StatementCheckerTest, checkContinueTest)
 {
     // Valid continue statement
     {
-        std::string source = "while (True) { continue \n}";
+        std::string source = "while (true) { continue \n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
