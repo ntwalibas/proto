@@ -44,11 +44,10 @@
 #include "parsetree/statements/block.h"
 #include "parsetree/statements/for.h"
 #include "parsetree/statements/if.h"
+#include "parsetree/program.h"
 #include "common/token_type.h"
 #include "parser/parser.h"
-#include "utils/parser.h"
 #include "common/token.h"
-#include "parsetree/program.h"
 #include "lexer/lexer.h"
 
 
