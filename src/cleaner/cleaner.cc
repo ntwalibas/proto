@@ -47,7 +47,7 @@ Cleaner::clean()
         if (definition->getToken().getLexeme() != "main" && ! definition->isUsed()) {
             warnings.emplace_back(
                 definition->getToken(),
-                "unsed definition",
+                "unused definition",
                 (definition->getType() == DefinitionType::Function)
                 ? "function was defined but not used"
                 : "variable was defined but not used"
