@@ -54,6 +54,9 @@ printMessage(
                 primary_message.c_str()
             );
         }
+        else {
+            // We will add notes here
+        }
         return;
     }
 
@@ -80,6 +83,9 @@ printMessage(
             primary_message.c_str()
         );
     }
+    else {
+        // We will add notes here
+    }
 
     fprintf(stderr, "%*s|\n", 6, "");
     fprintf(stderr, "%5zu", token.line);
@@ -87,10 +93,38 @@ printMessage(
     fprintf(stderr, "%s\n", token_line.line.c_str());
     fprintf(stderr, "%*s|", 6, "");
     fprintf(stderr, "%*s", static_cast<int>(token_line.offset) + 4, "");
-    for (std::string::size_type i = 0; i < token.length - 1; i++)
-        fprintf(stderr, ANSI_GREEN "~" ANSI_COLOR_RESET);
-    fprintf(stderr, ANSI_GREEN "^" ANSI_COLOR_RESET);
-    if (! secondary_message.empty())
-        fprintf(stderr, ANSI_GREEN " %s." ANSI_COLOR_RESET, secondary_message.c_str());
+    for (std::string::size_type i = 0; i < token.length - 1; i++) {
+        if (title == "error") {
+            fprintf(stderr, ANSI_GREEN "~" ANSI_COLOR_RESET);
+        }
+        else if (title == "warning") {
+            fprintf(stderr, ANSI_BLUE "~" ANSI_COLOR_RESET);
+        }
+        else {
+            // We will add notes here
+        }
+    }
+    if (title == "error") {
+        fprintf(stderr, ANSI_GREEN "^" ANSI_COLOR_RESET);
+    }
+    else if (title == "warning") {
+        fprintf(stderr, ANSI_BLUE "^" ANSI_COLOR_RESET);
+    }
+    else {
+        // We will add notes here
+    }
+
+    if (! secondary_message.empty()) {
+        if (title == "error") {
+            fprintf(stderr, ANSI_GREEN " %s." ANSI_COLOR_RESET, secondary_message.c_str());
+        }
+        else if (title == "warning") {
+            fprintf(stderr, ANSI_BLUE " %s." ANSI_COLOR_RESET, secondary_message.c_str());
+        }
+        else {
+            // We will add notes here
+        }
+    }
+
     fprintf(stderr, "\n\n");
 }
