@@ -58,10 +58,10 @@ TEST_F(ExpressionCleanerTest, cleanLiteralTest) {
         std::unique_ptr<CleanExpression> clean_expr =
             ExpressionCleaner(clean_scope).clean(expr.get());
 
-        EXPECT_EQ(clean_expr->type, CleanExpressionType::UnsignedInt);
-        CleanUnsignedIntExpression* uint_expr =
-            static_cast<CleanUnsignedIntExpression*>(clean_expr.get());
-        EXPECT_EQ(uint_expr->value, (uint64_t) 10);
+        EXPECT_EQ(clean_expr->type, CleanExpressionType::SignedInt);
+        CleanSignedIntExpression* int_expr =
+            static_cast<CleanSignedIntExpression*>(clean_expr.get());
+        EXPECT_EQ(int_expr->value, (int64_t) 10);
     }
 
     // Signed int
@@ -112,7 +112,7 @@ TEST_F(ExpressionCleanerTest, cleanLiteralTest) {
 
 // Cast
 TEST_F(ExpressionCleanerTest, cleanCastTest) {
-    std::string source = "1:int";
+    std::string source = "1:uint";
     Lexer lexer(std::make_shared<std::string>(source), source_path);
     Parser parser(lexer);
     std::unique_ptr<Expression> expr = parser.parseExpression();
@@ -123,7 +123,7 @@ TEST_F(ExpressionCleanerTest, cleanCastTest) {
     EXPECT_EQ(clean_expr->type, CleanExpressionType::Call);
     CleanCallExpression* call_expr =
         static_cast<CleanCallExpression*>(clean_expr.get());
-    EXPECT_EQ(call_expr->fun_name, "__cast@int__(uint)");
+    EXPECT_EQ(call_expr->fun_name, "__cast@uint__(int)");
 }
 
 // Variable
@@ -163,7 +163,7 @@ TEST_F(ExpressionCleanerTest, cleanGroupTest) {
 TEST_F(ExpressionCleanerTest, cleanAssignmentTest) {
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("count: uint = 0");
+            std::make_shared<std::string>("count: int = 0");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         var_def = parser.parseDefinition();
@@ -183,10 +183,10 @@ TEST_F(ExpressionCleanerTest, cleanAssignmentTest) {
         EXPECT_EQ(clean_expr->type, CleanExpressionType::Assignment);
         CleanAssignmentExpression* assign_expr =
             static_cast<CleanAssignmentExpression*>(clean_expr.get());
-        EXPECT_EQ(assign_expr->rvalue->type, CleanExpressionType::UnsignedInt);
-        CleanUnsignedIntExpression* uint_expr =
-            static_cast<CleanUnsignedIntExpression*>(assign_expr->rvalue.get());
-        EXPECT_EQ(uint_expr->value, (uint64_t) 1);
+        EXPECT_EQ(assign_expr->rvalue->type, CleanExpressionType::SignedInt);
+        CleanSignedIntExpression* int_expr =
+            static_cast<CleanSignedIntExpression*>(assign_expr->rvalue.get());
+        EXPECT_EQ(int_expr->value, (int64_t) 1);
     }
 
     // Assignment introduces a definition
@@ -211,9 +211,9 @@ TEST_F(ExpressionCleanerTest, cleanAssignmentTest) {
         std::unique_ptr<CleanVariableDefinition>& clean_var =
             clean_scope->getSymbol<CleanVariableDefinition>("new_count");
         EXPECT_EQ(clean_var->name, "new_count");
-        EXPECT_EQ(clean_var->initializer->type, CleanExpressionType::UnsignedInt);
-        CleanUnsignedIntExpression* uint_expr =
-            static_cast<CleanUnsignedIntExpression*>(clean_var->initializer.get());
-        EXPECT_EQ(uint_expr->value, (uint64_t) 1);
+        EXPECT_EQ(clean_var->initializer->type, CleanExpressionType::SignedInt);
+        CleanSignedIntExpression* int_expr =
+            static_cast<CleanSignedIntExpression*>(clean_var->initializer.get());
+        EXPECT_EQ(int_expr->value, (int64_t) 1);
     }
 }

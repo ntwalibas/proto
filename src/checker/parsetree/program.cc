@@ -104,11 +104,11 @@ ProgramChecker::check()
         FunctionDefinition* main_fun =
             static_cast<FunctionDefinition*>(def.get());
         
-        if (main_fun->getReturnType()->getTypeName() != "uint") {
+        if (main_fun->getReturnType()->getTypeName() != "int") {
             throw CheckerError(
                 program.getDefinitions()[0]->getToken(),
                 "invalid main function",
-                "the main function must have return type `uint`",
+                "the main function must have return type `int`",
                 true
             );
         }
@@ -118,7 +118,7 @@ ProgramChecker::check()
             program.getDefinitions()[0]->getToken(),
             "missing entry point",
             std::string("the program is missing a main function with signature ") +
-            "`main()->uint` to serve as entry point",
+            "`main()->int` to serve as entry point",
             true
         );
     }

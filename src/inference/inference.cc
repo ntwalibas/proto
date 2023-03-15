@@ -111,7 +111,7 @@ Inference::inferLiteralType()
         case LiteralType::Integer:
             lit_expr->setTypeDeclaration(createSimpleTypeDeclaration(
                 false,
-                "uint"
+                "int"
             ));
             return lit_expr->getTypeDeclaration();
 

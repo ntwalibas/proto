@@ -128,8 +128,8 @@ ExpressionCleaner::cleanLiteral(
         }
 
         case LiteralType::Integer: {
-            return std::make_unique<CleanUnsignedIntExpression>(
-                (uint64_t) std::stoull(lit_expr->getToken().getLexeme().c_str())
+            return std::make_unique<CleanSignedIntExpression>(
+                (int64_t) std::stoll(lit_expr->getToken().getLexeme().c_str())
             );
         }
 

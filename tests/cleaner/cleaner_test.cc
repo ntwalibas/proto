@@ -29,8 +29,8 @@ TEST_F(CleanerTest, cleanTest) {
         "sum: function(a: int, b: int) -> int {\n"
         "    return a + b\n"
         "}\n"
-        "main: function() -> uint {\n"
-        "    sum(-1, 1:int)\n"
+        "main: function() -> int {\n"
+        "    sum(-1, 1)\n"
         "    return 0\n"
         "}\n";
 

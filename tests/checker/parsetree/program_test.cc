@@ -27,7 +27,7 @@ TEST_F(ProgramCheckerTest, checkTest)
 {
     // Correct program
     {
-        std::string source = "count: uint = 0\n main: function()->uint{return 0\n}\n";
+        std::string source = "count: int = 0\n main: function()->int{return 0\n}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
@@ -38,7 +38,7 @@ TEST_F(ProgramCheckerTest, checkTest)
 
     // Incorrect program
     {
-        std::string source = "count: type = 0\n main: function()->uint{return 0\n}\n";
+        std::string source = "count: type = 0\n main: function()->int{return 0\n}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
@@ -56,7 +56,7 @@ TEST_F(ProgramCheckerTest, checkTest)
 
     // Missing entry point
     {
-        std::string source = "count: uint = 0\n";
+        std::string source = "count: int = 0\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();
@@ -77,7 +77,7 @@ TEST_F(ProgramCheckerTest, checkTest)
 
     // Invalid main function
     {
-        std::string source = "main: function()->int{}\n";
+        std::string source = "main: function()->uint{}\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         Program prog = parser.parseProgram();

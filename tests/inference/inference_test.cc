@@ -68,7 +68,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
     // Float literals
@@ -106,7 +106,7 @@ TEST_F(InferenceTest, inferLiteralTypeTest) {
 
 TEST_F(InferenceTest, inferCastTypeTest) {
     std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1:int");
+        std::make_shared<std::string>("1:uint");
 
     Lexer lexer(source, source_path);
     Parser parser(lexer);
@@ -118,13 +118,13 @@ TEST_F(InferenceTest, inferCastTypeTest) {
     EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
     SimpleTypeDeclaration& type_decl =
         static_cast<SimpleTypeDeclaration&>(*expr_type);
-    EXPECT_EQ(type_decl.getTypeName(), "int");
+    EXPECT_EQ(type_decl.getTypeName(), "uint");
 }
 
 TEST_F(InferenceTest, inferVariableTypeTest) {
     // Variable definition
     {
-        std::string source = "count: uint = 0";
+        std::string source = "count: int = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         var_def.reset(nullptr);
@@ -154,7 +154,7 @@ TEST_F(InferenceTest, inferVariableTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
     // Variable definition is not in scope
@@ -214,7 +214,7 @@ TEST_F(InferenceTest, inferCallTypeTest) {
     // Function was found
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("sum(2, 2)");
+        std::make_shared<std::string>("sum(2:uint, 2:uint)");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -246,7 +246,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
     // Unary positive: unsigned int
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("+10");
+        std::make_shared<std::string>("+10:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -300,7 +300,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
     // Unary negative: unsigned int
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("-10");
+        std::make_shared<std::string>("-10:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -354,7 +354,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
     // Bitwise not: unsigned int
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("~10");
+        std::make_shared<std::string>("~10:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -422,7 +422,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Addition
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 + 2");
+        std::make_shared<std::string>("1:uint + 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -458,7 +458,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Multiplication
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 * 2");
+        std::make_shared<std::string>("1:uint * 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -508,7 +508,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Division
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 / 2");
+        std::make_shared<std::string>("1:uint / 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -558,7 +558,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Remainder
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 % 2");
+        std::make_shared<std::string>("1:uint % 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -608,57 +608,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Power
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 ** 2");
-
-        Lexer lexer(source, source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr.get(), scope).inferBinaryType();
-        
-        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
-        SimpleTypeDeclaration& type_decl =
-            static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
-    }
-    {
-        std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("-1 ** -2");
-
-        Lexer lexer(source, source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr.get(), scope).inferBinaryType();
-        
-        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
-        SimpleTypeDeclaration& type_decl =
-            static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "float");
-    }
-    {
-        std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1.0 ** 2.0");
-
-        Lexer lexer(source, source_path);
-        Parser parser(lexer);
-        std::unique_ptr<Expression> expr = parser.parseExpression();
-
-        std::unique_ptr<TypeDeclaration>& expr_type =
-            Inference(expr.get(), scope).inferBinaryType();
-        
-        EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
-        SimpleTypeDeclaration& type_decl =
-            static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "float");
-    }
-
-    // Power
-    {
-        std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 ** 2");
+        std::make_shared<std::string>("1:uint ** 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -708,7 +658,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Bitwise and
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 & 2");
+        std::make_shared<std::string>("1:uint & 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -742,7 +692,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Bitwise or
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 | 2");
+        std::make_shared<std::string>("1:uint | 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -776,7 +726,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Bitwise xor
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 ^ 2");
+        std::make_shared<std::string>("1:uint ^ 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -810,7 +760,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Left shift
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 << 2");
+        std::make_shared<std::string>("1:uint << 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -826,7 +776,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     }
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("-1 << 2");
+        std::make_shared<std::string>("-1 << 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -844,7 +794,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     // Right shift
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("1 >> 2");
+        std::make_shared<std::string>("1:uint >> 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -860,7 +810,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
     }
     {
         std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("-1 >> 2");
+        std::make_shared<std::string>("-1 >> 2:uint");
 
         Lexer lexer(source, source_path);
         Parser parser(lexer);
@@ -1022,7 +972,7 @@ TEST_F(InferenceTest, inferBinaryTypeTest) {
 
 TEST_F(InferenceTest, inferTernaryIfTypeTest) {
     std::shared_ptr<std::string> source =
-        std::make_shared<std::string>("b == true ? 1:int <> -1");
+        std::make_shared<std::string>("b == true ? 1 <> -1");
 
     Lexer lexer(source, source_path);
     Parser parser(lexer);
@@ -1039,7 +989,7 @@ TEST_F(InferenceTest, inferTernaryIfTypeTest) {
 
 TEST_F(InferenceTest, inferAssignmentTypeTest) {
     {
-        std::string source = "new_count: uint = 0";
+        std::string source = "new_count: int = 0";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         var_def.reset(nullptr);
@@ -1060,7 +1010,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
     // Correct in-place assignment
@@ -1076,7 +1026,7 @@ TEST_F(InferenceTest, inferAssignmentTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "uint");
+        EXPECT_EQ(type_decl.getTypeName(), "int");
     }
 
     // Incorrect in-place assignment

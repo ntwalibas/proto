@@ -27,14 +27,14 @@ TEST_F(ExpressionCheckerTest, checkCastTest)
 {
     // Valid cast expression
     {
-        std::string source = "0:int";
+        std::string source = "0:uint";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& type_decl =
             ExpressionChecker(expr.get(), scope).checkCast();
 
-        EXPECT_EQ(type_decl->getTypeName(), "int");
+        EXPECT_EQ(type_decl->getTypeName(), "uint");
     }
 
     // Invalid cast expression
@@ -87,7 +87,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
 {
     {
         std::shared_ptr<std::string> source =
-            std::make_shared<std::string>("count: uint = 0");
+            std::make_shared<std::string>("count: int = 0");
         Lexer lexer(source, source_path);
         Parser parser(lexer);
         var_def = parser.parseDefinition();
@@ -103,19 +103,19 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
             ExpressionChecker(expr.get(), scope).check();
 
-        EXPECT_EQ(expr_type_decl->getTypeName(), "uint");
+        EXPECT_EQ(expr_type_decl->getTypeName(), "int");
     }
 
     // Valid simple assignment with non-existent variable
     {
-        std::string source = "new_count = 1:int";
+        std::string source = "new_count = 1:uint";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
             ExpressionChecker(expr.get(), scope).check();
 
-        EXPECT_EQ(expr_type_decl->getTypeName(), "int");
+        EXPECT_EQ(expr_type_decl->getTypeName(), "uint");
     }
 
     // Valid in-place assignment
@@ -127,7 +127,7 @@ TEST_F(ExpressionCheckerTest, checkAssignmentTest)
         std::unique_ptr<TypeDeclaration>& expr_type_decl =
             ExpressionChecker(expr.get(), scope).check();
 
-        EXPECT_EQ(expr_type_decl->getTypeName(), "uint");
+        EXPECT_EQ(expr_type_decl->getTypeName(), "int");
     }
 
     // Invalid simple assignment: non-existent variable on the RHS

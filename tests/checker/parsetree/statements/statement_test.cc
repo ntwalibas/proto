@@ -286,12 +286,12 @@ TEST_F(StatementCheckerTest, checkReturnTest)
 
     // Valid return statement with int to return
     {
-        std::string source = "return 0:int\n";
+        std::string source = "return 0:uint\n";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
 
-        ret_type_decl = createSimpleTypeDeclaration(false, "int");
+        ret_type_decl = createSimpleTypeDeclaration(false, "uint");
         
         EXPECT_NO_THROW(StatementChecker(ret_type_decl).check(
             static_cast<Statement*>(stmt.get()),
