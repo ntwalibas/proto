@@ -379,7 +379,18 @@ Parser::parseStatement()
 std::unique_ptr<BlockStatement>
 Parser::parseBlockStatement()
 {
-    Token& block_token = consume(PROTO_LEFT_BRACE);
+    Token block_token;
+    try {
+        block_token = consume(PROTO_LEFT_BRACE);
+    } catch (std::invalid_argument const& e) {
+        throw ParserError(
+            peekBack(),
+            "missing opening left brace to start a block",
+            "expected an opening left brace to end a block",
+            false
+        );
+    }
+
     std::unique_ptr<BlockStatement> block_stmt = 
         std::make_unique<BlockStatement>(block_token);
 
