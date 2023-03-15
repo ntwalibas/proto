@@ -235,7 +235,7 @@ BuiltinFunctionsSymtable::BuiltinFunctionsSymtable()
     fun_return_types["__sub__(int,int)"]        =
         createSimpleTypeDeclaration(false,"int");
     fun_return_types["__sub__(uint,uint)"]      =
-        createSimpleTypeDeclaration(false,"int");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__sub__(float,float)"]    =
         createSimpleTypeDeclaration(false,"float");
     // Multiplication
