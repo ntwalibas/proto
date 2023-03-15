@@ -30,6 +30,10 @@ cc_library(
         "cleaner/parsetree/statements/*.h",
         "cleaner/parsetree/expressions/*.h",
         "cleaner/symbols/*.h",
+        "interpreter/*.h",
+        "interpreter/ast/definitions/*.h",
+        "interpreter/ast/statements/*.h",
+        "interpreter/ast/expressions/*.h",
     ]),
     visibility = ["//visibility:public"],
 )

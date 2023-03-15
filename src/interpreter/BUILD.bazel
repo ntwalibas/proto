@@ -1,0 +1,15 @@
+cc_library(
+    name = "interpreter",
+    srcs = glob([
+        "*.cc",
+        "ast/definitions/*.cc",
+        "ast/statements/*.cc",
+        "ast/expressions/*.cc",
+    ]),
+    copts = ["-Iinclude"],
+    deps = [
+        "//include:include",
+        "//src/cleaner:cleaner",
+    ],
+    visibility = ["//visibility:public"],
+)

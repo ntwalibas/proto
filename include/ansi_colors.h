@@ -21,5 +21,6 @@
 #define ANSI_BRIGHT_BOLD_WHITE      "\x1b[1;1;1m"
 #define ANSI_BRIGHT_BOLD_RED        "\x1b[1;31;1m"
 #define ANSI_BRIGHT_BOLD_GREEN      "\x1b[1;32;1m"
+#define ANSI_BRIGHT_BOLD_MAGNETA    "\x1b[1;35;1m"
 
 #endif

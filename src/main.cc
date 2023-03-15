@@ -17,12 +17,17 @@
 
 
 #include <iostream>
+#include <cstddef>
+#include <memory>
 #include <string>
 
-#include "checker/checker.h"
-#include "parser/parser.h"
-#include "utils/parser.h"
+#include "interpreter/interpreter.h"
+#include "cleaner/symbols/scope.h"
 #include "parsetree/program.h"
+#include "cleaner/cleaner.h"
+#include "checker/checker.h"
+#include "utils/messages.h"
+#include "parser/parser.h"
 #include "ansi_colors.h"
 #include "lexer/lexer.h"
 #include "utils/lexer.h"
@@ -37,7 +42,7 @@ int
 main(int argc, char const * argv[])
 {
     if (argc != 2) {
-        std::cout << "Usage: nova program" << std::endl;
+        std::cout << "Usage: proto program" << std::endl;
     }
     else {
         return compile(std::string(argv[1]));
@@ -57,79 +62,109 @@ compile(std::string const& source_path)
         return 1;
     }
 
-    /* 2. Read the source */
-    std::string source = readFile(source_path);
+    /* 
+     * Frontend processing
+     *
+     * The outcome of this will be a symbol table that contains the AST.
+     *
+     * We create a lexical scope for the frontend so its associated data
+     * is delete except the final processed AST.
+     */
+    std::shared_ptr<CleanScope> scope = nullptr;
+    {
+        std::string source = readFile(source_path);
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
 
-    /* 3. Lex the source */
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    // printTokens(lexer);
+        Program program;
+        Parser parser(lexer);
+        try {
+            program = parser.parse();
+            if (parser.errors.size() > 0) {
+                for (auto& e : parser.errors) {
+                    printMessage(
+                        "error",
+                        e.getToken(), e.getPrimaryMessage(),
+                        e.getSecondaryMessage(), e.getToken().source_path
+                    );
+                }
 
-    /* 4. Parse tokens */
-    Parser parser(lexer);
-    Program program;
-    try {
-        program = parser.parse();
-        if (parser.errors.size() > 0) {
+                return 1;
+            }
+        } catch (ParserError& e) {
             for (auto& e : parser.errors) {
-                printError(
+                printMessage(
+                    "error",
                     e.getToken(), e.getPrimaryMessage(),
                     e.getSecondaryMessage(), e.getToken().source_path
                 );
             }
 
+            // To avoid displaying spirious fatal errors,
+            // we only show them if there are no non-fatal errors
+            if (! parser.errors.size())
+                printMessage(
+                    "error",
+                    e.getToken(), e.getPrimaryMessage(),
+                    e.getSecondaryMessage(), e.getToken().source_path
+                );
+
             return 1;
         }
-    } catch (ParserError& e) {
-        for (auto& e : parser.errors) {
-            printError(
-                e.getToken(), e.getPrimaryMessage(),
-                e.getSecondaryMessage(), e.getToken().source_path
-            );
+
+        Checker checker(program);
+        try {
+            checker.check();
+            if (checker.errors.size() > 0) {
+                for (auto& e : checker.errors) {
+                    printMessage(
+                        "error",
+                        e.getToken(), e.getPrimaryMessage(),
+                        e.getSecondaryMessage(), e.getToken().source_path
+                    );
+                }
+
+                return 1;
+            }
+        } catch (CheckerError& e) {
+            for (auto& e : checker.errors) {
+                printMessage(
+                    "error",
+                    e.getToken(), e.getPrimaryMessage(),
+                    e.getSecondaryMessage(), e.getToken().source_path
+                );
+            }
+            
+            if (! checker.errors.size())
+                printMessage(
+                    "error",
+                    e.getToken(), e.getPrimaryMessage(),
+                    e.getSecondaryMessage(), e.getToken().source_path
+                );
+
+            return 1;
         }
 
-        // To avoid displaying spirious fatal errors,
-        // we only show them if there are no non-fatal errors
-        if (! parser.errors.size())
-            printError(
-                e.getToken(), e.getPrimaryMessage(),
-                e.getSecondaryMessage(), e.getToken().source_path
+        Cleaner cleaner(program);
+        scope = cleaner.clean();
+        for (auto& w : cleaner.warnings) {
+            printMessage(
+                "warning",
+                w.getToken(), w.getPrimaryMessage(),
+                w.getSecondaryMessage(), w.getToken().source_path
             );
-
-        return 1;
+        }
     }
 
-    /* 5. Check the proram for errors */
-    Checker checker(program);
-    try {
-        checker.check();
-        if (checker.errors.size() > 0) {
-            for (auto& e : checker.errors) {
-                printError(
-                    e.getToken(), e.getPrimaryMessage(),
-                    e.getSecondaryMessage(), e.getToken().source_path
-                );
-            }
-
-            return 1;
-        }
-        else {
-            std::cout << "Program checks out!" << std::endl;
-        }
-    } catch (CheckerError& e) {
-        for (auto& e : checker.errors) {
-            printError(
-                e.getToken(), e.getPrimaryMessage(),
-                e.getSecondaryMessage(), e.getToken().source_path
-            );
-        }
-        
-        if (! checker.errors.size())
-            printError(
-                e.getToken(), e.getPrimaryMessage(),
-                e.getSecondaryMessage(), e.getToken().source_path
-            );
-
-        return 1;
+    /*
+     * Backend processing
+     *
+     * We process the AST found in the scope.
+     *
+     * In this PoC, we just invoke the interpreter.
+     */
+    {
+        Interpreter interpreter(scope.get());
+        interpreter.interpret();
     }
 
     return 0;

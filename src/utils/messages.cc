@@ -19,15 +19,16 @@
 #include <string>
 
 #include "include/ansi_colors.h"
+#include "utils/messages.h"
 #include "common/token.h"
-#include "utils/parser.h"
 
 /**
  * Given a token and an error message, display that error in a visually appealing way.
  * We stick to using C-style formatted output due to iomap being hard to use.
  */
 void
-printError(
+printMessage(
+    std::string const& title,
     Token const& token,
     std::string const& primary_message,
     std::string const& secondary_message,
@@ -35,26 +36,51 @@ printError(
 )
 {
     if (token.type == PROTO_EOF || token.type == PROTO_ERROR) {
-        fprintf(
-            stderr,
-            ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-            "[%s]: " ANSI_BRIGHT_BOLD_WHITE "%s.\n" ANSI_COLOR_RESET,
-            source_path.c_str(),
-            primary_message.c_str()
-        );
+        if (title == "error") {
+            fprintf(
+                stderr,
+                ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
+                "[%s]: " ANSI_BRIGHT_BOLD_WHITE "%s.\n" ANSI_COLOR_RESET,
+                source_path.c_str(),
+                primary_message.c_str()
+            );
+        }
+        else if (title == "warning") {
+            fprintf(
+                stderr,
+                ANSI_BRIGHT_BOLD_MAGNETA "warning " ANSI_COLOR_RESET
+                "[%s]: " ANSI_BRIGHT_BOLD_WHITE "%s.\n" ANSI_COLOR_RESET,
+                source_path.c_str(),
+                primary_message.c_str()
+            );
+        }
         return;
     }
 
     TokenLine token_line = token.getLine();
-    fprintf(
-        stderr,
-        ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
-        "[%s:%zu:%zu]: " ANSI_BRIGHT_BOLD_WHITE "%s:\n" ANSI_COLOR_RESET,
-        source_path.c_str(),
-        token.line,
-        token.column,
-        primary_message.c_str()
-    );
+    if (title == "error") {
+        fprintf(
+            stderr,
+            ANSI_BRIGHT_BOLD_RED "error " ANSI_COLOR_RESET
+            "[%s:%zu:%zu]: " ANSI_BRIGHT_BOLD_WHITE "%s:\n" ANSI_COLOR_RESET,
+            source_path.c_str(),
+            token.line,
+            token.column,
+            primary_message.c_str()
+        );
+    }
+    else if (title == "warning") {
+        fprintf(
+            stderr,
+            ANSI_BRIGHT_BOLD_MAGNETA "warning " ANSI_COLOR_RESET
+            "[%s:%zu:%zu]: " ANSI_BRIGHT_BOLD_WHITE "%s:\n" ANSI_COLOR_RESET,
+            source_path.c_str(),
+            token.line,
+            token.column,
+            primary_message.c_str()
+        );
+    }
+
     fprintf(stderr, "%*s|\n", 6, "");
     fprintf(stderr, "%5zu", token.line);
     fprintf(stderr, "%2s%-4s", "|", "");

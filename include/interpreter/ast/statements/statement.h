@@ -15,21 +15,22 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_UTILS_PARSER_H
-#define PROTO_UTILS_PARSER_H
+#ifndef PROTO_STATEMENT_INTERPRETER_H
+#define PROTO_STATEMENT_INTERPRETER_H
 
-#include "common/token.h"
+#include "cleaner/ast/statements/statement.h"
+#include "cleaner/symbols/scope.h"
 
 
-/**
- * Given a token and an error message, display that error in a visually appealing way.
- */
-void
-printError(
-    Token const& token,
-    std::string const& primary_message,
-    std::string const& secondary_message,
-    std::string const& source_path
-);
+class StatementInterpreter
+{
+    public:
+        StatementInterpreter();
+
+        /**
+         * Interprets the given statement.
+         */
+        void interpret(CleanStatement* stmt, CleanScope* scope);
+};
 
 #endif
