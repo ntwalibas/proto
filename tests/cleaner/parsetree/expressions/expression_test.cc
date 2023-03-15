@@ -112,18 +112,37 @@ TEST_F(ExpressionCleanerTest, cleanLiteralTest) {
 
 // Cast
 TEST_F(ExpressionCleanerTest, cleanCastTest) {
-    std::string source = "1:uint";
-    Lexer lexer(std::make_shared<std::string>(source), source_path);
-    Parser parser(lexer);
-    std::unique_ptr<Expression> expr = parser.parseExpression();
-    ExpressionChecker(expr.get(), scope).checkCast();
-    std::unique_ptr<CleanExpression> clean_expr =
-        ExpressionCleaner(clean_scope).clean(expr.get());
+    // Int to string results in function call
+    {
+        std::string source = "1:string";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+        ExpressionChecker(expr.get(), scope).checkCast();
+        std::unique_ptr<CleanExpression> clean_expr =
+            ExpressionCleaner(clean_scope).clean(expr.get());
 
-    EXPECT_EQ(clean_expr->type, CleanExpressionType::Call);
-    CleanCallExpression* call_expr =
-        static_cast<CleanCallExpression*>(clean_expr.get());
-    EXPECT_EQ(call_expr->fun_name, "__cast@uint__(int)");
+        EXPECT_EQ(clean_expr->type, CleanExpressionType::Call);
+        CleanCallExpression* call_expr =
+            static_cast<CleanCallExpression*>(clean_expr.get());
+        EXPECT_EQ(call_expr->fun_name, "__cast@string__(int)");
+    }
+
+    // Int to unsigned int results in immediate cast to unsigned int literal
+    {
+        std::string source = "1:uint";
+        Lexer lexer(std::make_shared<std::string>(source), source_path);
+        Parser parser(lexer);
+        std::unique_ptr<Expression> expr = parser.parseExpression();
+        ExpressionChecker(expr.get(), scope).checkCast();
+        std::unique_ptr<CleanExpression> clean_expr =
+            ExpressionCleaner(clean_scope).clean(expr.get());
+
+        EXPECT_EQ(clean_expr->type, CleanExpressionType::UnsignedInt);
+        CleanUnsignedIntExpression* uint_expr =
+            static_cast<CleanUnsignedIntExpression*>(clean_expr.get());
+        EXPECT_EQ(uint_expr->value, (uint64_t) 1);
+    }
 }
 
 // Variable

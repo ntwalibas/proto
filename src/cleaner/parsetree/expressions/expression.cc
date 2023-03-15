@@ -153,11 +153,24 @@ ExpressionCleaner::cleanCast(
     CastExpression* cast_expr
 )
 {
-    std::unique_ptr<CleanCallExpression> clean_call =
-        std::make_unique<CleanCallExpression>(cast_expr->getFunctionName());
-    
+    // If we have a cast of an int literal to an uint, we generate an unsigned int
     Expression* expr =
         static_cast<Expression*>(cast_expr->getExpression().get());
+    
+    if (
+        cast_expr->getTypeDeclaration()->getTypeName() == "uint" &&
+        expr->getType() == ExpressionType::Literal
+    ) {
+         LiteralExpression* lit_expr =
+            static_cast<LiteralExpression*>(expr);
+        if (lit_expr->getLiteralType() == LiteralType::Integer)
+            return std::make_unique<CleanUnsignedIntExpression>(
+                ((uint64_t) std::stoull(lit_expr->getToken().getLexeme().c_str()))
+            );
+    }
+
+    std::unique_ptr<CleanCallExpression> clean_call =
+        std::make_unique<CleanCallExpression>(cast_expr->getFunctionName());
     clean_call->arguments.push_back(clean(expr));
     
     return clean_call;
