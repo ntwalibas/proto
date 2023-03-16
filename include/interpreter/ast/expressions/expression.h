@@ -30,7 +30,28 @@ class ExpressionInterpreter
         /**
          * Interprets the given expression.
          */
-        void interpret(CleanExpression* expr);
+        std::unique_ptr<CleanExpression> interpret(
+            CleanExpression* expr);
+
+        // Bool
+        std::unique_ptr<CleanBoolExpression> interpretBool(
+            CleanBoolExpression* bool_expr);
+
+        // Signed int
+        std::unique_ptr<CleanSignedIntExpression> interpretSignedInt(
+            CleanSignedIntExpression* int_expr);
+
+        // Unsigned int
+        std::unique_ptr<CleanUnsignedIntExpression> interpretUnsignedInt(
+            CleanUnsignedIntExpression* uint_expr);
+
+        // Float
+        std::unique_ptr<CleanFloatExpression> interpretFloat(
+            CleanFloatExpression* float_expr);
+
+        // String
+        std::unique_ptr<CleanStringExpression> interpretString(
+            CleanStringExpression* string_expr);
 
     private:
         CleanScope* scope;

@@ -18,6 +18,7 @@
 #ifndef PROTO_FUNCTION_DEFINITION_INTERPRETER_H
 #define PROTO_FUNCTION_DEFINITION_INTERPRETER_H
 
+#include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/definitions/function.h"
 #include "cleaner/symbols/scope.h"
 
@@ -25,12 +26,10 @@
 class FunctionDefinitionInterpreter
 {
     public:
-        FunctionDefinitionInterpreter();
-
         /**
          * Interprets the given function definition.
          */
-        void interpret(CleanFunctionDefinition* fun_def, CleanScope* scope);
+        std::unique_ptr<CleanExpression> interpret(CleanFunctionDefinition* fun_def);
 };
 
 #endif

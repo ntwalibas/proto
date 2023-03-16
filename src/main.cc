@@ -164,7 +164,7 @@ compile(std::string const& source_path)
      */
     {
         Interpreter interpreter(scope.get());
-        interpreter.interpret();
+        return interpreter.interpret();
     }
 
     return 0;

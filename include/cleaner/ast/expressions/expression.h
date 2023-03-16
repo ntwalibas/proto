@@ -62,6 +62,40 @@ struct CleanBoolExpression : public CleanExpression
         value(value)
     {}
 
+    CleanBoolExpression(
+        CleanBoolExpression const& other
+    ) : CleanExpression(CleanExpressionType::Boolean),
+        value(other.value)
+    {}
+
+    CleanBoolExpression(
+        CleanBoolExpression const * const other
+    ) : CleanExpression(CleanExpressionType::Boolean),
+        value(other->value)
+    {}
+
+    CleanBoolExpression& operator=(
+        CleanBoolExpression const& other
+    )
+    {
+        if (this != &other) {
+            value = other.value;
+        }
+
+        return *this;
+    }
+
+    CleanBoolExpression& operator=(
+        CleanBoolExpression const * const other
+    ) 
+    {
+        if (this != other) {
+            value = other->value;
+        }
+
+        return *this;
+    }
+
     bool value;
 };
 
@@ -72,6 +106,40 @@ struct CleanSignedIntExpression : public CleanExpression
     ) : CleanExpression(CleanExpressionType::SignedInt),
         value(value)
     {}
+
+    CleanSignedIntExpression(
+        CleanSignedIntExpression const& other
+    ) : CleanExpression(CleanExpressionType::SignedInt),
+        value(other.value)
+    {}
+
+    CleanSignedIntExpression(
+        CleanSignedIntExpression const * const other
+    ) : CleanExpression(CleanExpressionType::SignedInt),
+        value(other->value)
+    {}
+
+    CleanSignedIntExpression& operator=(
+        CleanSignedIntExpression const& other
+    )
+    {
+        if (this != &other) {
+            value = other.value;
+        }
+
+        return *this;
+    }
+
+    CleanSignedIntExpression& operator=(
+        CleanSignedIntExpression const * const other
+    ) 
+    {
+        if (this != other) {
+            value = other->value;
+        }
+
+        return *this;
+    }
 
     int64_t value;
 };
@@ -84,6 +152,40 @@ struct CleanUnsignedIntExpression : public CleanExpression
         value(value)
     {}
 
+    CleanUnsignedIntExpression(
+        CleanUnsignedIntExpression const& other
+    ) : CleanExpression(CleanExpressionType::UnsignedInt),
+        value(other.value)
+    {}
+
+    CleanUnsignedIntExpression(
+        CleanUnsignedIntExpression const * const other
+    ) : CleanExpression(CleanExpressionType::UnsignedInt),
+        value(other->value)
+    {}
+
+    CleanUnsignedIntExpression& operator=(
+        CleanUnsignedIntExpression const& other
+    )
+    {
+        if (this != &other) {
+            value = other.value;
+        }
+
+        return *this;
+    }
+
+    CleanUnsignedIntExpression& operator=(
+        CleanUnsignedIntExpression const * const other
+    ) 
+    {
+        if (this != other) {
+            value = other->value;
+        }
+
+        return *this;
+    }
+
     uint64_t value;
 };
 
@@ -95,6 +197,40 @@ struct CleanFloatExpression : public CleanExpression
         value(value)
     {}
 
+    CleanFloatExpression(
+        CleanFloatExpression const& other
+    ) : CleanExpression(CleanExpressionType::Float),
+        value(other.value)
+    {}
+
+    CleanFloatExpression(
+        CleanFloatExpression const * const other
+    ) : CleanExpression(CleanExpressionType::Float),
+        value(other->value)
+    {}
+
+    CleanFloatExpression& operator=(
+        CleanFloatExpression const& other
+    )
+    {
+        if (this != &other) {
+            value = other.value;
+        }
+
+        return *this;
+    }
+
+    CleanFloatExpression& operator=(
+        CleanFloatExpression const * const other
+    ) 
+    {
+        if (this != other) {
+            value = other->value;
+        }
+
+        return *this;
+    }
+
     double value;
 };
 
@@ -105,6 +241,40 @@ struct CleanStringExpression : public CleanExpression
     ) : CleanExpression(CleanExpressionType::String),
         value(value)
     {}
+
+    CleanStringExpression(
+        CleanStringExpression const& other
+    ) : CleanExpression(CleanExpressionType::String),
+        value(other.value)
+    {}
+
+    CleanStringExpression(
+        CleanStringExpression const * const other
+    ) : CleanExpression(CleanExpressionType::String),
+        value(other->value)
+    {}
+
+    CleanStringExpression& operator=(
+        CleanStringExpression const& other
+    )
+    {
+        if (this != &other) {
+            value = other.value;
+        }
+
+        return *this;
+    }
+
+    CleanStringExpression& operator=(
+        CleanStringExpression const * const other
+    ) 
+    {
+        if (this != other) {
+            value = other->value;
+        }
+
+        return * this;
+    }
 
     std::string value;
 };

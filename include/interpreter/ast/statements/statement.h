@@ -18,7 +18,13 @@
 #ifndef PROTO_STATEMENT_INTERPRETER_H
 #define PROTO_STATEMENT_INTERPRETER_H
 
+#include <cstdbool>
+#include <memory>
+
+#include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/statements/statement.h"
+#include "cleaner/ast/statements/return.h"
+#include "cleaner/ast/statements/block.h"
 #include "cleaner/symbols/scope.h"
 
 
@@ -30,7 +36,23 @@ class StatementInterpreter
         /**
          * Interprets the given statement.
          */
-        void interpret(CleanStatement* stmt, CleanScope* scope);
+        std::unique_ptr<CleanExpression> interpret(
+            CleanStatement* stmt, CleanScope* scope);
+
+        // Block
+        std::unique_ptr<CleanExpression> interpretBlock(
+            CleanBlockStatement* block_stmt);
+
+        // Return
+        std::unique_ptr<CleanExpression> interpretReturn(
+            CleanReturnStatement* ret_stmt, CleanScope* scope);
+
+        // Expressions
+        std::unique_ptr<CleanExpression> interpretExpression(
+            CleanExpression* expr_stmt, CleanScope* scope);
+    
+    private:
+        bool returned;
 };
 
 #endif

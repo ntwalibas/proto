@@ -18,38 +18,20 @@
 #include <memory>
 
 #include "interpreter/ast/definitions/function.h"
+#include "interpreter/ast/statements/statement.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/definitions/function.h"
-#include "interpreter/interpreter.h"
 #include "cleaner/symbols/scope.h"
 
 
-Interpreter::Interpreter(
-    CleanScope* scope
-) : scope(scope)
-{}
-
 /**
- * Interprets the program starting with the main function found in the global scope.
+ * Interprets the given function definition.
  */
-int
-Interpreter::interpret()
+std::unique_ptr<CleanExpression>
+FunctionDefinitionInterpreter::interpret(CleanFunctionDefinition* fun_def)
 {
-    std::unique_ptr<CleanFunctionDefinition>& main_fun =
-        scope->getSymbol<CleanFunctionDefinition>("main()");
-    
-    std::unique_ptr<CleanExpression> ret_expr =
-        FunctionDefinitionInterpreter().interpret(main_fun.get());
-
-    if (ret_expr && ret_expr->type == CleanExpressionType::SignedInt) {
-        CleanSignedIntExpression* int_expr =
-            static_cast<CleanSignedIntExpression*>(ret_expr.get());
-        
-        // The value will be of type int64_t
-        // But since we are interpreting through C++, we convert to int
-        return (int) int_expr->value;
-    }
-
-    // If we got a nullptr from main, we have an error
-    return -1;
+    return StatementInterpreter().interpret(
+        fun_def->body.get(),
+        fun_def->scope.get()
+    );
 }

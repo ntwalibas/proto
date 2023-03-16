@@ -1,9 +1,10 @@
 cc_test(
-  name = "cleaner_test",
+  name = "interpreter_test",
   size = "small",
   srcs = glob([
     "*.cc",
-    "parsetree/expressions/*.cc",
+    "ast/statements/*.cc",
+    "ast/expressions/*.cc",
   ]),
   deps = [
     "@com_google_googletest//:gtest_main",
@@ -13,6 +14,7 @@ cc_test(
     "//src/parser:parser",
     "//src/checker:checker",
     "//src/cleaner:cleaner",
+    "//src/interpreter:interpreter",
   ],
   copts = ["-Iinclude"],
 )

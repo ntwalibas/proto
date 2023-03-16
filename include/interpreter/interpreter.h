@@ -31,7 +31,7 @@ class Interpreter
         /**
          * Interprets the program starting with the main function found in the global scope.
          */
-        void interpret();
+        int interpret();
 
     private:
         CleanScope* scope;
