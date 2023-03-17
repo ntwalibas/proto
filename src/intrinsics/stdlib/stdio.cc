@@ -22,7 +22,6 @@
 #include <utility>
 #include <cstdio>
 #include <memory>
-#include <vector>
 #include <string>
 #include <map>
 

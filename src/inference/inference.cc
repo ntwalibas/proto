@@ -40,8 +40,8 @@
 #include "parsetree/expressions/cast.h"
 #include "inference/inference_error.h"
 #include "inference/inference.h"
+#include "intrinsics/reslib.h"
 #include "intrinsics/stdlib.h"
-#include "symbols/symtable.h"
 #include "utils/inference.h"
 #include "symbols/scope.h"
 
@@ -319,7 +319,7 @@ Inference::inferUnaryType()
 
     try {
         expr->setTypeDeclaration(
-            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+            copy(ReslibFunctionsSymtable().getReturnType(op_name))
         );
     } catch (std::out_of_range const& e) {
         throw InferenceError(
@@ -435,7 +435,7 @@ Inference::inferBinaryType()
 
     try {
         expr->setTypeDeclaration(
-            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+            copy(ReslibFunctionsSymtable().getReturnType(op_name))
         );
     } catch (std::out_of_range const& e) {
         throw InferenceError(
@@ -529,7 +529,7 @@ Inference::inferAssignmentType()
 
     try {
         expr->setTypeDeclaration(
-            copy(BuiltinFunctionsSymtable().getReturnType(op_name))
+            copy(ReslibFunctionsSymtable().getReturnType(op_name))
         );
     } catch (std::out_of_range const& e) {
         throw InferenceError(

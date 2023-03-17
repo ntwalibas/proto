@@ -33,7 +33,7 @@
 #include "inference/inference_error.h"
 #include "checker/checker_error.h"
 #include "inference/inference.h"
-#include "symbols/symtable.h"
+#include "intrinsics/reslib.h"
 #include "symbols/scope.h"
 
 
@@ -117,7 +117,7 @@ ExpressionChecker::checkCast()
     std::string dest_type_name = cast_expr->getTypeDeclaration()->getTypeName();
     std::string source_type_name = expr_type_decl->getTypeName();
     std::string op_name = "__cast@" + dest_type_name + "__(" + source_type_name + ")";
-    if (! BuiltinFunctionsSymtable().hasFunctionDefinition(op_name)) {
+    if (! ReslibFunctionsSymtable().hasFunctionDefinition(op_name)) {
         throw CheckerError(
             cast_expr->getToken(),
             "invalid cast",
