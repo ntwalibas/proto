@@ -53,6 +53,16 @@ class ExpressionInterpreter
         std::unique_ptr<CleanStringExpression> interpretString(
             CleanStringExpression* string_expr);
 
+        // Call
+        std::unique_ptr<CleanExpression> interpretCall(
+            CleanCallExpression* call_expr,
+            CleanScope* scope);
+        
+        // Intrinsic
+        std::unique_ptr<CleanExpression> interpretIntrinsic(
+            CleanIntrinsicExpression* intr_expr,
+            CleanScope* scope);
+
     private:
         CleanScope* scope;
 };

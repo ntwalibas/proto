@@ -6,6 +6,7 @@ cc_library(
         "//include:include",
         "//src/utils:utils",
         "//src/parsetree:parsetree",
+        "//src/intrinsics:intrinsics",
     ],
     visibility = ["//visibility:public"],
 )

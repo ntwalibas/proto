@@ -15,7 +15,9 @@
  *  limitations under the License.
  */
 
+#include <cstddef>
 #include <memory>
+#include <vector>
 
 #include "interpreter/ast/definitions/function.h"
 #include "interpreter/ast/statements/statement.h"
@@ -28,10 +30,38 @@
  * Interprets the given function definition.
  */
 std::unique_ptr<CleanExpression>
-FunctionDefinitionInterpreter::interpret(CleanFunctionDefinition* fun_def)
+FunctionDefinitionInterpreter::interpret(
+    CleanFunctionDefinition* fun_def,
+    std::vector<std::unique_ptr<CleanExpression>>& arguments
+)
 {
-    return StatementInterpreter().interpret(
-        fun_def->body.get(),
-        fun_def->scope.get()
-    );
+    // Create temporary variables in the function's scope
+    //  and bind passed arguments to them
+    for (
+        std::vector<std::unique_ptr<CleanExpression>>::size_type i = 0;
+        i < arguments.size();
+        ++i
+    ) {
+        fun_def->scope->addSymbol<CleanVariableDefinition>(
+            fun_def->parameters[i]->name,
+            std::make_unique<CleanVariableDefinition>(
+                "",
+                nullptr,
+                std::move(arguments[i])
+            )
+        );
+    }
+
+    std::unique_ptr<CleanExpression> ret_expr =
+        StatementInterpreter().interpret(
+            fun_def->body.get(),
+            fun_def->scope.get()
+        );
+
+    // Delete the temporary variable definitions created above
+    // Technically this is unnecessary (and may impact performance)
+    // but we want to start the next interpretation with a clean slate
+    fun_def->scope->clearSymbols<CleanVariableDefinition>();
+    
+    return ret_expr;
 }

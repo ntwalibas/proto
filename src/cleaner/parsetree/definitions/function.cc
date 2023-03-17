@@ -69,29 +69,15 @@ FunctionDefinitionCleaner::cleanHeader(
     std::unique_ptr<CleanFunctionDefinition>& clean_fun
 )
 {
-    // Handle parameters:
-    // - Create parameters to be used during code generation
-    // - Generate incomplete variable definitions in the scope for interpretation
+    // Handle parameters
     for (auto const& parameter : function_def->getParameters()) {
         std::string clean_param_name = parameter->getToken().getLexeme();
-
-        // Variable declarations to be used during code generation
         clean_fun->parameters.push_back(
             VariableDeclarationCleaner(parameter.get()).clean()
         );
-
-        // Variable definitions to be used during interpretation
-        clean_fun->scope->addSymbol<CleanVariableDefinition>(
-            clean_param_name,
-            std::make_unique<CleanVariableDefinition>(
-                clean_param_name,
-                TypeDeclarationCleaner(parameter->getTypeDeclaration().get()).clean(),
-                nullptr
-            )
-        );
     }
 
-    // Generate a clean return type declaration
+    // Handle return type
     clean_fun->return_type = TypeDeclarationCleaner(
         function_def->getReturnType().get()
     ).clean();

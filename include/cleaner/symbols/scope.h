@@ -50,8 +50,7 @@ struct CleanScope
             var_defs.addSymbol(key, std::move(symbol));
         } else {
             throw std::invalid_argument(
-                std::string("Can only add function and variable definitions,") +
-                " and variable declarations to the scope."
+                "Can only add function and variable definitions this scope."
             );
         }
     }
@@ -69,8 +68,7 @@ struct CleanScope
             res = var_defs.hasSymbol(key);
         } else {
             throw std::invalid_argument(
-                std::string("Can only check if function and variable definitions,") +
-                " and variable declarations exists in the scope."
+                "Can only check if function and variable definitions exist in this scope."
             );
         }
 
@@ -93,15 +91,31 @@ struct CleanScope
                 return var_defs.getSymbol(key);
             } else {
                 throw std::invalid_argument(
-                    std::string("Can only get function and variable definitions,") +
-                    "and variable declarations from this scope."
+                    "Can only get function and variable definitions from this scope."
                 );
             }
         } catch (std::out_of_range const& e) {
             if (deep && parent)
                 return parent->getSymbol<T>(key, deep);
             
-            throw;
+            throw std::invalid_argument("Symbol `" + key + "` could not be found.");
+        }
+    }
+
+    /**
+     * Deletes all function or variable definitions in this scope.
+     */
+    template<typename T>
+    void clearSymbols()
+    {
+        if constexpr (std::is_same_v<T, CleanFunctionDefinition>) {
+            fun_defs.clearSymbols();
+        } else if constexpr (std::is_same_v<T, CleanVariableDefinition>) {
+            var_defs.clearSymbols();
+        } else {
+            throw std::invalid_argument(
+                "Can only delete function and variable definitions from this scope."
+            );
         }
     }
 

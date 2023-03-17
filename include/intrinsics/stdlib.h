@@ -15,26 +15,27 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_FUNCTION_DEFINITION_INTERPRETER_H
-#define PROTO_FUNCTION_DEFINITION_INTERPRETER_H
+#ifndef PROTO_INTRISINCS_STDLIB_H
+#define PROTO_INTRISINCS_STDLIB_H
 
 #include <memory>
-#include <vector>
+#include <string>
+#include <map>
 
-#include "cleaner/ast/expressions/expression.h"
-#include "cleaner/ast/definitions/function.h"
-#include "cleaner/symbols/scope.h"
+#include "parsetree/declarations/type.h"
 
 
-class FunctionDefinitionInterpreter
+class StdlibFunctionsSymtable
 {
     public:
-        /**
-         * Interprets the given function definition.
-         */
-        std::unique_ptr<CleanExpression> interpret(
-            CleanFunctionDefinition* fun_def,
-            std::vector<std::unique_ptr<CleanExpression>>& arguments);
+        StdlibFunctionsSymtable();
+
+        std::unique_ptr<TypeDeclaration>& getReturnType(std::string& function_mangled_name);
+
+        bool hasFunctionDefinition(std::string const& function_mangled_name);
+    
+    private:
+        std::map<std::string, std::unique_ptr<TypeDeclaration>> fun_return_types;
 };
 
 #endif

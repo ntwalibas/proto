@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "interpreter/ast/expressions/expression.h"
+#include "interpreter/ast/definitions/function.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/symbols/scope.h"
 
@@ -37,23 +38,47 @@ ExpressionInterpreter::interpret(CleanExpression* expr)
 {
     switch (expr->type) {
         case CleanExpressionType::Boolean: {
-            return interpretBool(static_cast<CleanBoolExpression*>(expr));
+            return interpretBool(
+                static_cast<CleanBoolExpression*>(expr)
+            );
         }
 
         case CleanExpressionType::SignedInt: {
-            return interpretSignedInt(static_cast<CleanSignedIntExpression*>(expr));
+            return interpretSignedInt(
+                static_cast<CleanSignedIntExpression*>(expr)
+            );
         }
 
         case CleanExpressionType::UnsignedInt: {
-            return interpretUnsignedInt(static_cast<CleanUnsignedIntExpression*>(expr));
+            return interpretUnsignedInt(
+                static_cast<CleanUnsignedIntExpression*>(expr)
+            );
         }
 
         case CleanExpressionType::Float: {
-            return interpretFloat(static_cast<CleanFloatExpression*>(expr));
+            return interpretFloat(
+                static_cast<CleanFloatExpression*>(expr)
+            );
         }
 
         case CleanExpressionType::String: {
-            return interpretString(static_cast<CleanStringExpression*>(expr));
+            return interpretString(
+                static_cast<CleanStringExpression*>(expr)
+            );
+        }
+
+        case CleanExpressionType::Call: {
+            return interpretCall(
+                static_cast<CleanCallExpression*>(expr),
+                scope
+            );
+        }
+
+        case CleanExpressionType::Intrinsic: {
+            return interpretIntrinsic(
+                static_cast<CleanIntrinsicExpression*>(expr),
+                scope
+            );
         }
 
         default:
@@ -110,4 +135,37 @@ ExpressionInterpreter::interpretString(
 )
 {
     return std::make_unique<CleanStringExpression>(string_expr);
+}
+
+// Call
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretCall(
+    CleanCallExpression* call_expr,
+    CleanScope* scope
+)
+{
+    // Construct new arguments from the call expression
+    // These should essentially amount to literals only
+    std::vector<std::unique_ptr<CleanExpression>> arguments;
+    for (auto& argument: call_expr->arguments)
+        arguments.push_back(interpret(argument.get()));
+
+    // Find the function in the scope and interpret it based on new arguments
+    std::unique_ptr<CleanFunctionDefinition>& fun_def =
+        scope->getSymbol<CleanFunctionDefinition>(call_expr->fun_name, true);
+    
+    return FunctionDefinitionInterpreter().interpret(
+        fun_def.get(),
+        arguments
+    );
+}
+
+// Intrinsic
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretIntrinsic(
+    CleanIntrinsicExpression* intr_expr,
+    CleanScope* scope
+)
+{
+    return intr_expr->callable(scope);
 }

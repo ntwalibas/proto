@@ -1,0 +1,13 @@
+cc_library(
+    name = "intrinsics",
+    srcs = glob([
+        "*.cc",
+        "stdlib/*.cc"
+    ]),
+    copts = ["-Iinclude"],
+    deps = [
+        "//include:include",
+        "//src/cleaner:cleaner",
+    ],
+    visibility = ["//visibility:public"],
+)

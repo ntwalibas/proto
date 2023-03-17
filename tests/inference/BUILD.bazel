@@ -6,11 +6,12 @@ cc_test(
     "@com_google_googletest//:gtest_main",
     "//include:include",
     "//src/common:common",
-    "//src/parsetree:parsetree",
     "//src/utils:utils",
     "//src/lexer:lexer",
     "//src/parser:parser",
     "//src/inference:inference",
+    "//src/parsetree:parsetree",
+    "//src/intrinsics:intrinsics",
   ],
   copts = ["-Iinclude"],
 )

@@ -21,6 +21,7 @@
 #include <memory>
 #include <string>
 
+#include "intrinsics/stdlib/stdio.h"
 #include "interpreter/interpreter.h"
 #include "cleaner/symbols/scope.h"
 #include "parsetree/program.h"
@@ -163,6 +164,10 @@ compile(std::string const& source_path)
      * In this PoC, we just invoke the interpreter.
      */
     {
+        // Register resident and standard functions
+        Stdio().load(scope.get());
+
+        // Run the interpreter and return the result of the program's main function
         Interpreter interpreter(scope.get());
         return interpreter.interpret();
     }

@@ -18,6 +18,7 @@
 #ifndef PROTO_AST_CLEAN_EXPRESSION_H
 #define PROTO_AST_CLEAN_EXPRESSION_H
 
+#include <functional>
 #include <cstdint>
 #include <utility>
 #include <memory>
@@ -25,6 +26,7 @@
 #include <string>
 
 #include "cleaner/ast/statements/statement.h"
+#include "cleaner/symbols/scope.forward.h"
 
 
 enum class CleanExpressionType {
@@ -37,7 +39,8 @@ enum class CleanExpressionType {
     Group,
     Call,
     TernaryIf,
-    Assignment
+    Assignment,
+    Intrinsic
 };
 
 struct CleanExpression : public CleanStatement
@@ -342,6 +345,21 @@ struct CleanAssignmentExpression : public CleanExpression
 
     std::unique_ptr<CleanExpression> lvalue;
     std::unique_ptr<CleanExpression> rvalue;
+};
+
+struct CleanIntrinsicExpression : public CleanExpression
+{
+    CleanIntrinsicExpression(
+        std::function<
+            std::unique_ptr<CleanExpression>(CleanScope* scope)
+        > callable
+    ) : CleanExpression(CleanExpressionType::Intrinsic),
+        callable(std::move(callable))
+    {}
+
+    std::function<
+        std::unique_ptr<CleanExpression>(CleanScope* scope)
+    > callable;
 };
 
 #endif

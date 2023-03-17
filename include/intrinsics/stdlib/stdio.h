@@ -15,26 +15,19 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_FUNCTION_DEFINITION_INTERPRETER_H
-#define PROTO_FUNCTION_DEFINITION_INTERPRETER_H
+#ifndef PROTO_INTRISINCS_STDLIB_STDIO_H
+#define PROTO_INTRISINCS_STDLIB_STDIO_H
 
-#include <memory>
-#include <vector>
-
-#include "cleaner/ast/expressions/expression.h"
-#include "cleaner/ast/definitions/function.h"
 #include "cleaner/symbols/scope.h"
 
 
-class FunctionDefinitionInterpreter
+class Stdio
 {
     public:
         /**
-         * Interprets the given function definition.
+         * Add all definitions in this library into the given scope.
          */
-        std::unique_ptr<CleanExpression> interpret(
-            CleanFunctionDefinition* fun_def,
-            std::vector<std::unique_ptr<CleanExpression>>& arguments);
+        void load(CleanScope* scope);
 };
 
 #endif

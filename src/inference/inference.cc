@@ -28,7 +28,6 @@
 #include "parsetree/expressions/assignment.h"
 #include "parsetree/expressions/ternaryif.h"
 #include "parsetree/declarations/variable.h"
-#include "inference/inference_error.h"
 #include "parsetree/definitions/variable.h"
 #include "parsetree/definitions/function.h"
 #include "parsetree/expressions/variable.h"
@@ -39,7 +38,9 @@
 #include "parsetree/declarations/type.h"
 #include "parsetree/expressions/call.h"
 #include "parsetree/expressions/cast.h"
+#include "inference/inference_error.h"
 #include "inference/inference.h"
+#include "intrinsics/stdlib.h"
 #include "symbols/symtable.h"
 #include "utils/inference.h"
 #include "symbols/scope.h"
@@ -245,33 +246,40 @@ Inference::inferCallType()
     }
     fun_name += ")";
 
-    if (! scope->hasDefinition(fun_name, true)) {
-        throw InferenceError(
-            call_expr->getToken(),
-            "no such function",
-            "no function with signature `" + fun_name + "` was defined",
-            false
+    // First check if this is not a stdlib function
+    try {
+        expr->setTypeDeclaration(
+            copy(StdlibFunctionsSymtable().getReturnType(fun_name))
+        );
+    } catch (std::out_of_range const& e) {
+        if (! scope->hasDefinition(fun_name, true)) {
+            throw InferenceError(
+                call_expr->getToken(),
+                "no such function",
+                "no function with signature `" + fun_name + "` was defined",
+                false
+            );
+        }
+
+        std::unique_ptr<Definition>& def = scope->getDefinition(
+            fun_name,
+            true
+        );
+
+        if (def->getType() != DefinitionType::Function) {
+            throw InferenceError(
+                call_expr->getToken(),
+                "function called but not defined",
+                "no function with name `" + call_expr->getToken().getLexeme() + "` was defined",
+                false
+            );
+        }
+
+        FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
+        expr->setTypeDeclaration(
+            copy(fun_def->getReturnType())
         );
     }
-
-    std::unique_ptr<Definition>& def = scope->getDefinition(
-        fun_name,
-        true
-    );
-
-    if (def->getType() != DefinitionType::Function) {
-        throw InferenceError(
-            call_expr->getToken(),
-            "function called but not defined",
-            "no function with name `" + call_expr->getToken().getLexeme() + "` was defined",
-            false
-        );
-    }
-
-    FunctionDefinition* fun_def = static_cast<FunctionDefinition*>(def.get());
-    expr->setTypeDeclaration(
-        copy(fun_def->getReturnType())
-    );
 
     // Set the function name on the call expression so we don't have to recompute this
     call_expr->setFunctionName(fun_name);

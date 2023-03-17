@@ -8,6 +8,7 @@ cc_binary(
         "//src/parser:parser",
         "//src/checker:checker",
         "//src/cleaner:cleaner",
+        "//src/intrinsics:intrinsics",
         "//src/interpreter:interpreter",
     ],
     copts = ["-Iinclude"],

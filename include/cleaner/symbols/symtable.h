@@ -57,6 +57,14 @@ struct CleanSymtable
         return symbols.at(key);
     }
 
+    /**
+     * Deletes all symbols from this symtable
+     */
+    void clearSymbols()
+    {
+        symbols.clear();
+    }
+
     std::map<std::string, T> symbols;       
 };
 

@@ -38,8 +38,10 @@ Interpreter::interpret()
     std::unique_ptr<CleanFunctionDefinition>& main_fun =
         scope->getSymbol<CleanFunctionDefinition>("main()");
     
+    std::vector<std::unique_ptr<CleanExpression>> args{};
+    
     std::unique_ptr<CleanExpression> ret_expr =
-        FunctionDefinitionInterpreter().interpret(main_fun.get());
+        FunctionDefinitionInterpreter().interpret(main_fun.get(), args);
 
     if (ret_expr && ret_expr->type == CleanExpressionType::SignedInt) {
         CleanSignedIntExpression* int_expr =

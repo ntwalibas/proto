@@ -8,6 +8,7 @@
 #include "cleaner/ast/expressions/expression.h"
 #include "interpreter/interpreter.h"
 #include "cleaner/symbols/scope.h"
+#include "parsetree/program.h"
 #include "cleaner/cleaner.h"
 #include "checker/checker.h"
 #include "parser/parser.h"
@@ -112,4 +113,22 @@ TEST_F(ExpressionInterpreterTest, interpretLiteralTest) {
             static_cast<CleanStringExpression*>(i_clean_expr.get());
         EXPECT_EQ(string_expr->value, "Hello World!");
     }
+}
+
+TEST_F(ExpressionInterpreterTest, interpretCallTest) {
+    std::string source =
+        "twelve: function()->int{\n"
+        "   return 12\n"
+        "}\n"
+        "main: function()->int{\n"
+        "   return twelve()\n"
+        "}\n";
+    Lexer lexer(std::make_shared<std::string>(source), source_path);
+    Parser parser(lexer);
+    Program program = parser.parseProgram();
+    Checker checker(program);
+    checker.check();
+    Cleaner cleaner(program);
+    clean_scope = cleaner.clean();
+    EXPECT_EQ(Interpreter(clean_scope.get()).interpret(), 12);
 }

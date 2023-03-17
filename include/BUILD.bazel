@@ -30,6 +30,8 @@ cc_library(
         "cleaner/parsetree/statements/*.h",
         "cleaner/parsetree/expressions/*.h",
         "cleaner/symbols/*.h",
+        "intrinsics/*.h",
+        "intrinsics/stdlib/*.h",
         "interpreter/*.h",
         "interpreter/ast/definitions/*.h",
         "interpreter/ast/statements/*.h",
