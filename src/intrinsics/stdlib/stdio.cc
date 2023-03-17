@@ -28,54 +28,9 @@
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/declarations/variable.h"
 #include "cleaner/ast/definitions/function.h"
-#include "cleaner/ast/declarations/type.h"
 #include "intrinsics/stdlib/stdio.h"
 #include "cleaner/symbols/scope.h"
-
-
-static std::unique_ptr<CleanFunctionDefinition> printGenerator(
-    std::string const& name,
-    std::map<std::string, std::string>& params,
-    std::string const& ret_type,
-    std::function<std::unique_ptr<CleanExpression>(CleanScope*)> callable
-)
-{
-    std::shared_ptr<CleanScope> print_scope =
-        std::make_shared<CleanScope>(nullptr);
-    
-    std::unique_ptr<CleanFunctionDefinition> print_fun =
-        std::make_unique<CleanFunctionDefinition>(
-            name,
-            print_scope
-        );
-    
-    // Header
-    for (auto&& [name, type]: params) {
-        std::unique_ptr<CleanVariableDeclaration> print_param =
-            std::make_unique<CleanVariableDeclaration>(
-                name,
-                std::make_unique<CleanSimpleTypeDeclaration>(true, type)
-            );
-        print_fun->parameters.push_back(std::move(print_param));
-    }
-
-    print_fun->return_type = std::make_unique<CleanSimpleTypeDeclaration>(
-        true,
-        ret_type
-    );
-
-    // Body
-    std::shared_ptr<CleanScope> body_scope =
-        std::make_shared<CleanScope>(print_scope);
-    std::unique_ptr<CleanBlockStatement> body =
-        std::make_unique<CleanBlockStatement>(body_scope);
-    body->statements.push_back(
-        std::make_unique<CleanIntrinsicExpression>(callable)
-    );
-    print_fun->body = std::move(body);
-
-    return print_fun;
-}
+#include "utils/intrinsics.h"
 
 // Print booleans
 static std::unique_ptr<CleanFunctionDefinition> printBool(bool newline)
@@ -84,7 +39,7 @@ static std::unique_ptr<CleanFunctionDefinition> printBool(bool newline)
         {"__param__", "bool"}
     };
 
-    return printGenerator(
+    return intrinsicGenerator(
         "println(bool)",
         params,
         "void",
@@ -109,7 +64,7 @@ static std::unique_ptr<CleanFunctionDefinition> printInt(bool newline)
         {"__param__", "int"}
     };
 
-    return printGenerator(
+    return intrinsicGenerator(
         "print(int)",
         params,
         "void",
@@ -134,7 +89,7 @@ static std::unique_ptr<CleanFunctionDefinition> printUint(bool newline)
         {"__param__", "uint"}
     };
 
-    return printGenerator(
+    return intrinsicGenerator(
         "println(uint)",
         params,
         "void",
@@ -159,7 +114,7 @@ static std::unique_ptr<CleanFunctionDefinition> printFloat(bool newline)
         {"__param__", "float"}
     };
 
-    return printGenerator(
+    return intrinsicGenerator(
         "println(float)",
         params,
         "void",
@@ -184,7 +139,7 @@ static std::unique_ptr<CleanFunctionDefinition> printString(bool newline)
         {"__param__", "string"}
     };
 
-    return printGenerator(
+    return intrinsicGenerator(
         "println(string)",
         params,
         "void",

@@ -21,6 +21,7 @@
 #include <memory>
 #include <string>
 
+#include "intrinsics/reslib/resint.h"
 #include "intrinsics/stdlib/stdio.h"
 #include "interpreter/interpreter.h"
 #include "cleaner/symbols/scope.h"
@@ -165,6 +166,7 @@ compile(std::string const& source_path)
      */
     {
         // Register resident and standard functions
+        Resint().load(scope.get());
         Stdio().load(scope.get());
 
         // Run the interpreter and return the result of the program's main function

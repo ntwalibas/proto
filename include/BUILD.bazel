@@ -31,6 +31,7 @@ cc_library(
         "cleaner/parsetree/expressions/*.h",
         "cleaner/symbols/*.h",
         "intrinsics/*.h",
+        "intrinsics/reslib/*.h",
         "intrinsics/stdlib/*.h",
         "interpreter/*.h",
         "interpreter/ast/definitions/*.h",

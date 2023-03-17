@@ -2,6 +2,7 @@ cc_library(
     name = "intrinsics",
     srcs = glob([
         "*.cc",
+        "reslib/*.cc",
         "stdlib/*.cc"
     ]),
     copts = ["-Iinclude"],

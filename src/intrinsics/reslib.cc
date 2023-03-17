@@ -37,7 +37,7 @@ ReslibFunctionsSymtable::ReslibFunctionsSymtable()
     fun_return_types["__neg__(int)"]            =
         createSimpleTypeDeclaration(false,"int");
     fun_return_types["__neg__(uint)"]           =
-        createSimpleTypeDeclaration(false,"int");
+        createSimpleTypeDeclaration(false,"uint");
     fun_return_types["__neg__(float)"]          =
         createSimpleTypeDeclaration(false,"float");
     // Bitwise not
