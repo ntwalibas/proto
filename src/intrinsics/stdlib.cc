@@ -25,12 +25,44 @@
 
 StdlibFunctionsSymtable::StdlibFunctionsSymtable()
 {
+    // Print booleans without newline
+    fun_return_types["print(bool)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print booleans with newline
+    fun_return_types["println(bool)"]  =
+        createSimpleTypeDeclaration(false,"void");
+
     // Print signed int without newline
-    fun_return_types["print(int)"]            =
+    fun_return_types["print(int)"] =
         createSimpleTypeDeclaration(false,"void");
 
     // Print signed int with newline
-    fun_return_types["println(int)"]            =
+    fun_return_types["println(int)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print unsigned int without newline
+    fun_return_types["print(uint)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print unsigned int with newline
+    fun_return_types["println(uint)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print float without newline
+    fun_return_types["print(float)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print float with newline
+    fun_return_types["println(float)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print string without newline
+    fun_return_types["print(string)"] =
+        createSimpleTypeDeclaration(false,"void");
+
+    // Print string with newline
+    fun_return_types["println(string)"] =
         createSimpleTypeDeclaration(false,"void");
 }
 
