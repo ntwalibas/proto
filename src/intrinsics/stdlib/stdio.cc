@@ -78,8 +78,8 @@ static std::unique_ptr<CleanFunctionDefinition> printGenerator(
     return print_fun;
 }
 
-// Print booleans without newline
-static std::unique_ptr<CleanFunctionDefinition> printBool()
+// Print booleans
+static std::unique_ptr<CleanFunctionDefinition> printBool(bool newline)
 {
     std::map<std::string, std::string> params{
         {"__param__", "bool"}
@@ -89,41 +89,22 @@ static std::unique_ptr<CleanFunctionDefinition> printBool()
         "println(bool)",
         params,
         "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+        [newline](CleanScope* scope)->std::unique_ptr<CleanExpression> {
             CleanBoolExpression* bool_expr = static_cast<CleanBoolExpression*>(
                 scope->getSymbol<CleanVariableDefinition>("__param__", true)
                     ->initializer.get()
             );
-            printf("%s", bool_expr->value ? "true" : "false");
+            if (newline)
+                printf("%s\n", bool_expr->value ? "true" : "false");
+            else
+                printf("%s", bool_expr->value ? "true" : "false");
             return nullptr;
         }
     );
 }
 
-// Print booleans with newline
-static std::unique_ptr<CleanFunctionDefinition> printlnBool()
-{
-    std::map<std::string, std::string> params{
-        {"__param__", "bool"}
-    };
-
-    return printGenerator(
-        "println(bool)",
-        params,
-        "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
-            CleanBoolExpression* bool_expr = static_cast<CleanBoolExpression*>(
-                scope->getSymbol<CleanVariableDefinition>("__param__", true)
-                    ->initializer.get()
-            );
-            printf("%s\n", bool_expr->value ? "true" : "false");
-            return nullptr;
-        }
-    );
-}
-
-// Print signed int without newline
-static std::unique_ptr<CleanFunctionDefinition> printInt()
+// Print signed int
+static std::unique_ptr<CleanFunctionDefinition> printInt(bool newline)
 {
     std::map<std::string, std::string> params{
         {"__param__", "int"}
@@ -133,41 +114,22 @@ static std::unique_ptr<CleanFunctionDefinition> printInt()
         "print(int)",
         params,
         "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+        [newline](CleanScope* scope)->std::unique_ptr<CleanExpression> {
             CleanSignedIntExpression* int_expr = static_cast<CleanSignedIntExpression*>(
                 scope->getSymbol<CleanVariableDefinition>("__param__", true)
                         ->initializer.get()
             );
-            printf("%" PRIi64, int_expr->value);
+            if (newline)
+                printf("%" PRIi64 "\n", int_expr->value);
+            else
+                printf("%" PRIi64, int_expr->value);
             return nullptr;
         }
     );
 }
 
-// Print signed int with newline
-static std::unique_ptr<CleanFunctionDefinition> printlnInt()
-{
-    std::map<std::string, std::string> params{
-        {"__param__", "int"}
-    };
-
-    return printGenerator(
-        "println(int)",
-        params,
-        "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
-            CleanSignedIntExpression* int_expr = static_cast<CleanSignedIntExpression*>(
-                scope->getSymbol<CleanVariableDefinition>("__param__", true)
-                        ->initializer.get()
-            );
-            printf("%" PRIi64 "\n", int_expr->value);
-            return nullptr;
-        }
-    );
-}
-
-// Print unsigned int without newline
-static std::unique_ptr<CleanFunctionDefinition> printUint()
+// Print unsigned int
+static std::unique_ptr<CleanFunctionDefinition> printUint(bool newline)
 {
     std::map<std::string, std::string> params{
         {"__param__", "uint"}
@@ -177,41 +139,22 @@ static std::unique_ptr<CleanFunctionDefinition> printUint()
         "println(uint)",
         params,
         "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+        [newline](CleanScope* scope)->std::unique_ptr<CleanExpression> {
             CleanUnsignedIntExpression* uint_expr = static_cast<CleanUnsignedIntExpression*>(
                 scope->getSymbol<CleanVariableDefinition>("__param__", true)
                     ->initializer.get()
             );
-            printf("%" PRIu64, uint_expr->value);
+            if (newline)
+                printf("%" PRIu64 "\n", uint_expr->value);
+            else
+                printf("%" PRIu64, uint_expr->value);
             return nullptr;
         }
     );
 }
 
-// Print unsigned int with newline
-static std::unique_ptr<CleanFunctionDefinition> printlnUint()
-{
-    std::map<std::string, std::string> params{
-        {"__param__", "uint"}
-    };
-
-    return printGenerator(
-        "println(uint)",
-        params,
-        "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
-            CleanUnsignedIntExpression* uint_expr = static_cast<CleanUnsignedIntExpression*>(
-                scope->getSymbol<CleanVariableDefinition>("__param__", true)
-                    ->initializer.get()
-            );
-            printf("%" PRIu64 "\n", uint_expr->value);
-            return nullptr;
-        }
-    );
-}
-
-// Print float without newline
-static std::unique_ptr<CleanFunctionDefinition> printFloat()
+// Print float
+static std::unique_ptr<CleanFunctionDefinition> printFloat(bool newline)
 {
     std::map<std::string, std::string> params{
         {"__param__", "float"}
@@ -221,41 +164,22 @@ static std::unique_ptr<CleanFunctionDefinition> printFloat()
         "println(float)",
         params,
         "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+        [newline](CleanScope* scope)->std::unique_ptr<CleanExpression> {
             CleanFloatExpression* float_expr = static_cast<CleanFloatExpression*>(
                 scope->getSymbol<CleanVariableDefinition>("__param__", true)
                     ->initializer.get()
             );
-            printf("%f", float_expr->value);
+            if (newline)
+                printf("%f\n",float_expr->value);
+            else
+                printf("%f",float_expr->value);
             return nullptr;
         }
     );
 }
 
-// Print float with newline
-static std::unique_ptr<CleanFunctionDefinition> printlnFloat()
-{
-    std::map<std::string, std::string> params{
-        {"__param__", "float"}
-    };
-
-    return printGenerator(
-        "println(float)",
-        params,
-        "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
-            CleanFloatExpression* float_expr = static_cast<CleanFloatExpression*>(
-                scope->getSymbol<CleanVariableDefinition>("__param__", true)
-                    ->initializer.get()
-            );
-            printf("%f\n", float_expr->value);
-            return nullptr;
-        }
-    );
-}
-
-// Print string without newline
-static std::unique_ptr<CleanFunctionDefinition> printString()
+// Print string
+static std::unique_ptr<CleanFunctionDefinition> printString(bool newline)
 {
     std::map<std::string, std::string> params{
         {"__param__", "string"}
@@ -265,34 +189,15 @@ static std::unique_ptr<CleanFunctionDefinition> printString()
         "println(string)",
         params,
         "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+        [newline](CleanScope* scope)->std::unique_ptr<CleanExpression> {
             CleanStringExpression* string_expr = static_cast<CleanStringExpression*>(
                 scope->getSymbol<CleanVariableDefinition>("__param__", true)
                     ->initializer.get()
             );
-            printf("%s", string_expr->value.c_str());
-            return nullptr;
-        }
-    );
-}
-
-// Print string with newline
-static std::unique_ptr<CleanFunctionDefinition> printlnString()
-{
-    std::map<std::string, std::string> params{
-        {"__param__", "string"}
-    };
-
-    return printGenerator(
-        "println(string)",
-        params,
-        "void",
-        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
-            CleanStringExpression* string_expr = static_cast<CleanStringExpression*>(
-                scope->getSymbol<CleanVariableDefinition>("__param__", true)
-                    ->initializer.get()
-            );
-            printf("%s\n", string_expr->value.c_str());
+            if (newline)
+                printf("%s\n", string_expr->value.c_str());
+            else
+                printf("%s", string_expr->value.c_str());
             return nullptr;
         }
     );
@@ -306,42 +211,42 @@ Stdio::load(CleanScope* scope)
 {
     scope->addSymbol<CleanFunctionDefinition>(
         "print(bool)",
-        printBool()
+        printBool(false)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "println(bool)",
-        printlnBool()
+        printBool(true)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "print(int)",
-        printInt()
+        printInt(false)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "println(int)",
-        printlnInt()
+        printInt(true)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "print(uint)",
-        printUint()
+        printUint(false)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "println(uint)",
-        printlnUint()
+        printUint(true)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "print(float)",
-        printFloat()
+        printFloat(false)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "println(float)",
-        printlnFloat()
+        printFloat(true)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "print(string)",
-        printString()
+        printString(false)
     );
     scope->addSymbol<CleanFunctionDefinition>(
         "println(string)",
-        printlnString()
+        printString(true)
     );
 }
