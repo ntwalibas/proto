@@ -15,24 +15,23 @@
  *  limitations under the License.
  */
 
-#ifndef PROTO_VARIABLE_DEFINITION_INTERPRETER_H
-#define PROTO_VARIABLE_DEFINITION_INTERPRETER_H
-
 #include <memory>
 
+#include "interpreter/ast/expressions/expression.h"
+#include "interpreter/ast/definitions/variable.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/definitions/variable.h"
 #include "cleaner/symbols/scope.h"
 
 
-class VariableDefinitionInterpreter
+/**
+ * Interprets the given variable definition.
+ */
+std::unique_ptr<CleanExpression>
+VariableDefinitionInterpreter::interpret(
+    CleanVariableDefinition* var_def,
+    CleanScope* scope
+)
 {
-    public:
-        /**
-         * Interprets the given variable definition.
-         */
-        std::unique_ptr<CleanExpression> interpret(
-            CleanVariableDefinition* var_def, CleanScope* scope);
-};
-
-#endif
+    return ExpressionInterpreter(scope).interpret(var_def->initializer.get());
+}

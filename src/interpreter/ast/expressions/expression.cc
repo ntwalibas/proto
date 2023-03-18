@@ -21,6 +21,7 @@
 
 #include "interpreter/ast/expressions/expression.h"
 #include "interpreter/ast/definitions/function.h"
+#include "interpreter/ast/definitions/variable.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/symbols/scope.h"
 
@@ -67,10 +68,15 @@ ExpressionInterpreter::interpret(CleanExpression* expr)
             );
         }
 
+        case CleanExpressionType::Variable: {
+            return interpretVariable(
+                static_cast<CleanVariableExpression*>(expr)
+            );
+        }
+
         case CleanExpressionType::Call: {
             return interpretCall(
-                static_cast<CleanCallExpression*>(expr),
-                scope
+                static_cast<CleanCallExpression*>(expr)
             );
         }
 
@@ -137,11 +143,25 @@ ExpressionInterpreter::interpretString(
     return std::make_unique<CleanStringExpression>(string_expr);
 }
 
+// Variable
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretVariable(
+    CleanVariableExpression* var_expr
+)
+{
+    std::unique_ptr<CleanVariableDefinition>& var_def =
+        scope->getSymbol<CleanVariableDefinition>(var_expr->var_name, true);
+    
+    return VariableDefinitionInterpreter().interpret(
+        var_def.get(),
+        scope
+    );
+}
+
 // Call
 std::unique_ptr<CleanExpression>
 ExpressionInterpreter::interpretCall(
-    CleanCallExpression* call_expr,
-    CleanScope* scope
+    CleanCallExpression* call_expr
 )
 {
     // Construct new arguments from the call expression
