@@ -92,6 +92,12 @@ ExpressionInterpreter::interpret(CleanExpression* expr)
             );
         }
 
+        case CleanExpressionType::Assignment: {
+            return interpretAssignment(
+                static_cast<CleanAssignmentExpression*>(expr)
+            );
+        }
+
         case CleanExpressionType::Intrinsic: {
             return interpretIntrinsic(
                 static_cast<CleanIntrinsicExpression*>(expr),
@@ -215,6 +221,39 @@ ExpressionInterpreter::interpretTernaryIf(
         return interpret(ternif_expr->then_branch.get());
     else
         return interpret(ternif_expr->else_branch.get());
+}
+
+// Assignment
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretAssignment(
+    CleanAssignmentExpression* assign_expr
+)
+{
+    CleanVariableExpression* lvalue_expr =
+        static_cast<CleanVariableExpression*>(assign_expr->lvalue.get());
+
+    // Pull the variable definition to update
+    std::unique_ptr<CleanVariableDefinition>& var_def =
+        scope->getSymbol<CleanVariableDefinition>(lvalue_expr->var_name, true);
+
+    // If the rvalue is the same variable on the lvalue,
+    // we just return the content of the corresponding variable definition
+    bool interpret_rvalue = true;
+    if (assign_expr->rvalue->type == CleanExpressionType::Variable) {
+        CleanVariableExpression* rvalue_expr =
+            static_cast<CleanVariableExpression*>(assign_expr->rvalue.get());
+        if (lvalue_expr->var_name == rvalue_expr->var_name)
+            interpret_rvalue = false;
+    }
+
+    // Update the variable definition initializer
+    if (interpret_rvalue)
+        var_def->initializer = interpret(assign_expr->rvalue.get());
+    
+    return VariableDefinitionInterpreter().interpret(
+        var_def.get(),
+        scope
+    );
 }
 
 // Intrinsic

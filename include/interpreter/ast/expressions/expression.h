@@ -69,6 +69,10 @@ class ExpressionInterpreter
         std::unique_ptr<CleanExpression> interpretTernaryIf(
             CleanTernaryIfExpression* ternif_expr);
         
+        // Assignment
+        std::unique_ptr<CleanExpression> interpretAssignment(
+            CleanAssignmentExpression* assign_expr);
+        
         // Intrinsic
         std::unique_ptr<CleanExpression> interpretIntrinsic(
             CleanIntrinsicExpression* intr_expr,
