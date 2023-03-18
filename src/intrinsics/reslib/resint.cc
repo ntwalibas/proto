@@ -81,6 +81,59 @@ static std::unique_ptr<CleanFunctionDefinition> neg()
     );
 }
 
+// bitwise not
+static std::unique_ptr<CleanFunctionDefinition> bnot()
+{
+    std::map<std::string, std::string> params{
+        {"__param__", "int"}
+    };
+
+    return intrinsicGenerator(
+        "__bnot__(int)",
+        params,
+        "void",
+        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+            CleanSignedIntExpression* int_expr = static_cast<CleanSignedIntExpression*>(
+                scope->getSymbol<CleanVariableDefinition>("__param__", true)
+                    ->initializer.get()
+            );
+            
+            return std::make_unique<CleanSignedIntExpression>(
+                ~int_expr->value
+            );
+        }
+    );
+}
+
+// bitwise not
+static std::unique_ptr<CleanFunctionDefinition> add()
+{
+    std::map<std::string, std::string> params{
+        {"__param1__", "int"},
+        {"__param2__", "int"},
+    };
+
+    return intrinsicGenerator(
+        "__add__(int,int)",
+        params,
+        "void",
+        [](CleanScope* scope)->std::unique_ptr<CleanExpression> {
+            CleanSignedIntExpression* int_expr_1 = static_cast<CleanSignedIntExpression*>(
+                scope->getSymbol<CleanVariableDefinition>("__param1__", true)
+                    ->initializer.get()
+            );
+            CleanSignedIntExpression* int_expr_2 = static_cast<CleanSignedIntExpression*>(
+                scope->getSymbol<CleanVariableDefinition>("__param2__", true)
+                    ->initializer.get()
+            );
+            
+            return std::make_unique<CleanSignedIntExpression>(
+                int_expr_1->value + int_expr_2->value
+            );
+        }
+    );
+}
+
 /**
  * Add all definitions in this library into the program.
  */
@@ -94,5 +147,13 @@ Resint::load(CleanScope* scope)
     scope->addSymbol<CleanFunctionDefinition>(
         "__neg__(int)",
         neg()
+    );
+    scope->addSymbol<CleanFunctionDefinition>(
+        "__bnot__(int)",
+        bnot()
+    );
+    scope->addSymbol<CleanFunctionDefinition>(
+        "__add__(int,int)",
+        add()
     );
 }
