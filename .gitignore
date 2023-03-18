@@ -2,5 +2,6 @@ bazel-*
 Process.pro
 main.pro
 simple.pro
+test.pro
 VERSION
 .DS_Store
