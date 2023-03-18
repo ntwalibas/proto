@@ -20,6 +20,8 @@
 #include <memory>
 #include <string>
 
+#include <iostream>
+
 #include "checker/parsetree/expressions/expression.h"
 #include "checker/parsetree/declarations/type.h"
 #include "parsetree/expressions/expression.h"
@@ -28,8 +30,12 @@
 #include "parsetree/expressions/ternaryif.h"
 #include "parsetree/definitions/variable.h"
 #include "parsetree/expressions/variable.h"
+#include "parsetree/expressions/binary.h"
+#include "parsetree/expressions/unary.h"
+#include "parsetree/expressions/group.h"
 #include "parsetree/declarations/type.h"
 #include "parsetree/expressions/cast.h"
+#include "parsetree/expressions/call.h"
 #include "inference/inference_error.h"
 #include "checker/checker_error.h"
 #include "inference/inference.h"
@@ -38,10 +44,8 @@
 
 
 ExpressionChecker::ExpressionChecker(
-    Expression* expr,
     std::shared_ptr<Scope> const& scope
-) : expr(expr),
-    scope(scope)
+) : scope(scope)
 {}
 
 
@@ -49,35 +53,37 @@ ExpressionChecker::ExpressionChecker(
  * Checks that any given expression obeys the language semantics
  */
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::check()
+ExpressionChecker::check(Expression* expr)
 {
     switch (expr->getType()) {
         case ExpressionType::Literal:
-            return checkLiteral();
+            return checkLiteral(expr);
 
         case ExpressionType::Cast:
-            return checkCast();
+            return checkCast(expr);
 
         case ExpressionType::Variable:
-            return checkVariable();
+            return checkVariable(expr);
 
         case ExpressionType::Group:
-            return checkGroup();
+            return checkGroup(expr);
 
         case ExpressionType::Call:
-            return checkCall();
+            return checkCall(expr);
 
         case ExpressionType::Unary:
-            return checkUnary();
+            return checkUnary(expr);
 
         case ExpressionType::Binary:
-            return checkBinary();
+            return checkBinary(expr);
 
-        case ExpressionType::TernaryIf:
-            return checkTernaryIf();
+        case ExpressionType::TernaryIf: {
+            std::cout << "Checking ternary" << std::endl;
+            return checkTernaryIf(expr);
+        }
 
         case ExpressionType::Assignment:
-            return checkAssignment();
+            return checkAssignment(expr);
 
         default:
             throw std::invalid_argument("Given expression cannot currently be checked.");
@@ -86,7 +92,7 @@ ExpressionChecker::check()
 
 // Literals
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkLiteral()
+ExpressionChecker::checkLiteral(Expression* expr)
 {
     try {
         return Inference(expr, scope).infer();
@@ -102,7 +108,7 @@ ExpressionChecker::checkLiteral()
 
 // Cast
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkCast()
+ExpressionChecker::checkCast(Expression* expr)
 {
     CastExpression* cast_expr = static_cast<CastExpression*>(expr);
 
@@ -111,7 +117,7 @@ ExpressionChecker::checkCast()
 
     // Make sure the expression to cast is valid
     std::unique_ptr<TypeDeclaration>& expr_type_decl =
-        ExpressionChecker(cast_expr->getExpression().get(), scope).check();
+        check(cast_expr->getExpression().get());
     
     // Make sure there is a function that can perform the cast
     std::string dest_type_name = cast_expr->getTypeDeclaration()->getTypeName();
@@ -141,7 +147,7 @@ ExpressionChecker::checkCast()
 
 // Variable
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkVariable()
+ExpressionChecker::checkVariable(Expression* expr)
 {
     try {
         return Inference(expr, scope).infer();
@@ -157,8 +163,12 @@ ExpressionChecker::checkVariable()
 
 // Group
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkGroup()
+ExpressionChecker::checkGroup(Expression* expr)
 {
+    GroupExpression* gr_expr =
+        static_cast<GroupExpression*>(expr);
+
+    check(gr_expr->getExpression().get());
     try {
         return Inference(expr, scope).infer();
     } catch(InferenceError& e) {
@@ -173,8 +183,13 @@ ExpressionChecker::checkGroup()
 
 // Call
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkCall()
+ExpressionChecker::checkCall(Expression* expr)
 {
+    CallExpression* call_expr =
+        static_cast<CallExpression*>(expr);
+    for (auto& argument: call_expr->getArguments())
+        check(argument.get());
+
     try {
         return Inference(expr, scope).infer();
     } catch(InferenceError& e) {
@@ -189,8 +204,12 @@ ExpressionChecker::checkCall()
 
 // Unary
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkUnary()
+ExpressionChecker::checkUnary(Expression* expr)
 {
+    UnaryExpression* un_expr =
+        static_cast<UnaryExpression*>(expr);
+    check(un_expr->getExpression().get());
+
     try {
         return Inference(expr, scope).infer();
     } catch(InferenceError& e) {
@@ -205,8 +224,13 @@ ExpressionChecker::checkUnary()
 
 // Binary
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkBinary()
+ExpressionChecker::checkBinary(Expression* expr)
 {
+    BinaryExpression* bin_expr =
+        static_cast<BinaryExpression*>(expr);
+    check(bin_expr->getLeft().get());
+    check(bin_expr->getRight().get());
+
     try {
         return Inference(expr, scope).infer();
     } catch(InferenceError& e) {
@@ -221,14 +245,15 @@ ExpressionChecker::checkBinary()
 
 // TernaryIf
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkTernaryIf()
+ExpressionChecker::checkTernaryIf(Expression* expr)
 {
-    TernaryIfExpression* ternif_expr = static_cast<TernaryIfExpression*>(expr);
+    TernaryIfExpression* ternif_expr =
+        static_cast<TernaryIfExpression*>(expr);
 
     // Make sure the condition is of type bool
     std::unique_ptr<Expression>& ternif_cond = ternif_expr->getCondition();
     std::unique_ptr<TypeDeclaration>& cond_type_decl =
-        ExpressionChecker(ternif_cond.get(), scope).check();
+        check(ternif_cond.get());
     if (cond_type_decl->getTypeName() != "bool") {
         throw CheckerError(
             ternif_cond->getToken(),
@@ -242,9 +267,9 @@ ExpressionChecker::checkTernaryIf()
     std::unique_ptr<Expression>& lval = ternif_expr->getLvalue();
     std::unique_ptr<Expression>& rval = ternif_expr->getRvalue();
     std::unique_ptr<TypeDeclaration>& lval_type_decl =
-        ExpressionChecker(lval.get(), scope).check();
+        check(lval.get());
     std::unique_ptr<TypeDeclaration>& rval_type_decl =
-        ExpressionChecker(rval.get(), scope).check();
+        check(rval.get());
     if (! typeDeclarationEquals(lval_type_decl, rval_type_decl)) {
         throw CheckerError(
             ternif_expr->getToken(),
@@ -269,13 +294,14 @@ ExpressionChecker::checkTernaryIf()
 
 // Assignment
 std::unique_ptr<TypeDeclaration>&
-ExpressionChecker::checkAssignment()
+ExpressionChecker::checkAssignment(Expression* expr)
 {
     AssignmentExpression* assign_expr =
         static_cast<AssignmentExpression*>(expr);
-    
-    // Make sure the LHS is a variable expression
     std::unique_ptr<Expression>& lval = assign_expr->getLvalue();
+    std::unique_ptr<Expression>& rval = assign_expr->getRvalue();
+
+    // Make sure the LHS is a variable expression
     if (lval->getType() != ExpressionType::Variable) {
         throw CheckerError(
             lval->getToken(),
@@ -284,6 +310,10 @@ ExpressionChecker::checkAssignment()
             false
         );
     }
+
+    // Check the lval and rval
+    std::unique_ptr<TypeDeclaration>& rval_type_decl =
+        check(rval.get());
 
     // Make sure that if the LHS exists, it is not const
     VariableExpression* var_expr = static_cast<VariableExpression*>(lval.get());
@@ -342,14 +372,10 @@ ExpressionChecker::checkAssignment()
     // Simple assignment: if LHS doesn't exist, create it
     else {
         try {
-            std::unique_ptr<TypeDeclaration>& rval_type_decl =
-                Inference(assign_expr->getRvalue().get(), scope).infer();
-            
             // If the LHS exists, make sure it has the same type as the RHS
             if (decl_found || def_found) {
                 std::unique_ptr<TypeDeclaration>& lval_type_decl =
-                    Inference(lval.get(), scope).infer();
-                
+                    check(lval.get());
                 if (! typeDeclarationEquals(rval_type_decl, lval_type_decl)) {
                     throw CheckerError(
                         assign_expr->getToken(),
@@ -363,8 +389,6 @@ ExpressionChecker::checkAssignment()
             // In case the LHS doesn't exist, we introduce a new definition in its name
             else {
                 Token var_token = lval->getToken();
-                std::unique_ptr<Expression>& rval = assign_expr->getRvalue();
-
                 assign_expr->setVariableDefinition(
                     std::make_unique<VariableDefinition>(
                         var_token,
@@ -372,7 +396,10 @@ ExpressionChecker::checkAssignment()
                         std::move(rval)
                     )
                 ); 
-                scope->addDefinition(var_token.getLexeme(), assign_expr->getVariableDefinition());
+                scope->addDefinition(
+                    var_token.getLexeme(),
+                    assign_expr->getVariableDefinition()
+                );
 
                 // Reset the assignment rvalue to point to itself
                 assign_expr->setRvalue(

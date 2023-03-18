@@ -118,7 +118,7 @@ TEST_F(ExpressionCleanerTest, cleanCastTest) {
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
-        ExpressionChecker(expr.get(), scope).checkCast();
+        ExpressionChecker(scope).checkCast(expr.get());
         std::unique_ptr<CleanExpression> clean_expr =
             ExpressionCleaner(clean_scope).clean(expr.get());
 
@@ -134,7 +134,7 @@ TEST_F(ExpressionCleanerTest, cleanCastTest) {
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
-        ExpressionChecker(expr.get(), scope).checkCast();
+        ExpressionChecker(scope).checkCast(expr.get());
         std::unique_ptr<CleanExpression> clean_expr =
             ExpressionCleaner(clean_scope).clean(expr.get());
 
@@ -195,7 +195,7 @@ TEST_F(ExpressionCleanerTest, cleanAssignmentTest) {
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
-        ExpressionChecker(expr.get(), scope).check();
+        ExpressionChecker(scope).check(expr.get());
         std::unique_ptr<CleanExpression> clean_expr =
             ExpressionCleaner(clean_scope).clean(expr.get());
         
@@ -214,7 +214,7 @@ TEST_F(ExpressionCleanerTest, cleanAssignmentTest) {
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Expression> expr = parser.parseExpression();
-        ExpressionChecker(expr.get(), scope).check();
+        ExpressionChecker(scope).check(expr.get());
         std::unique_ptr<CleanExpression> clean_expr =
             ExpressionCleaner(clean_scope).clean(expr.get());
         

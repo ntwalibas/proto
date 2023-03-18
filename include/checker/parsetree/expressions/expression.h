@@ -21,6 +21,15 @@
 #include <memory>
 
 #include "parsetree/expressions/expression.h"
+// #include "parsetree/expressions/assignment.h"
+// #include "parsetree/expressions/ternaryif.h"
+// #include "parsetree/expressions/variable.h"
+// #include "parsetree/expressions/literal.h"
+// #include "parsetree/expressions/binary.h"
+// #include "parsetree/expressions/unary.h"
+// #include "parsetree/expressions/group.h"
+// #include "parsetree/expressions/call.h"
+// #include "parsetree/expressions/cast.h"
 #include "parsetree/declarations/type.h"
 #include "symbols/scope.h"
 
@@ -29,45 +38,43 @@ class ExpressionChecker
 {
     public:
         ExpressionChecker(
-            Expression* expr,
             std::shared_ptr<Scope> const& scope
         );
         
         /**
          * Checks that any given expression obeys the language semantics
          */
-        std::unique_ptr<TypeDeclaration>& check();
+        std::unique_ptr<TypeDeclaration>& check(Expression* expr);
 
         // Literals
-        std::unique_ptr<TypeDeclaration>& checkLiteral();
+        std::unique_ptr<TypeDeclaration>& checkLiteral(Expression* expr);
 
         // Cast
-        std::unique_ptr<TypeDeclaration>& checkCast();
+        std::unique_ptr<TypeDeclaration>& checkCast(Expression* expr);
 
         // Variable
-        std::unique_ptr<TypeDeclaration>& checkVariable();
+        std::unique_ptr<TypeDeclaration>& checkVariable(Expression* expr);
 
         // Group
-        std::unique_ptr<TypeDeclaration>& checkGroup();
+        std::unique_ptr<TypeDeclaration>& checkGroup(Expression* expr);
 
         // Call
-        std::unique_ptr<TypeDeclaration>& checkCall();
+        std::unique_ptr<TypeDeclaration>& checkCall(Expression* expr);
 
         // Unary
-        std::unique_ptr<TypeDeclaration>& checkUnary();
+        std::unique_ptr<TypeDeclaration>& checkUnary(Expression* expr);
 
         // Binary
-        std::unique_ptr<TypeDeclaration>& checkBinary();
+        std::unique_ptr<TypeDeclaration>& checkBinary(Expression* expr);
 
         // Ternary
-        std::unique_ptr<TypeDeclaration>& checkTernaryIf();
+        std::unique_ptr<TypeDeclaration>& checkTernaryIf(Expression* expr);
 
         // Assignment
-        std::unique_ptr<TypeDeclaration>& checkAssignment();
+        std::unique_ptr<TypeDeclaration>& checkAssignment(Expression* expr);
 
     private:
-        Expression* expr;
-        std::shared_ptr<Scope> const& scope;
+        std::shared_ptr<Scope> scope;
 };
 
 #endif

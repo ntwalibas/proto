@@ -30,7 +30,7 @@ TEST_F(StatementCheckerTest, checkBlockTest)
 {
     // Valid block statement
     {
-        std::string source = "{count: int = 0:int\n count += 1:int\n}";
+        std::string source = "{count: int = 0\n count += 1\n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -101,7 +101,7 @@ TEST_F(StatementCheckerTest, checkForTest)
 {
     // Valid for loop without clauses
     {
-        std::string source = "for (;;) {count = 0:int\n}";
+        std::string source = "for (;;) {count = 0\n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();
@@ -127,7 +127,7 @@ TEST_F(StatementCheckerTest, checkForTest)
 
     // Valid for loop with initial clause and termination clause
     {
-        std::string source = "for (count = 0:int; count < 10:int;) {count += 1:int\n}";
+        std::string source = "for (count = 0; count < 10;) {count += 1\n}";
         Lexer lexer(std::make_shared<std::string>(source), source_path);
         Parser parser(lexer);
         std::unique_ptr<Statement> stmt = parser.parseStatement();

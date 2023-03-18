@@ -17,10 +17,10 @@
 
 #include <memory>
 
+#include "checker/parsetree/expressions/expression.h"
 #include "checker/parsetree/definitions/variable.h"
 #include "checker/parsetree/declarations/type.h"
 #include "parsetree/expressions/expression.h"
-#include "inference/inference_error.h"
 #include "parsetree/definitions/variable.h"
 #include "parsetree/declarations/type.h"
 #include "checker/checker_error.h"
@@ -121,14 +121,5 @@ VariableDefinitionChecker::checkBody()
         }
     }
 
-    try {
-        return Inference(var_init.get(), scope).infer();
-    } catch (InferenceError & e) {
-        throw CheckerError(
-            e.getToken(),
-            e.getPrimaryMessage(),
-            e.getSecondaryMessage(),
-            e.isFatal()
-        );
-    }
+    return ExpressionChecker(scope).check(var_init.get());
 }

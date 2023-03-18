@@ -162,7 +162,7 @@ StatementChecker::checkIf(
     // Validate the if branch
     std::unique_ptr<Expression>& if_cond = if_stmt->getCondition();
     std::unique_ptr<TypeDeclaration>& if_cond_type_decl =
-        ExpressionChecker(if_cond.get(), scope).check();
+        ExpressionChecker(scope).check(if_cond.get());
     if (if_cond_type_decl->getTypeName() != "bool") {
         throw CheckerError(
             if_cond->getToken(),
@@ -185,7 +185,7 @@ StatementChecker::checkIf(
     for (auto& branch : elif_branches) {
         std::unique_ptr<Expression>& branch_cond = branch->getCondition();
         std::unique_ptr<TypeDeclaration>& branch_cond_type_decl =
-            ExpressionChecker(branch_cond.get(), scope).check();
+            ExpressionChecker(scope).check(branch_cond.get());
         if (branch_cond_type_decl->getTypeName() != "bool") {
             throw CheckerError(
                 branch_cond->getToken(),
@@ -262,7 +262,7 @@ StatementChecker::checkFor(
                     true
                 );
             }
-            ExpressionChecker(expr_stmt, for_scope).check();
+            ExpressionChecker(for_scope).check(expr_stmt);
         }
         // Any other kind of definition is prohibited in the init clause
         else {
@@ -281,7 +281,7 @@ StatementChecker::checkFor(
     std::unique_ptr<Expression>& term_clause = for_stmt->getTermClause();
     if (term_clause != nullptr) {
         std::unique_ptr<TypeDeclaration>& term_type_decl =
-            ExpressionChecker(term_clause.get(), for_scope).check();
+            ExpressionChecker(for_scope).check(term_clause.get());
 
         if (term_type_decl->getTypeName() != "bool") {
             throw CheckerError(
@@ -297,7 +297,7 @@ StatementChecker::checkFor(
     // the only requirement is that it is a valid expression
     std::unique_ptr<Expression>& incr_clause = for_stmt->getIncrClause();
     if (incr_clause != nullptr) {
-        ExpressionChecker(incr_clause.get(), for_scope).check();
+        ExpressionChecker(for_scope).check(incr_clause.get());
     }
 
     // Last, validate the body
@@ -323,7 +323,7 @@ StatementChecker::checkWhile(
 {
     std::unique_ptr<Expression>& while_cond = while_stmt->getCondition();
     std::unique_ptr<TypeDeclaration>& while_cond_type_decl =
-        ExpressionChecker(while_cond.get(), scope).check();
+        ExpressionChecker(scope).check(while_cond.get());
     if (while_cond_type_decl->getTypeName() != "bool") {
         throw CheckerError(
             while_cond->getToken(),
@@ -410,7 +410,7 @@ StatementChecker::checkReturn(
     // If the return statement has an expression to return,
     // its type must match that of the function where this return is found
     std::unique_ptr<TypeDeclaration>& ret_type =
-        ExpressionChecker(ret_expr.get(), scope).check();
+        ExpressionChecker(scope).check(ret_expr.get());
     
     if (! typeDeclarationEquals(ret_type, ret_type_decl)) {
         throw CheckerError(
@@ -431,5 +431,5 @@ StatementChecker::checkExpression(
     std::shared_ptr<Scope> const& scope
 )
 {
-    ExpressionChecker(expression_stmt, scope).check();
+    ExpressionChecker(scope).check(expression_stmt);
 }
