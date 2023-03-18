@@ -298,13 +298,17 @@ ExpressionCleaner::cleanAssignment(
     Expression* rval_expr =
         static_cast<Expression*>(assign_expr->getRvalue().get());
     
-    // If we have an in-place assignment, we call the corresponding function
+    // If we have an in-place assignment, we make an assignment
+    // with the decayed-to function as rvalue
     if (assign_expr->getAssignmentType() != AssignmentType::Simple) {
         std::unique_ptr<CleanCallExpression> clean_call =
             std::make_unique<CleanCallExpression>(assign_expr->getFunctionName());
         clean_call->arguments.push_back(clean(lval_expr));
         clean_call->arguments.push_back(clean(rval_expr));
-        return clean_call;
+        return std::make_unique<CleanAssignmentExpression>(
+            clean(lval_expr),
+            std::move(clean_call)
+        );
     }
 
     // If we have a simple assignment,

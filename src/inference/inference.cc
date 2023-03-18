@@ -492,37 +492,37 @@ Inference::inferAssignmentType()
     std::string op_name;
     switch (assign_expr->getAssignmentType()) {
         case AssignmentType::Iadd:
-            op_name = "__iadd__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__add__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Isub:
-            op_name = "__isub__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__sub__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Imul:
-            op_name = "__imul__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__mul__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Idiv:
-            op_name = "__idiv__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__div__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Irem:
-            op_name = "__irem__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__rem__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Ipow:
-            op_name = "__ipow__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__pow__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Iand:
-            op_name = "__iand__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__and__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Ior:
-            op_name = "__ior__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__or__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Ixor:
-            op_name = "__ixor__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__xor__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Ilshift:
-            op_name = "__ilshift__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__lshift__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         case AssignmentType::Irshift:
-            op_name = "__irshift__(" + lval_type_name + "," + rval_type_name + ")";
+            op_name = "__rshift__(" + lval_type_name + "," + rval_type_name + ")";
             break;
         default:;
     }

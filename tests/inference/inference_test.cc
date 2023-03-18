@@ -312,7 +312,7 @@ TEST_F(InferenceTest, inferUnaryTypeTest) {
         EXPECT_EQ(expr_type->getTypeCategory(), TypeCategory::Simple);
         SimpleTypeDeclaration& type_decl =
             static_cast<SimpleTypeDeclaration&>(*expr_type);
-        EXPECT_EQ(type_decl.getTypeName(), "int");
+        EXPECT_EQ(type_decl.getTypeName(), "uint");
     }
 
     // Unary negative: signed int
