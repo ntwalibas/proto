@@ -66,6 +66,18 @@ StatementInterpreter::interpret(
             );
         }
 
+        case CleanStatementType::Break: {
+            return interpretBreak(
+                static_cast<CleanBreakStatement*>(stmt)
+            );
+        }
+
+        case CleanStatementType::Continue: {
+            return interpretContinue(
+                static_cast<CleanContinueStatement*>(stmt)
+            );
+        }
+
         case CleanStatementType::Return: {
             return interpretReturn(
                 static_cast<CleanReturnStatement*>(stmt), scope
