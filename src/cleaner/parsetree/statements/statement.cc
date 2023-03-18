@@ -180,21 +180,25 @@ StatementCleaner::cleanFor(
 
     std::unique_ptr<CleanExpression> clean_init = nullptr;
     std::unique_ptr<Definition>& init_clause = for_stmt->getInitClause();
+    std::unique_ptr<Expression>& term_clause = for_stmt->getTermClause();
+    std::unique_ptr<Expression>& incr_clause = for_stmt->getIncrClause();
 
-    if (init_clause->getType() == DefinitionType::Variable) {
+    if (init_clause && init_clause->getType() == DefinitionType::Variable) {
         VariableDefinition* var_def =
             static_cast<VariableDefinition*>(init_clause.get());
         VariableDefinitionCleaner(var_def, for_scope).clean();
     }
-    else if (init_clause->getType() == DefinitionType::Statement) {
+    else if (init_clause && init_clause->getType() == DefinitionType::Statement) {
         Expression* expr_def = static_cast<Expression*>(init_clause.get());
         clean_init = cleanExpression(expr_def, for_scope);
     }
 
     return std::make_unique<CleanForStatement>(
         std::move(clean_init),
-        cleanExpression(for_stmt->getTermClause().get(), for_scope),
-        cleanExpression(for_stmt->getIncrClause().get(), for_scope),
+        term_clause ? cleanExpression(term_clause.get(), for_scope)
+                    : nullptr,
+        incr_clause ? cleanExpression(incr_clause.get(), for_scope)
+                    : nullptr,
         cleanBlock(for_stmt->getBody().get(), for_scope),
         for_scope
     );
