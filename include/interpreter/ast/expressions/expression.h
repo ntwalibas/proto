@@ -57,9 +57,17 @@ class ExpressionInterpreter
         std::unique_ptr<CleanExpression> interpretVariable(
             CleanVariableExpression* var_expr);
 
+        // Group
+        std::unique_ptr<CleanExpression> interpretGroup(
+            CleanGroupExpression* gr_expr);
+
         // Call
         std::unique_ptr<CleanExpression> interpretCall(
             CleanCallExpression* call_expr);
+
+        // Ternary if
+        std::unique_ptr<CleanExpression> interpretTernaryIf(
+            CleanTernaryIfExpression* ternif_expr);
         
         // Intrinsic
         std::unique_ptr<CleanExpression> interpretIntrinsic(

@@ -68,6 +68,12 @@ ExpressionInterpreter::interpret(CleanExpression* expr)
             );
         }
 
+        case CleanExpressionType::Group: {
+            return interpretGroup(
+                static_cast<CleanGroupExpression*>(expr)
+            );
+        }
+
         case CleanExpressionType::Variable: {
             return interpretVariable(
                 static_cast<CleanVariableExpression*>(expr)
@@ -77,6 +83,12 @@ ExpressionInterpreter::interpret(CleanExpression* expr)
         case CleanExpressionType::Call: {
             return interpretCall(
                 static_cast<CleanCallExpression*>(expr)
+            );
+        }
+
+        case CleanExpressionType::TernaryIf: {
+            return interpretTernaryIf(
+                static_cast<CleanTernaryIfExpression*>(expr)
             );
         }
 
@@ -158,6 +170,15 @@ ExpressionInterpreter::interpretVariable(
     );
 }
 
+// Group
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretGroup(
+    CleanGroupExpression* gr_expr
+)
+{
+    return interpret(gr_expr->expression.get());
+}
+
 // Call
 std::unique_ptr<CleanExpression>
 ExpressionInterpreter::interpretCall(
@@ -178,6 +199,22 @@ ExpressionInterpreter::interpretCall(
         fun_def.get(),
         arguments
     );
+}
+
+// Ternary if
+std::unique_ptr<CleanExpression>
+ExpressionInterpreter::interpretTernaryIf(
+    CleanTernaryIfExpression* ternif_expr
+)
+{
+    std::unique_ptr<CleanExpression> eval_condition =
+        interpret(ternif_expr->condition.get());
+    CleanBoolExpression* bool_condition =
+        static_cast<CleanBoolExpression*>(eval_condition.get());
+    if (bool_condition->value == true)
+        return interpret(ternif_expr->then_branch.get());
+    else
+        return interpret(ternif_expr->else_branch.get());
 }
 
 // Intrinsic
