@@ -48,6 +48,12 @@ StatementInterpreter::interpret(
             );
         }
 
+        case CleanStatementType::If: {
+            return interpretIf(
+                static_cast<CleanIfStatement*>(stmt), scope
+            );
+        }
+
         case CleanStatementType::Return: {
             return interpretReturn(
                 static_cast<CleanReturnStatement*>(stmt), scope
@@ -86,6 +92,47 @@ StatementInterpreter::interpretBlock(
     }
 
     return nullptr;
+}
+
+// If
+std::unique_ptr<CleanExpression>
+StatementInterpreter::interpretIf(
+    CleanIfStatement* if_stmt,
+    CleanScope* scope
+)
+{
+    std::unique_ptr<CleanExpression> ret_expr = nullptr;
+
+    std::unique_ptr<CleanExpression> cond_expr =
+        interpret(if_stmt->condition.get(), scope);
+    CleanBoolExpression* cond_bool =
+        static_cast<CleanBoolExpression*>(cond_expr.get());
+
+    bool interpret_else = true;
+    if (cond_bool->value) {
+        interpret_else = false;
+        ret_expr = interpretBlock(if_stmt->body.get());
+    }
+    else {
+        for (auto& elif_branch: if_stmt->elif_branches) {
+            std::unique_ptr<CleanExpression> elif_cond_expr =
+                interpret(elif_branch->condition.get(), scope);
+            CleanBoolExpression* elif_cond_bool =
+                static_cast<CleanBoolExpression*>(elif_cond_expr.get());
+            
+            if (elif_cond_bool->value) {
+                interpret_else = false;
+                ret_expr = interpretBlock(elif_branch->body.get());
+                break;
+            }
+        }
+    }
+
+    // If the main branch and elif branches failed, interpret else branch
+    if (interpret_else && if_stmt->else_branch)
+        ret_expr = interpretBlock(if_stmt->else_branch->body.get());
+    
+    return ret_expr;
 }
 
 // Return

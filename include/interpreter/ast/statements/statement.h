@@ -25,6 +25,7 @@
 #include "cleaner/ast/statements/statement.h"
 #include "cleaner/ast/statements/return.h"
 #include "cleaner/ast/statements/block.h"
+#include "cleaner/ast/statements/if.h"
 #include "cleaner/symbols/scope.h"
 
 
@@ -42,6 +43,10 @@ class StatementInterpreter
         // Block
         std::unique_ptr<CleanExpression> interpretBlock(
             CleanBlockStatement* block_stmt);
+
+        // If
+        std::unique_ptr<CleanExpression> interpretIf(
+            CleanIfStatement* if_stmt, CleanScope* scope);
 
         // Return
         std::unique_ptr<CleanExpression> interpretReturn(
