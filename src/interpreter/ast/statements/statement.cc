@@ -23,13 +23,19 @@
 #include "interpreter/ast/statements/statement.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/statements/statement.h"
+#include "cleaner/ast/statements/continue.h"
 #include "cleaner/ast/statements/return.h"
+#include "cleaner/ast/statements/break.h"
 #include "cleaner/ast/statements/block.h"
+#include "cleaner/ast/statements/for.h"
+#include "cleaner/ast/statements/if.h"
 #include "cleaner/symbols/scope.h"
 
 
 StatementInterpreter::StatementInterpreter(
-) : returned(false)
+) : returned(false),
+    broke(false),
+    continued(false)
 {}
 
 /**
@@ -51,6 +57,12 @@ StatementInterpreter::interpret(
         case CleanStatementType::If: {
             return interpretIf(
                 static_cast<CleanIfStatement*>(stmt), scope
+            );
+        }
+
+        case CleanStatementType::For: {
+            return interpretFor(
+                static_cast<CleanForStatement*>(stmt), scope
             );
         }
 
@@ -87,7 +99,11 @@ StatementInterpreter::interpretBlock(
         std::unique_ptr<CleanExpression> ret_expr =
             interpret(statement.get(), block_stmt->scope.get());
         
-        if (returned)
+        if (
+            returned    ||
+            broke       ||
+            continued
+        )
             return ret_expr;
     }
 
@@ -131,8 +147,85 @@ StatementInterpreter::interpretIf(
     // If the main branch and elif branches failed, interpret else branch
     if (interpret_else && if_stmt->else_branch)
         ret_expr = interpretBlock(if_stmt->else_branch->body.get());
-    
+
     return ret_expr;
+}
+
+// For
+std::unique_ptr<CleanExpression>
+StatementInterpreter::interpretFor(
+    CleanForStatement* for_stmt,
+    CleanScope* scope
+)
+{
+    std::unique_ptr<CleanExpression> ret_expr = nullptr;
+
+    // Initialize the init_clause first
+    if (for_stmt->init_clause)
+        interpret(for_stmt->init_clause.get(), for_stmt->scope.get());
+
+    // Execute the body conditional on the termination and increment clause
+    while(true) {
+        // If the termination clause holds, we are done
+        if (for_stmt->term_clause) {
+            std::unique_ptr<CleanExpression> term_expr =
+                interpret(for_stmt->term_clause.get(), for_stmt->scope.get());
+            CleanBoolExpression* term_bool =
+                static_cast<CleanBoolExpression*>(term_expr.get());
+
+            if (! term_bool->value)
+                break;
+        }
+
+        // Execute the body
+        ret_expr = interpretBlock(for_stmt->body.get());
+
+        // If the body returned, we are done
+        if (returned)
+            return ret_expr;
+        
+        // If a continue statement was encountered
+        // we just keep chugging along
+        if (continued) {
+            if (for_stmt->incr_clause)
+                interpret(for_stmt->incr_clause.get(), for_stmt->scope.get());
+            continued = false;
+            continue;
+        }
+
+        // If a break statement was encountered
+        // We leave the loop and return nothing
+        if (broke) {
+            broke = false;
+            break;
+        }
+        
+        // In any other case, we execute the increment clause
+        if (for_stmt->incr_clause)
+            interpret(for_stmt->incr_clause.get(), for_stmt->scope.get());
+    }
+
+    return ret_expr;
+}
+
+// Break
+std::unique_ptr<CleanExpression>
+StatementInterpreter::interpretBreak(
+    CleanBreakStatement* br_stmt
+)
+{
+    broke = true;
+    return nullptr;
+}
+
+// Continue
+std::unique_ptr<CleanExpression>
+StatementInterpreter::interpretContinue(
+    CleanContinueStatement* cont_stmt
+)
+{
+    continued = true;
+    return nullptr;
 }
 
 // Return

@@ -23,8 +23,11 @@
 
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/statements/statement.h"
+#include "cleaner/ast/statements/continue.h"
 #include "cleaner/ast/statements/return.h"
+#include "cleaner/ast/statements/break.h"
 #include "cleaner/ast/statements/block.h"
+#include "cleaner/ast/statements/for.h"
 #include "cleaner/ast/statements/if.h"
 #include "cleaner/symbols/scope.h"
 
@@ -48,6 +51,18 @@ class StatementInterpreter
         std::unique_ptr<CleanExpression> interpretIf(
             CleanIfStatement* if_stmt, CleanScope* scope);
 
+        // For
+        std::unique_ptr<CleanExpression> interpretFor(
+            CleanForStatement* for_stmt, CleanScope* scope);
+
+        // Break
+        std::unique_ptr<CleanExpression> interpretBreak(
+            CleanBreakStatement* br_stmt);
+
+        // Continue
+        std::unique_ptr<CleanExpression> interpretContinue(
+            CleanContinueStatement* cont_stmt);
+
         // Return
         std::unique_ptr<CleanExpression> interpretReturn(
             CleanReturnStatement* ret_stmt, CleanScope* scope);
@@ -58,6 +73,8 @@ class StatementInterpreter
     
     private:
         bool returned;
+        bool broke;
+        bool continued;
 };
 
 #endif
