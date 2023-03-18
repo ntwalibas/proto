@@ -20,8 +20,6 @@
 #include <memory>
 #include <string>
 
-#include <iostream>
-
 #include "checker/parsetree/expressions/expression.h"
 #include "checker/parsetree/declarations/type.h"
 #include "parsetree/expressions/expression.h"
@@ -77,10 +75,8 @@ ExpressionChecker::check(Expression* expr)
         case ExpressionType::Binary:
             return checkBinary(expr);
 
-        case ExpressionType::TernaryIf: {
-            std::cout << "Checking ternary" << std::endl;
+        case ExpressionType::TernaryIf:
             return checkTernaryIf(expr);
-        }
 
         case ExpressionType::Assignment:
             return checkAssignment(expr);
