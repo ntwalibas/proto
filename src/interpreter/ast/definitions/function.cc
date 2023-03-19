@@ -88,12 +88,6 @@ FunctionDefinitionInterpreter::interpret(
     // there was no recursion (or we are at the end of recursion), we empty the scope
     else {
         fun_def->scope->clearSymbols<CleanVariableDefinition>();
-    }
-
-    // Delete the temporary variable definitions created above
-    // Technically this is unnecessary (and may impact performance)
-    // but we want to start the next interpretation with a clean slate
-    // fun_def->scope->clearSymbols<CleanVariableDefinition>();
     
     return ret_expr;
 }
