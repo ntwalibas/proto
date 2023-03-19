@@ -22,8 +22,10 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <stack>
 
 #include "cleaner/ast/declarations/variable.h"
+#include "cleaner/ast/definitions/variable.h"
 #include "cleaner/symbols/scope.forward.h"
 #include "cleaner/ast/declarations/type.h"
 #include "cleaner/ast/statements/block.h"
@@ -46,6 +48,7 @@ struct CleanFunctionDefinition
         std::unique_ptr<CleanVariableDeclaration>> parameters;
     std::unique_ptr<CleanTypeDeclaration> return_type;
     std::unique_ptr<CleanBlockStatement> body;
+    std::stack<std::vector<std::unique_ptr<CleanVariableDefinition>>> stack_frame;
 };
 
 #endif

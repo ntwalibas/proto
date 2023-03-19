@@ -103,6 +103,23 @@ struct CleanScope
     }
 
     /**
+     * Returns all function or variable definitions in this scope.
+     */
+    template<typename T>
+    std::map<std::string,std::unique_ptr<T>>& getSymbols()
+    {
+        if constexpr (std::is_same_v<T, CleanFunctionDefinition>) {
+            return fun_defs.symbols;
+        } else if constexpr (std::is_same_v<T, CleanVariableDefinition>) {
+            return var_defs.symbols;
+        } else {
+            throw std::invalid_argument(
+                "Can retrieve only function or variable definitions from this scope."
+            );
+        }
+    }
+
+    /**
      * Deletes all function or variable definitions in this scope.
      */
     template<typename T>

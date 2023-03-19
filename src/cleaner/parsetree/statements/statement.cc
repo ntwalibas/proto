@@ -117,7 +117,7 @@ StatementCleaner::cleanBlock(
         if (definition->getType() == DefinitionType::Variable) {
             VariableDefinition* var_def =
                 static_cast<VariableDefinition*>(definition.get());
-            VariableDefinitionCleaner(var_def, scope).clean();
+            VariableDefinitionCleaner(var_def, block_scope).clean();
         }
         else if (definition->getType() == DefinitionType::Statement) {
             Statement* stmt_def = static_cast<Statement*>(definition.get());
