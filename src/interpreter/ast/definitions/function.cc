@@ -43,7 +43,6 @@ FunctionDefinitionInterpreter::interpret(
     std::map<std::string,std::unique_ptr<CleanVariableDefinition>>& var_defs =
         fun_def->scope->getSymbols<CleanVariableDefinition>();
     for (auto& [name, var_def]: var_defs) {
-        // new_frame.push_back(std::move(var_def));
         fun_def->stack_frame.push(std::move(var_def));
     }
 
