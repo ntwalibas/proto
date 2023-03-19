@@ -88,6 +88,7 @@ FunctionDefinitionInterpreter::interpret(
     // there was no recursion (or we are at the end of recursion), we empty the scope
     else {
         fun_def->scope->clearSymbols<CleanVariableDefinition>();
+    }
     
     return ret_expr;
 }
