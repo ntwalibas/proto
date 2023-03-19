@@ -42,12 +42,10 @@ FunctionDefinitionInterpreter::interpret(
     // we probably have a recursive call, we save them on stack frame
     std::map<std::string,std::unique_ptr<CleanVariableDefinition>>& var_defs =
         fun_def->scope->getSymbols<CleanVariableDefinition>();
-    std::vector<std::unique_ptr<CleanVariableDefinition>> new_frame;
     for (auto& [name, var_def]: var_defs) {
-        new_frame.push_back(std::move(var_def));
+        // new_frame.push_back(std::move(var_def));
+        fun_def->stack_frame.push(std::move(var_def));
     }
-    if (new_frame.size() > 0)
-        fun_def->stack_frame.push(std::move(new_frame));
 
     // Create temporary variables in the function's scope
     // and bind passed arguments to them
@@ -74,15 +72,15 @@ FunctionDefinitionInterpreter::interpret(
     
     // We restore the scope after this function's body interpretation
     if (fun_def->stack_frame.size() > 0) {
-        std::vector<std::unique_ptr<CleanVariableDefinition>>& old_frame =
-            fun_def->stack_frame.top();
-        for (auto& var_def: old_frame) {
+        for (int i = 0; i < fun_def->parameters.size(); ++i) {
+            std::unique_ptr<CleanVariableDefinition>& var_def =
+                fun_def->stack_frame.top();
             fun_def->scope->addSymbol<CleanVariableDefinition>(
                 var_def->name,
                 std::move(var_def)
             );
+            fun_def->stack_frame.pop();
         }
-        fun_def->stack_frame.pop();
     }
     // If the stack frame is empty,
     // there was no recursion (or we are at the end of recursion), we empty the scope

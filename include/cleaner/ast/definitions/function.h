@@ -48,7 +48,7 @@ struct CleanFunctionDefinition
         std::unique_ptr<CleanVariableDeclaration>> parameters;
     std::unique_ptr<CleanTypeDeclaration> return_type;
     std::unique_ptr<CleanBlockStatement> body;
-    std::stack<std::vector<std::unique_ptr<CleanVariableDefinition>>> stack_frame;
+    std::stack<std::unique_ptr<CleanVariableDefinition>> stack_frame;
 };
 
 #endif
