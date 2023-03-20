@@ -5,14 +5,49 @@ as I play with different parts of a compiler and programming languages concepts.
 
 It also serves as a tool to help me learn and update my C++ knowledge.
 
-I intend to use it later to build something more fully featured upon it.
+This repo contains the reference implementation using an interpreter.
+As things progress, I will create different backends using bytecode,
+a JIT compiler (that can either ouput bytecode or assembly code),
+and of course just generate assembly for a particular machine.
 
+That's the general plan thus far but initially, with the interpreter,
+the goal is first to first gain a better understanding of the choices
+existing programming languages have made, why those choices were made,
+and compare them.
+
+## What a Proto program looks like
+
+Here is a program that calculates the n-th Fibonnaci number.
+
+```Rust
+fib : function(n: const int) -> int {
+    t1:     int = 1
+    t2:     int = 0
+    result: int = 0
+
+    for (i: int = 0; i < n; i += 1) {
+        t2      = result
+        result  = t1
+        t1      = t1 + t2
+    }
+
+    return result
+}
+
+main : function() -> int {
+    println(fib(92))
+    return 0
+}
+```
+
+*Note:* syntax highlighting is provided by setting the language to Rust since Proto's syntax
+resembles that of Rust.
 
 ## Testing
 
 > Make sure bazel is installed. Instructions can be found at https://bazel.build/install/bazelisk.
 
-All tests are under the `tests` folder. Each subfolder contains tests for a particular module of the compiler.
+All tests are under the `tests` folder. Each subfolder contains tests for a particular module of the interpreter.
 
 To run all tests:
 
@@ -20,7 +55,7 @@ To run all tests:
 bazel test --test_output=all //tests/...
 ```
 
-To run tests for a specific module of the compiler, e.g. the parser:
+To run tests for a specific module of the interpreter, e.g. the parser:
 
 ```shell
 bazel test --test_output=all //tests/parser:parser_test
@@ -28,16 +63,23 @@ bazel test --test_output=all //tests/parser:parser_test
 
 ## Building
 
-To generate the main binary for the compiler:
+To generate the main binary for the interpreter:
 
 ```shell
 bazel build //src:main
 ```
 
-And to run the compiler:
+## Running
+
+In the file `fibonnaci.pro`, there is a sample program that calculates the n-th Fibonacci number.
+
+It exercises almost all of the parts of the language already implemented.
+
+To run the interpreter:
 
 ```shell
 bazel-bin/sr/main program.pro
 ```
 
 Where `program.pro` is the file containing your Proto code.
+Or in this case replace `program.pro` with `fibonnaci.pro`.
