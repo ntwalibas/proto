@@ -1,14 +1,21 @@
 /* Fibonacci numbers
  *
- * This function calculates F(n), that is the nth number
+ * This program calculates F(n), that is the nth number
  * in the Fibonacci sequence.
+ *
+ * The first function uses iteration and is quite fast.
+ *
+ * The second function uses recursion and is slow.
+ * This is due to frequently needing to maintain function arguments
+ * in the function's scope with subsequent calls.
+ * That can of course be improved upon but it is not important right now.
  */
-fib : function(n: const uint) -> uint {
-    t1     = 1:uint
-    t2     = 0:uint
-    result = 0:uint
+ iter_fib : function(n: const int) -> int {
+    t1:     int = 1
+    t2:     int = 0
+    result: int = 0
 
-    for (i = 0:uint; i < n; i += 1:uint) {
+    for (i: int = 0; i < n; i += 1) {
         t2      = result
         result  = t1
         t1      = t1 + t2
@@ -17,7 +24,20 @@ fib : function(n: const uint) -> uint {
     return result
 }
 
+rec_fib : function(n: const int) -> int {
+    if (n < 2) {
+        return n
+    }
+    
+    return rec_fib(n - 1) + rec_fib(n - 2)
+}
+
 main : function() -> int {
-    // println(fib(9))
+    // Since out signed int is 64 bits max,
+    // our limit is Fib of 92.
+    println(iter_fib(92))
+
+    // Recursion will be slower as n increases
+    println(rec_fib(25))
     return 0
 }
