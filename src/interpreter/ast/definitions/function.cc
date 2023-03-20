@@ -26,6 +26,7 @@
 #include "interpreter/ast/statements/statement.h"
 #include "cleaner/ast/expressions/expression.h"
 #include "cleaner/ast/definitions/function.h"
+#include "cleaner/ast/declarations/type.h"
 #include "cleaner/symbols/scope.h"
 
 
@@ -68,10 +69,14 @@ FunctionDefinitionInterpreter::interpret(
             fun_def->body.get(),
             fun_def->scope.get()
         );
-    
+
     // We restore the scope after this function's body interpretation
     if (fun_def->stack_frame.size() > 0) {
-        for (int i = 0; i < fun_def->parameters.size(); ++i) {
+        for (
+            std::vector<std::unique_ptr<CleanTypeDeclaration>>::size_type i = 0;
+            i < fun_def->parameters.size();
+            ++i
+        ) {
             std::unique_ptr<CleanVariableDefinition>& var_def =
                 fun_def->stack_frame.top();
             fun_def->scope->addSymbol<CleanVariableDefinition>(
