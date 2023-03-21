@@ -67,7 +67,7 @@ bazel build //src:main
 ```
 
 **Note for Windows:** after installing Bazel, remember to change the options in `.bazelrc` to use
-Windows syntax of forward slahes and colons to pass options to the compiler.
+Windows syntax of forward slashes and colons to pass options to the compiler.
 
 ## Running
 
