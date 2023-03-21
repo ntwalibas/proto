@@ -1,6 +1,6 @@
 /* Fibonacci numbers
  *
- * This program calculates F(n), that is the nth number
+ * This program calculates F(n), that is the n-th number
  * in the Fibonacci sequence.
  *
  * The first function uses iteration and is quite fast.
@@ -33,7 +33,7 @@ rec_fib : function(n: const int) -> int {
 }
 
 main : function() -> int {
-    // Since out signed int is 64 bits max,
+    // Since our signed int is 64 bits max,
     // our limit is Fib of 92.
     println(iter_fib(92))
 

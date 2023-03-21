@@ -11,7 +11,7 @@ a JIT compiler (that can either ouput bytecode or assembly code),
 and of course just generate assembly for a particular machine.
 
 That's the general plan thus far but initially, with the interpreter,
-the goal is first to first gain a better understanding of the choices
+the goal is to first gain a better understanding of the choices
 existing programming languages have made, why those choices were made,
 and compare them.
 
@@ -40,9 +40,6 @@ main : function() -> int {
 }
 ```
 
-*Note:* syntax highlighting is provided by setting the language to Rust since Proto's syntax
-resembles that of Rust.
-
 ## Testing
 
 > Make sure bazel is installed. Instructions can be found at https://bazel.build/install/bazelisk.
@@ -68,6 +65,9 @@ To generate the main binary for the interpreter:
 ```shell
 bazel build //src:main
 ```
+
+**Note for Windows:** after installing Bazel, remember to change the options in `.bazelrc` to use
+Windows syntax of forward slahes and colons to pass options to the compiler.
 
 ## Running
 
