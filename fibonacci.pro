@@ -25,11 +25,7 @@
 }
 
 rec_fib : function(n: const int) -> int {
-    if (n < 2) {
-        return n
-    }
-    
-    return rec_fib(n - 1) + rec_fib(n - 2)
+    return n < 2 ? n else rec_fib(n - 1) + rec_fib(n - 2)
 }
 
 main : function() -> int {
