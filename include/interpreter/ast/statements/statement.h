@@ -25,6 +25,7 @@
 #include "cleaner/ast/statements/statement.h"
 #include "cleaner/ast/statements/continue.h"
 #include "cleaner/ast/statements/return.h"
+#include "cleaner/ast/statements/while.h"
 #include "cleaner/ast/statements/break.h"
 #include "cleaner/ast/statements/block.h"
 #include "cleaner/ast/statements/for.h"
@@ -54,6 +55,10 @@ class StatementInterpreter
         // For
         std::unique_ptr<CleanExpression> interpretFor(
             CleanForStatement* for_stmt, CleanScope* scope);
+
+        // While
+        std::unique_ptr<CleanExpression> interpretWhile(
+            CleanWhileStatement* while_stmt, CleanScope* scope);
 
         // Break
         std::unique_ptr<CleanExpression> interpretBreak(

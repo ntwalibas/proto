@@ -25,6 +25,7 @@
 #include "cleaner/ast/statements/statement.h"
 #include "cleaner/ast/statements/continue.h"
 #include "cleaner/ast/statements/return.h"
+#include "cleaner/ast/statements/while.h"
 #include "cleaner/ast/statements/break.h"
 #include "cleaner/ast/statements/block.h"
 #include "cleaner/ast/statements/for.h"
@@ -63,6 +64,12 @@ StatementInterpreter::interpret(
         case CleanStatementType::For: {
             return interpretFor(
                 static_cast<CleanForStatement*>(stmt), scope
+            );
+        }
+
+        case CleanStatementType::While: {
+            return interpretWhile(
+                static_cast<CleanWhileStatement*>(stmt), scope
             );
         }
 
@@ -178,7 +185,7 @@ StatementInterpreter::interpretFor(
 
     // Execute the body conditional on the termination and increment clause
     while(true) {
-        // If the termination clause holds, we are done
+        // If the termination clause doesn't hold, we are done
         if (for_stmt->term_clause) {
             std::unique_ptr<CleanExpression> term_expr =
                 interpret(for_stmt->term_clause.get(), for_stmt->scope.get());
@@ -215,6 +222,52 @@ StatementInterpreter::interpretFor(
         // In any other case, we execute the increment clause
         if (for_stmt->incr_clause)
             interpret(for_stmt->incr_clause.get(), for_stmt->scope.get());
+    }
+
+    return ret_expr;
+}
+
+// While
+std::unique_ptr<CleanExpression>
+StatementInterpreter::interpretWhile(
+    CleanWhileStatement* while_stmt,
+    CleanScope* scope
+)
+{
+    std::unique_ptr<CleanExpression> ret_expr = nullptr;
+
+    while (true) {
+        // If the condition doesn't hold, we are done
+        if (while_stmt->condition) {
+            std::unique_ptr<CleanExpression> cond_expr =
+                interpret(while_stmt->condition.get(), scope);
+            CleanBoolExpression* cond_bool =
+                static_cast<CleanBoolExpression*>(cond_expr.get());
+
+            if (! cond_bool->value)
+                break;
+        }
+
+        // Execute the body
+        ret_expr = interpretBlock(while_stmt->body.get());
+
+        // If the body returned, we are done
+        if (returned)
+            return ret_expr;
+        
+        // If a continue statement was encountered
+        // we just keep chugging along
+        if (continued) {
+            continued = false;
+            continue;
+        }
+
+        // If a break statement was encountered
+        // We leave the loop and return nothing
+        if (broke) {
+            broke = false;
+            break;
+        }
     }
 
     return ret_expr;
