@@ -6,11 +6,13 @@
  * The first function uses iteration and is quite fast.
  *
  * The second function uses recursion and is slow.
+ * Algorithmically, it is slow because it runs in O(2^n).
+ * But a Python implementation would be faster than this one.
  * This is due to frequently needing to maintain function arguments
  * in the function's scope with subsequent calls.
  * That can of course be improved upon but it is not important right now.
  */
- iter_fib : function(n: const int) -> int {
+iter_fib : function(n: const int) -> int {
     t1:     int = 1
     t2:     int = 0
     result: int = 0
