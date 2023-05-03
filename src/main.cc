@@ -21,6 +21,7 @@
 #include <memory>
 #include <string>
 
+#include "intrinsics/reslib/resuint.h"
 #include "intrinsics/reslib/resint.h"
 #include "intrinsics/stdlib/stdio.h"
 #include "interpreter/interpreter.h"
@@ -166,6 +167,7 @@ compile(std::string const& source_path)
      */
     {
         // Register resident and standard functions
+        Resuint().load(scope.get());
         Resint().load(scope.get());
         Stdio().load(scope.get());
 
