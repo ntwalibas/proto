@@ -1,1 +1,4 @@
+# --cxxopt='-std=c++17': require C++17
+# --copt='-O3'         : compile with highest optimizations
+
 build --cxxopt='-std=c++17' --copt='-O3'
