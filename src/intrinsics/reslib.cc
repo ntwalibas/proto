@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 
+#include <stdexcept>
 #include <memory>
 #include <string>
 #include <map>
@@ -22,6 +23,7 @@
 #include "parsetree/declarations/type.h"
 #include "intrinsics/reslib.h"
 #include "utils/inference.h"
+
 
 ReslibFunctionsSymtable::ReslibFunctionsSymtable()
 {
