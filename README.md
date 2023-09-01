@@ -3,8 +3,6 @@
 Proto (for prototype and primitive) is a single-file programming language that I will be using
 as I play with different parts of a compiler and programming languages concepts.
 
-It also serves as a tool to help me learn and update my C++ knowledge.
-
 This repo contains the reference implementation using an interpreter.
 As things progress, I will create different backends using bytecode,
 a JIT compiler (that can either ouput bytecode or assembly code),
